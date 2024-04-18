@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "OmelDevWebsite": {
+    "Dungeons": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/omel-dev-website",
+            "outputPath": "dist/dungeons",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -62,10 +62,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "OmelDevWebsite:build:production"
+              "buildTarget": "Dungeons:build:production"
             },
             "development": {
-              "buildTarget": "OmelDevWebsite:build:development"
+              "buildTarget": "Dungeons:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -73,7 +73,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "OmelDevWebsite:build"
+            "buildTarget": "Dungeons:build"
           }
         },
         "test": {
