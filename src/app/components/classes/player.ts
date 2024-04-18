@@ -38,6 +38,15 @@ export class Player {
     this.position.setY(this.position.getY() + this.velocity.getY());
   }
 
-  
+  public draw(): void {
+
+  }
+
+  public update(): void {
+    this.move();
+    this.draw()
+  }
+
+
 
 }
