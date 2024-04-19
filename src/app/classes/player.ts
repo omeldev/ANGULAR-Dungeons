@@ -4,6 +4,7 @@ import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
+import {Scale} from "./scale";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -15,7 +16,7 @@ export class Player {
 
   private sides: PlayerSide[];
 
-  private MAX_SPEED = 5;
+  private MAX_SPEED = 3;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
@@ -27,6 +28,8 @@ export class Player {
       new PlayerSide(Side.BOTTOM, this.position.getY() + this.height),
       new PlayerSide(Side.LEFT, this.position.getX())
     ];
+
+    this.sprite.setScale(new Scale(3))
   }
 
   public getBottomSide(): PlayerSide {
@@ -91,7 +94,7 @@ export class Player {
     this.position.setY(this.position.getY() + this.velocity.getY());
 
 
-    if (isKeyPressed('w') && this.getBottomSide().getPosition() >= GameComponent.canvasHeight) {
+    if (isKeyPressed('w') && this.isOnGround()) {
       this.getVelocity().setY(-3);
     }
     if ((!isKeyPressed('a') || !isKeyPressed('d')) && this.isOnGround()) {
@@ -106,7 +109,7 @@ export class Player {
     //TODO Acceleration
     if (isKeyPressed('a')) {
       //if(this.getVelocity().getX() <= this.MAX_SPEED * -1) this.getVelocity().setX(this.MAX_SPEED * -1);
-      this.getVelocity().setX(this.MAX_SPEED * -1);
+      this.getVelocity().setX(-this.MAX_SPEED);
     }
 
     if (isKeyPressed('d')) {
@@ -123,14 +126,14 @@ export class Player {
   }
 
   public draw(context: CanvasRenderingContext2D): void {
-    context.fillStyle = 'black';
-    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
+    this.sprite.update(context, this.position);
   }
 
   public update(context: CanvasRenderingContext2D): void {
 
     this.move();
     this.draw(context);
+
 
 
   }
