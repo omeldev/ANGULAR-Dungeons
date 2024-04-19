@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {Player} from "../classes/player";
-import {Sprite} from "../classes/sprite";
-import {Position} from "../classes/position";
-import {registerKeystrokes} from "../listener/keystroke";
+import {Player} from "../../classes/player";
+import {Sprite} from "../../classes/sprite";
+import {Position} from "../../classes/position";
+import {registerKeystrokes} from "../../listener/keystroke";
 
 @Component({
   selector: 'app-game',

@@ -1,7 +1,7 @@
 import {Position} from "./position";
 import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
-import {GameComponent} from "../game/game.component";
+import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
 
@@ -118,6 +118,7 @@ export class Player {
     if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight && !isKeyPressed('w')) {
       this.getVelocity().setY(0);
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
+    this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
   }
 
@@ -130,8 +131,6 @@ export class Player {
 
     this.move();
     this.draw(context);
-
-    this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
 
   }
