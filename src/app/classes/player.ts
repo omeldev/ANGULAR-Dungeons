@@ -4,14 +4,13 @@ import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
-import {Scale} from "./scale";
 
 export class Player {
   private readonly sprite: Sprite;
   private position: Position;
   private velocity: Velocity;
 
-  private width = 100;
+  private width;
   private height;
 
   private sides: PlayerSide[];
@@ -22,6 +21,7 @@ export class Player {
     this.sprite = sprite;
     this.sprite.getScale().setScale(9);
     this.height = this.sprite.getImage().height * this.sprite.getScale().getScale();
+    this.width = this.sprite.getImage().width * this.sprite.getScale().getScale();
     this.position = position;
     this.velocity = new Velocity(0, 0);
     this.sides = [
@@ -30,7 +30,6 @@ export class Player {
       new PlayerSide(Side.BOTTOM, this.position.getY() + this.height),
       new PlayerSide(Side.LEFT, this.position.getX())
     ];
-
 
 
   }
@@ -137,7 +136,6 @@ export class Player {
 
     this.move();
     this.draw(context);
-
 
 
   }
