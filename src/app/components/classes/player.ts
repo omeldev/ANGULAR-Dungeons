@@ -3,6 +3,7 @@ import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
 import {GameComponent} from "../game/game.component";
 import {PlayerSide, Side} from "./sides";
+import {isKeyPressed} from "../listener/keystroke";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -13,6 +14,8 @@ export class Player {
   private height = 100;
 
   private sides: PlayerSide[];
+
+  private MAX_SPEED = 5;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
@@ -79,9 +82,46 @@ export class Player {
     this.velocity = velocity;
   }
 
+  public isOnGround(): boolean {
+    return this.getBottomSide().getPosition() >= GameComponent.canvasHeight;
+  }
+
   public move(): void {
     this.position.setX(this.position.getX() + this.velocity.getX());
     this.position.setY(this.position.getY() + this.velocity.getY());
+
+
+    if (isKeyPressed('w') && this.getBottomSide().getPosition() >= GameComponent.canvasHeight) {
+      this.getVelocity().setY(-3);
+    }
+    if ((!isKeyPressed('a') || !isKeyPressed('d')) && this.isOnGround()) {
+      this.getVelocity().setX(0);
+    } else {
+      if (this.getVelocity().getX() !== 0) {
+        this.getVelocity().setX(this.getVelocity().getX() + (Math.sign(this.getVelocity().getX()) == -1 ? 0.01 : -0.01));
+      }
+    }
+
+
+    //TODO Acceleration
+    if (isKeyPressed('a')) {
+      //if(this.getVelocity().getX() <= this.MAX_SPEED * -1) this.getVelocity().setX(this.MAX_SPEED * -1);
+
+      this.getVelocity().setX(this.MAX_SPEED * -1);
+    }
+
+    if (isKeyPressed('d')) {
+      //if(this.getVelocity().getX() >= this.MAX_SPEED) this.getVelocity().setX(this.MAX_SPEED);
+      this.getVelocity().setX(this.MAX_SPEED);
+    }
+
+
+    if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight && !isKeyPressed('w')) {
+      this.getVelocity().setY(0);
+    } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
+
+
+    console.log(this.position.getX(), this.position.getY());
   }
 
   public draw(context: CanvasRenderingContext2D): void {
@@ -90,10 +130,6 @@ export class Player {
   }
 
   public update(context: CanvasRenderingContext2D): void {
-
-    if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight) {
-      this.getVelocity().setY(0);
-    } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
     this.move();
     this.draw(context);
