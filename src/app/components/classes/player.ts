@@ -2,6 +2,7 @@ import {Position} from "./position";
 import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
 import {GameComponent} from "../game/game.component";
+import {PlayerSide, Side} from "./sides";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -11,11 +12,35 @@ export class Player {
   private width = 100;
   private height = 100;
 
+  private sides: PlayerSide[];
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
     this.position = position;
     this.velocity = new Velocity(0, 0);
+    this.sides = [
+      new PlayerSide(Side.TOP, this.position.getY()),
+      new PlayerSide(Side.RIGHT, this.position.getX() + this.width),
+      new PlayerSide(Side.BOTTOM, this.position.getY() + this.height),
+      new PlayerSide(Side.LEFT, this.position.getX())
+    ];
   }
+
+  public getBottomSide(): PlayerSide {
+    return this.sides.find(side => side.getSide() === Side.BOTTOM)!;
+  }
+
+  public getTopSide(): PlayerSide {
+    return this.sides.find(side => side.getSide() === Side.TOP)!;
+  }
+
+  public getRightSide(): PlayerSide {
+    return this.sides.find(side => side.getSide() === Side.RIGHT)!;
+  }
+
+  public getLeftSide(): PlayerSide {
+    return this.sides.find(side => side.getSide() === Side.LEFT)!;
+  }
+
 
   public getSprite(): Sprite {
     return this.sprite;
@@ -68,12 +93,15 @@ export class Player {
     this.move();
 
     this.getVelocity().setY(1);
-    
-    if (this.getPosition().getY() + this.getHeight() >= GameComponent.canvasHeight) {
+
+    if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight) {
       this.getVelocity().setY(0);
     }
 
     this.draw(context);
+
+    this.getBottomSide().setPosition(this.getBottomSide().getPosition() + this.getVelocity().getY());
+
 
 
   }
