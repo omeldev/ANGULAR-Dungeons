@@ -45,7 +45,7 @@ export class GameComponent implements AfterViewInit {
     this.context!.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
 
     this.player.update(this.context!);
-    
+
 
   }
 
