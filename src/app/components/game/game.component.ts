@@ -1,9 +1,8 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {animate} from "@angular/animations";
 import {Player} from "../classes/player";
 import {Sprite} from "../classes/sprite";
 import {Position} from "../classes/position";
-import {isKeyPressed, registerKeystrokes} from "../listener/keystroke";
+import {registerKeystrokes} from "../listener/keystroke";
 
 @Component({
   selector: 'app-game',
@@ -11,12 +10,11 @@ import {isKeyPressed, registerKeystrokes} from "../listener/keystroke";
   styleUrl: './game.component.scss'
 })
 export class GameComponent implements AfterViewInit {
+  public static canvasWidth = 64 * 16;
+  public static canvasHeight = 64 * 9;
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
-  public static canvasWidth = 64 * 16;
-  public static canvasHeight = 64 * 9;
-
   private player: Player;
 
 

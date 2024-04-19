@@ -38,6 +38,7 @@ export function isKeyPressed(key: string): boolean {
   const gameKey = KEYS.find(gameKey => gameKey.getKey() === key);
   return gameKey!.isPressed();
 }
+
 export function registerKeystrokes(): void {
 
   window.addEventListener('keydown', (event) => {
@@ -46,7 +47,7 @@ export function registerKeystrokes(): void {
     switch (key) {
       case 'w':
         setKeyPressed('w', true);
-       break;
+        break;
       case 'a':
         setKeyPressed('a', true);
         break;
@@ -54,8 +55,8 @@ export function registerKeystrokes(): void {
         setKeyPressed('d', true);
         break;
 
-        default:
-          break;
+      default:
+        break;
     }
   });
 
