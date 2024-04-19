@@ -5,6 +5,7 @@ export class Sprite {
   private readonly image: HTMLImageElement;
   private dirty: boolean;
   private position: Position;
+  private isBackground: boolean;
 
   constructor(imageSrc: string, position: Position) {
     this.position = position;
@@ -12,6 +13,7 @@ export class Sprite {
     this.imageSrc = imageSrc;
     this.image.src = this.imageSrc;
     this.dirty = true;
+    this.isBackground = false;
 
   }
 
@@ -78,9 +80,17 @@ export class Sprite {
     this.dirty = true;
   }
 
+  public setIsBackground(isBackground: boolean): void {
+    this.isBackground = isBackground;
+  }
+
+  public getIsBackground(): boolean {
+    return this.isBackground;
+  }
+
 
   public draw(context: CanvasRenderingContext2D): void {
-    if (this.isDirty()) {
+    if (this.isDirty() && !this.isBackground) {
       context.drawImage(this.image, this.position.getX(), this.position.getY());
       this.setDirty(false);
     }
