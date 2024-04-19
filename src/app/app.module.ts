@@ -7,7 +7,7 @@ import {BrowserModule} from "@angular/platform-browser";
 import {RouterModule} from "@angular/router";
 import {routes} from "./modules/route/app.routes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { GameComponent } from './components/game/game.component';
+import {GameComponent} from './components/game/game.component';
 
 
 @NgModule({
@@ -15,7 +15,7 @@ import { GameComponent } from './components/game/game.component';
     AppComponent,
 
     ErrorComponent,
-      GameComponent,
+    GameComponent,
   ],
   imports: [
     BrowserModule,
