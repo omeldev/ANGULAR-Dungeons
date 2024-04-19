@@ -12,7 +12,7 @@ export class Player {
   private velocity: Velocity;
 
   private width = 100;
-  private height = 100;
+  private height;
 
   private sides: PlayerSide[];
 
@@ -20,6 +20,8 @@ export class Player {
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
+    this.sprite.getScale().setScale(9);
+    this.height = this.sprite.getImage().height * this.sprite.getScale().getScale();
     this.position = position;
     this.velocity = new Velocity(0, 0);
     this.sides = [
@@ -29,7 +31,8 @@ export class Player {
       new PlayerSide(Side.LEFT, this.position.getX())
     ];
 
-    this.sprite.setScale(new Scale(3))
+
+
   }
 
   public getBottomSide(): PlayerSide {
@@ -121,6 +124,7 @@ export class Player {
     if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight && !isKeyPressed('w')) {
       this.getVelocity().setY(0);
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
+
     this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
   }
