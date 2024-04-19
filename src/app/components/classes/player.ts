@@ -106,7 +106,6 @@ export class Player {
     //TODO Acceleration
     if (isKeyPressed('a')) {
       //if(this.getVelocity().getX() <= this.MAX_SPEED * -1) this.getVelocity().setX(this.MAX_SPEED * -1);
-
       this.getVelocity().setX(this.MAX_SPEED * -1);
     }
 
@@ -120,8 +119,6 @@ export class Player {
       this.getVelocity().setY(0);
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
-
-    console.log(this.position.getX(), this.position.getY());
   }
 
   public draw(context: CanvasRenderingContext2D): void {
