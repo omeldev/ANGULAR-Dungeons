@@ -3,6 +3,7 @@ import {animate} from "@angular/animations";
 import {Player} from "../classes/player";
 import {Sprite} from "../classes/sprite";
 import {Position} from "../classes/position";
+import {isKeyPressed, registerKeystrokes} from "../listener/keystroke";
 
 @Component({
   selector: 'app-game',
@@ -34,7 +35,7 @@ export class GameComponent implements AfterViewInit {
     this.canvas!.nativeElement.height = GameComponent.canvasHeight;
 
 
-
+    registerKeystrokes();
     this.animate();
   }
 
@@ -44,6 +45,7 @@ export class GameComponent implements AfterViewInit {
     this.context!.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
 
     this.player.update(this.context!);
+    
 
   }
 
