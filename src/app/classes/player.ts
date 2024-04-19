@@ -19,8 +19,12 @@ export class Player {
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
-    this.sprite.getScale().setScale(9);
+    this.sprite.getScale().setScale(4);
     this.height = this.sprite.getImage().height * this.sprite.getScale().getScale();
+    //@ts-ignore
+    console.log(this.sprite.getImage().height)
+    console.log(this.height);
+    console.log(this.sprite.getScale().getScale());
     this.width = this.sprite.getImage().width * this.sprite.getScale().getScale();
     this.position = position;
     this.velocity = new Velocity(0, 0);
