@@ -13,6 +13,7 @@ export class Player {
   private height = 100;
 
   private sides: PlayerSide[];
+
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
     this.position = position;
@@ -90,18 +91,14 @@ export class Player {
 
   public update(context: CanvasRenderingContext2D): void {
 
-    this.move();
-
-    this.getVelocity().setY(1);
-
     if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight) {
       this.getVelocity().setY(0);
-    }
+    } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
+    this.move();
     this.draw(context);
 
-    this.getBottomSide().setPosition(this.getBottomSide().getPosition() + this.getVelocity().getY());
-
+    this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
 
   }
