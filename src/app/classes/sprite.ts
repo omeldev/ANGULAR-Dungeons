@@ -1,4 +1,5 @@
 import {Position} from "./position";
+import {Scale} from "./scale";
 
 export class Sprite {
   private imageSrc: string;
@@ -7,13 +8,18 @@ export class Sprite {
   private position: Position;
   private isBackground: boolean;
 
+  private scale: Scale;
+
   constructor(imageSrc: string, position: Position) {
     this.position = position;
     this.image = new Image();
     this.imageSrc = imageSrc;
+
     this.image.src = this.imageSrc;
     this.dirty = true;
     this.isBackground = false;
+
+    this.scale = new Scale(1);
 
   }
 
@@ -37,6 +43,11 @@ export class Sprite {
 
   public setPosition(position: Position): void {
     this.position = position;
+    this.dirty = true;
+  }
+
+  public setScale(scale: Scale): void {
+    this.scale = scale;
     this.dirty = true;
   }
 
@@ -89,14 +100,29 @@ export class Sprite {
   }
 
 
+
+
+  public getScale(): Scale {
+    return this.scale;
+  }
   public draw(context: CanvasRenderingContext2D): void {
-    if (this.isDirty() && !this.isBackground) {
-      context.drawImage(this.image, this.position.getX(), this.position.getY());
+    if (this.isBackground) {
+      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.image.width * this.getScale().getScale(), this.image.height * this.getScale().getScale());
+      return;
+    }
+
+    if(this.isDirty()){
+      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.image.width * this.getScale().getScale(), this.image.height * this.getScale().getScale());
       this.setDirty(false);
     }
   }
 
   private setDirty(b: boolean) {
     this.dirty = b;
+  }
+
+  public update(context: CanvasRenderingContext2D, position: Position) {
+    this.setPosition(position);
+    this.draw(context);
   }
 }
