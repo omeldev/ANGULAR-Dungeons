@@ -22,4 +22,12 @@ export class Velocity {
   public getY(): number {
     return this.y;
   }
+
+  public isNegativeX(): boolean {
+    return this.x < 0;
+  }
+
+  public isNegativeY(): boolean {
+    return this.y < 0;
+  }
 }
