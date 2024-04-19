@@ -1,7 +1,11 @@
 export class Scale {
-  private readonly scale: number;
+  private scale: number;
 
   constructor(scale: number) {
+    this.scale = scale;
+  }
+
+  public setScale(scale: number): void {
     this.scale = scale;
   }
 
