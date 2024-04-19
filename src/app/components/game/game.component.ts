@@ -19,7 +19,7 @@ export class GameComponent implements AfterViewInit {
 
 
   constructor() {
-    this.player = new Player(new Position(100, 100), new Sprite('assets/player.png'));
+    this.player = new Player(new Position(100, 100), new Sprite('assets/player.png', new Position(100, 100)));
 
   }
 
