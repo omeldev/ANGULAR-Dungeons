@@ -45,10 +45,6 @@ export class GameComponent implements AfterViewInit {
 
     this.player.update(this.context!);
 
-
-
-
-
   }
 
 
