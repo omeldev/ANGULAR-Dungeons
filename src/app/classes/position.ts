@@ -3,7 +3,8 @@ export class Position {
   constructor(
     private x: number,
     private y: number
-  ) { }
+  ) {
+  }
 
   public setX(x: number): void {
     this.x = x;

@@ -8,10 +8,9 @@ declare global {
   }
 
 
-
 }
 //Experimental functionalitys implementation
-Array.prototype.log = function<T>(): void {
+Array.prototype.log = function <T>(): void {
   console.log(this);
 }
 

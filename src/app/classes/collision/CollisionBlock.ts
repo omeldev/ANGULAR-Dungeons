@@ -1,5 +1,4 @@
 import {Position} from "../position";
-import {Sprite} from "../sprite";
 import {Player} from "../player";
 
 export class CollisionBlock {
@@ -20,12 +19,12 @@ export class CollisionBlock {
   public collidesWith(pl: Player) {
     const x = pl.getSprite().getX(), y = pl.getSprite().getY();
     const width = pl.getWidth(), height = pl.getHeight();
-    if (x + width > this.position.getX() && x < this.position.getX() + this.width){
+    if (x + width > this.position.getX() && x < this.position.getX() + this.width) {
       console.log("collided")
 
       return true;
     }
-    if (y + height > this.position.getY() && y < this.position.getY() + this.height){
+    if (y + height > this.position.getY() && y < this.position.getY() + this.height) {
       console.log("collided")
       return true;
     }

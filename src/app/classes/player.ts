@@ -4,8 +4,6 @@ import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
-import {level1} from "../levels/levels";
-import {CollisionBlock} from "./collision/CollisionBlock";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -125,11 +123,6 @@ export class Player {
       this.getPosition().setY(GameComponent.canvasHeight - this.getHeight());
 
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
-
-
-
-
-
 
 
   }

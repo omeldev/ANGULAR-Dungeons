@@ -10,16 +10,16 @@ export class Animation {
 
   private context: CanvasRenderingContext2D | null = null;
 
+  constructor(sprites: Sprite[]) {
+    this.sprites = sprites;
+  }
+
   public setSpeed(speed: number): void {
     this.speed = speed;
-    if(this.interval) {
+    if (this.interval) {
       clearInterval(this.interval);
       this.play(this.context!);
     }
-  }
-
-  constructor(sprites: Sprite[]) {
-    this.sprites = sprites;
   }
 
   public getSprites(): Sprite[] {
@@ -44,14 +44,14 @@ export class Animation {
   public play(context: CanvasRenderingContext2D): void {
     this.context = context;
     let index = 0;
-     this.interval = setInterval(() => {
+    this.interval = setInterval(() => {
       if (index < this.sprites.length) {
 
         this.draw(context, index);
         index++;
 
       } else {
-        if(!this.loop) {
+        if (!this.loop) {
           clearInterval(this.interval);
         }
       }

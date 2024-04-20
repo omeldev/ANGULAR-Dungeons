@@ -3,9 +3,7 @@ import {Player} from "../../classes/player";
 import {Sprite} from "../../classes/sprite";
 import {Position} from "../../classes/position";
 import {registerKeystrokes} from "../../listener/keystroke";
-import {Animation} from "../../classes/animation";
 import {level1} from "../../levels/levels";
-import {CollisionBlock} from "../../classes/collision/CollisionBlock";
 
 @Component({
   selector: 'app-game',
@@ -26,6 +24,7 @@ export class GameComponent implements AfterViewInit {
     this.player = new Player(new Position(356, 250), spr);
 
   }
+
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
     this.iniCanvas();
@@ -48,7 +47,6 @@ export class GameComponent implements AfterViewInit {
     //TODO JUST FOR TESTING
     this.player.update(this.context!);
   }
-
 
 
 }
