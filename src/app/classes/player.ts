@@ -4,14 +4,12 @@ import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
+import {delay} from "rxjs";
 
 export class Player {
   private readonly sprite: Sprite;
   private position: Position;
   private velocity: Velocity;
-
-  private width;
-  private height;
 
   private sides: PlayerSide[];
 
@@ -19,19 +17,17 @@ export class Player {
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
-    this.sprite.getScale().setScale(4);
-    //TODO fix height
-    this.height = this.sprite.getImage().height * this.sprite.getScale().getScale();
+    this.sprite.getScale().setScale(6);
 
-    this.width = this.sprite.getImage().width * this.sprite.getScale().getScale();
     this.position = position;
     this.velocity = new Velocity(0, 0);
     this.sides = [
       new PlayerSide(Side.TOP, this.position.getY()),
-      new PlayerSide(Side.RIGHT, this.position.getX() + this.width),
-      new PlayerSide(Side.BOTTOM, this.position.getY() + this.height),
+      new PlayerSide(Side.RIGHT, this.position.getX() + this.getWidth()),
+      new PlayerSide(Side.BOTTOM, this.position.getY() + this.getHeight()),
       new PlayerSide(Side.LEFT, this.position.getX())
     ];
+
 
 
   }
@@ -62,19 +58,19 @@ export class Player {
   }
 
   public getWidth(): number {
-    return this.width;
+    return this.sprite.getWidth();
   }
 
   public getHeight(): number {
-    return this.height;
+    return this.sprite.getHeight()
   }
 
   public setWidth(width: number): void {
-    this.width = width;
+    this.sprite.setWidth(width);
   }
 
   public setHeight(height: number): void {
-    this.height = height;
+   this.sprite.setHeight(height);
   }
 
   public getVelocity(): Velocity {
@@ -124,6 +120,7 @@ export class Player {
 
     if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight && !isKeyPressed('w')) {
       this.getVelocity().setY(0);
+      this.getPosition().setY(GameComponent.canvasHeight - this.getHeight());
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
     this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
@@ -138,6 +135,7 @@ export class Player {
 
     this.move();
     this.draw(context);
+
 
 
   }

@@ -8,6 +8,9 @@ export class Sprite {
   private position: Position;
   private isBackground: boolean;
 
+  private width: number = 0;
+  private height: number = 0;
+
   private scale: Scale;
 
   constructor(imageSrc: string, position: Position) {
@@ -15,11 +18,18 @@ export class Sprite {
     this.image = new Image();
     this.imageSrc = imageSrc;
 
+    this.image.onload = () => {
+      this.width = this.image.width;
+      this.height = this.image.height;
+      console.log(this.width, this.height);
+    }
+
     this.image.src = this.imageSrc;
     this.dirty = true;
     this.isBackground = false;
 
     this.scale = new Scale(1);
+
 
   }
 
@@ -48,6 +58,8 @@ export class Sprite {
 
   public setScale(scale: Scale): void {
     this.scale = scale;
+    this.height = this.image.height * this.scale.getScale();
+    this.width = this.image.width * this.scale.getScale();
     this.dirty = true;
   }
 
@@ -70,11 +82,11 @@ export class Sprite {
   }
 
   public getWidth(): number {
-    return this.image.width;
+    return this.width * this.getScale().getScale();
   }
 
   public getHeight(): number {
-    return this.image.height;
+    return this.height * this.getScale().getScale();
   }
 
   public isDirty(): boolean {
@@ -82,12 +94,12 @@ export class Sprite {
   }
 
   public setWidth(width: number): void {
-    this.image.width = width;
+    this.width = width;
     this.dirty = true;
   }
 
   public setHeight(height: number): void {
-    this.image.height = height;
+    this.height = height;
     this.dirty = true;
   }
 
@@ -107,12 +119,12 @@ export class Sprite {
   }
   public draw(context: CanvasRenderingContext2D): void {
     if (this.isBackground) {
-      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.image.width * this.getScale().getScale(), this.image.height * this.getScale().getScale());
+      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
       return;
     }
 
     if(this.isDirty()){
-      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.image.width * this.getScale().getScale(), this.image.height * this.getScale().getScale());
+      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
       this.setDirty(false);
     }
   }
