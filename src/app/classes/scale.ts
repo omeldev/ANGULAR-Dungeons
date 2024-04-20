@@ -1,8 +1,8 @@
 export class Scale {
-  private scale: number;
 
-  constructor(scale: number) {
-    this.scale = scale;
+
+  constructor(private scale: number) {
+
   }
 
   public setScale(scale: number): void {
