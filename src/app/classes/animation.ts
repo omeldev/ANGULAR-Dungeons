@@ -4,7 +4,7 @@ export class Animation {
   private sprites: Sprite[];
   private loop: boolean = false;
 
-  private interval: number = 0;
+  private interval: ReturnType<typeof setInterval> | undefined = undefined;
 
   private speed: number = 1000 / 60;
 
