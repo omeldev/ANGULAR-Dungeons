@@ -5,11 +5,21 @@ import {Sprite} from "./sprite";
 export class Level {
   private collisions: number[];
   private background: Sprite;
+  private collisionBlocks: CollisionBlock[] = [];
 
   constructor(background: Sprite, collisions: number[]) {
     this.collisions = collisions;
     this.background = background;
     this.background.setIsBackground(true);
+
+    this.getCollisionsMap().forEach((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol === 292) {
+          this.collisionBlocks.push(new CollisionBlock(new Position(x * 64, y * 64)));
+        }
+      })
+    });
+
   }
 
   public getCollisionsMap(): number[][] {
@@ -26,17 +36,12 @@ export class Level {
   }
 
   public drawCollisionBlocks(context: CanvasRenderingContext2D): void {
-    let colissionBlocks: CollisionBlock[] = [];
 
-    this.getCollisionsMap().forEach((row, y) => {
-      row.forEach((symbol, x) => {
-        if (symbol === 292) {
-          colissionBlocks.push(new CollisionBlock(new Position(x * 64, y * 64)));
-        }
-      })
-    });
+    this.collisionBlocks.forEach(block => block.draw(context!));
+  }
 
-   colissionBlocks.forEach(block => block.draw(context!));
+  public getCollisionBlocks(): CollisionBlock[] {
+    return this.collisionBlocks;
   }
 
 }
