@@ -92,6 +92,7 @@ export class Player {
   public move(): void {
     this.position.setX(this.position.getX() + this.velocity.getX());
     this.position.setY(this.position.getY() + this.velocity.getY());
+    this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
 
     if (isKeyPressed('w') && this.isOnGround()) {
@@ -121,9 +122,9 @@ export class Player {
     if (this.getBottomSide().getPosition() >= GameComponent.canvasHeight && !isKeyPressed('w')) {
       this.getVelocity().setY(0);
       this.getPosition().setY(GameComponent.canvasHeight - this.getHeight());
+
     } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
-    this.getBottomSide().setPosition(this.getPosition().getY() + this.getHeight());
 
   }
 
