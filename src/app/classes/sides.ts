@@ -1,8 +1,10 @@
+import {Position} from "./position";
+
 export class PlayerSide {
   private readonly side: Side;
-  private position: number;
+  private position: Position;
 
-  constructor(side: Side, position: number) {
+  constructor(side: Side, position: Position) {
     this.side = side;
     this.position = position;
   }
@@ -11,11 +13,11 @@ export class PlayerSide {
     return this.side;
   }
 
-  public getPosition(): number {
+  public getPosition(): Position {
     return this.position;
   }
 
-  public setPosition(position: number): void {
+  public setPosition(position: Position): void {
     this.position = position;
   }
 
