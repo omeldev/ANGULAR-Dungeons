@@ -36,7 +36,7 @@ export class Level {
       })
     });
 
-    colissionBlocks.forEach(block => block.draw(context!));
+   colissionBlocks.forEach(block => block.draw(context!));
   }
 
 }
