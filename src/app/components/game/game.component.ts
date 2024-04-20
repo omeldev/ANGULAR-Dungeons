@@ -3,6 +3,7 @@ import {Player} from "../../classes/player";
 import {Sprite} from "../../classes/sprite";
 import {Position} from "../../classes/position";
 import {registerKeystrokes} from "../../listener/keystroke";
+import {Animation} from "../../classes/animation";
 
 @Component({
   selector: 'app-game',
@@ -37,6 +38,7 @@ export class GameComponent implements AfterViewInit {
     registerKeystrokes();
     this.animate();
   }
+
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
