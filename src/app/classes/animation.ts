@@ -17,15 +17,15 @@ export class Animation {
 
 
   public getSprite(index: number): Sprite {
-    if(index < 0) return this.sprites[0];
-    if(index >= this.sprites.length) return this.sprites[this.sprites.length - 1];
+    if (index < 0) return this.sprites[0];
+    if (index >= this.sprites.length) return this.sprites[this.sprites.length - 1];
     return this.sprites[index];
   }
 
   public play(context: CanvasRenderingContext2D): void {
     let index = 0;
     const interval = setInterval(() => {
-      if(index < this.sprites.length) {
+      if (index < this.sprites.length) {
 
         this.draw(context, index);
         index++;
@@ -36,6 +36,7 @@ export class Animation {
     }, 1000 / 60);
 
   }
+
 
   private draw(context: CanvasRenderingContext2D, spriteIndex: number): void {
     const sprite = this.getSprite(spriteIndex);

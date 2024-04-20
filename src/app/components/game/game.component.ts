@@ -34,7 +34,6 @@ export class GameComponent implements AfterViewInit {
     this.canvas!.nativeElement.width = GameComponent.canvasWidth;
     this.canvas!.nativeElement.height = GameComponent.canvasHeight;
 
-
     registerKeystrokes();
     this.animate();
   }

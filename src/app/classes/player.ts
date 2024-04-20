@@ -4,7 +4,6 @@ import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
 import {isKeyPressed} from "../listener/keystroke";
-import {delay} from "rxjs";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -27,7 +26,6 @@ export class Player {
       new PlayerSide(Side.BOTTOM, this.position.getY() + this.getHeight()),
       new PlayerSide(Side.LEFT, this.position.getX())
     ];
-
 
 
   }
@@ -70,7 +68,7 @@ export class Player {
   }
 
   public setHeight(height: number): void {
-   this.sprite.setHeight(height);
+    this.sprite.setHeight(height);
   }
 
   public getVelocity(): Velocity {
@@ -136,7 +134,6 @@ export class Player {
 
     this.move();
     this.draw(context);
-
 
 
   }

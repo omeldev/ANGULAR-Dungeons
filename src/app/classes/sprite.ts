@@ -112,29 +112,28 @@ export class Sprite {
   }
 
 
-
-
   public getScale(): Scale {
     return this.scale;
   }
+
   public draw(context: CanvasRenderingContext2D): void {
     if (this.isBackground) {
       context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
       return;
     }
 
-    if(this.isDirty()){
+    if (this.isDirty()) {
       context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
       this.setDirty(false);
     }
   }
 
-  private setDirty(b: boolean) {
-    this.dirty = b;
-  }
-
   public update(context: CanvasRenderingContext2D, position: Position) {
     this.setPosition(position);
     this.draw(context);
+  }
+
+  private setDirty(b: boolean) {
+    this.dirty = b;
   }
 }
