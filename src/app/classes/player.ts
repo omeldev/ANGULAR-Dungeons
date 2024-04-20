@@ -10,7 +10,7 @@ export class Player {
   private position: Position;
   private velocity: Velocity;
 
-  private sides: PlayerSide[];
+  private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
 
@@ -20,32 +20,30 @@ export class Player {
 
     this.position = position;
     this.velocity = new Velocity(0, 0);
-    this.sides = [
-      new PlayerSide(Side.TOP, this.position.getY()),
-      new PlayerSide(Side.RIGHT, this.position.getX() + this.getWidth()),
-      new PlayerSide(Side.BOTTOM, this.position.getY() + this.getHeight()),
-      new PlayerSide(Side.LEFT, this.position.getX())
-    ];
-
+    this.sides = {
+      top: new PlayerSide(Side.TOP, this.position.getY()),
+      right: new PlayerSide(Side.RIGHT, this.position.getX() + this.getWidth()),
+      bottom: new PlayerSide(Side.BOTTOM, this.position.getY() + this.getHeight()),
+      left: new PlayerSide(Side.LEFT, this.position.getX())
+    };
 
   }
 
   public getBottomSide(): PlayerSide {
-    return this.sides.find(side => side.getSide() === Side.BOTTOM)!;
+    return this.sides.bottom;
   }
 
   public getTopSide(): PlayerSide {
-    return this.sides.find(side => side.getSide() === Side.TOP)!;
+    return this.sides.top;
   }
 
   public getRightSide(): PlayerSide {
-    return this.sides.find(side => side.getSide() === Side.RIGHT)!;
+    return this.sides.right;
   }
 
   public getLeftSide(): PlayerSide {
-    return this.sides.find(side => side.getSide() === Side.LEFT)!;
+    return this.sides.left;
   }
-
 
   public getSprite(): Sprite {
     return this.sprite;
