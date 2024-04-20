@@ -23,9 +23,7 @@ export class GameComponent implements AfterViewInit {
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(100, 100));
     spr.setIsBackground(true);
-    this.player = new Player(new Position(100, 100), spr);
-
-
+    this.player = new Player(new Position(356, 250), spr);
 
   }
   ngAfterViewInit(): void {
