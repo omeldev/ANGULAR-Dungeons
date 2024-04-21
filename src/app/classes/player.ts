@@ -3,7 +3,7 @@ import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
-import {level1} from "../levels/levels";
+import {level1, level2} from "../levels/levels";
 import {CollisionBlock} from "./collision/CollisionBlock";
 import {isKeyPressed} from "../listener/keystroke";
 import {Level} from "./level";
@@ -17,7 +17,7 @@ export class Player {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
-  private JUMP_STRENGTH = 2.8;
+  private JUMP_STRENGTH = 4;
   private GRAVITY: number = 0.05;
   private currentLevel: Level;
   private hitbox: Hitbox;
@@ -37,7 +37,7 @@ export class Player {
       left: new PlayerSide(Side.LEFT, new Position(this.position.getX(), this.position.getY()))
     };
 
-    this.currentLevel = level1;
+    this.currentLevel = level2;
 
   }
 
@@ -210,9 +210,7 @@ export class Player {
 
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
-    this.drawHitbox(context);
 
-    this.hitbox.draw(context);
   }
 
   public drawHitbox(context: CanvasRenderingContext2D): void {

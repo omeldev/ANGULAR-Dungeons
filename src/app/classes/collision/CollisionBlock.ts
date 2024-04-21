@@ -3,8 +3,8 @@ import {Player} from "../player";
 
 export class CollisionBlock {
   private position: Position;
-  private readonly width: number = 64;
-  private readonly height: number = 64;
+  private readonly width: number = 63;
+  private readonly height: number = 63;
 
   constructor(position: Position, width?: number, height?: number) {
     this.position = position;
