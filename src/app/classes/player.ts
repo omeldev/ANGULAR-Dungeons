@@ -7,6 +7,7 @@ import {level1} from "../levels/levels";
 import {CollisionBlock} from "./collision/CollisionBlock";
 import {isKeyPressed} from "../listener/keystroke";
 import {Level} from "./level";
+import {Hitbox} from "./hitbox";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -19,6 +20,7 @@ export class Player {
   private JUMP_STRENGTH = 2.8;
   private GRAVITY: number = 0.05;
   private currentLevel: Level;
+  private hitbox: Hitbox;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
@@ -26,6 +28,8 @@ export class Player {
 
     this.position = position;
     this.velocity = new Velocity(0, 0);
+
+    this.hitbox = new Hitbox(this.position, this.sprite.getWidth(), this.sprite.getHeight());
     this.sides = {
       top: new PlayerSide(Side.TOP, this.position),
       right: new PlayerSide(Side.RIGHT, new Position(this.position.getX() + this.getWidth(), this.position.getY())),
@@ -122,6 +126,7 @@ export class Player {
 
 
     this.position.setX(this.position.getX() + this.velocity.getX());
+    this.hitbox.getPosition().setX(this.position.getX());
     this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
     this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
@@ -139,6 +144,7 @@ export class Player {
     if(this.isOnGround()) {
       this.velocity.setY(0);
       this.position.setY(GameComponent.canvasHeight - this.getHeight());
+      this.hitbox.getPosition().setY(this.position.getY());
     }
 
   }
@@ -146,7 +152,7 @@ export class Player {
   public applyGravity(): void {
     this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
     this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
-
+    this.hitbox.getPosition().setY(this.position.getY());
   }
 
   public checkVerticalCollisions() {
@@ -205,6 +211,8 @@ export class Player {
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
     this.drawHitbox(context);
+
+    this.hitbox.draw(context);
   }
 
   public drawHitbox(context: CanvasRenderingContext2D): void {

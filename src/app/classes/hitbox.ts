@@ -12,6 +12,7 @@ export class Hitbox {
   }
 
   public getPosition(): Position {
+    console.log(this.position.getX(), this.position.getY())
     return this.position;
   }
 
@@ -36,7 +37,8 @@ export class Hitbox {
   }
 
   public draw(context: CanvasRenderingContext2D): void {
-    context.fillStyle = "rgba(240, 52, 52, 0.3)";
+    //green
+    context.fillStyle = "rgba(0, 255, 0, 0.5)";
     context.fillRect(this.position.getX(), this.position.getY(), this.width, this.height);
   }
 

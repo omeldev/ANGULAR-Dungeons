@@ -82,7 +82,7 @@ export class Sprite {
   }
 
   public getWidth(): number {
-    return this.width * this.getScale().getScale();
+    return (this.width * this.getScale().getScale());
   }
 
   public getHeight(): number {
