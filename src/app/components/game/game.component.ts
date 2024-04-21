@@ -41,7 +41,7 @@ export class GameComponent implements AfterViewInit {
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-    level1.draw(this.context!);
+    this.player.getCurrentLevel().draw(this.context!);
     //TODO JUST FOR TESTING
     // level1.drawCollisionBlocks(this.context!);
     //TODO JUST FOR TESTING
