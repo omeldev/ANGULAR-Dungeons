@@ -191,10 +191,12 @@ export class Player {
 
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
-    //Hitbox Debug Draw
-   // context.fillStyle = "rgba(240, 52, 52, 0.3)";
-   // context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
+    this.drawHitbox(context);
+  }
 
+  public drawHitbox(context: CanvasRenderingContext2D): void {
+    context.fillStyle = "rgba(240, 52, 52, 0.3)";
+    context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
   }
 
   public update(context: CanvasRenderingContext2D): void {
