@@ -3,6 +3,8 @@ import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
+import {level1} from "../levels/levels";
+import {CollisionBlock} from "./collision/CollisionBlock";
 import {isKeyPressed} from "../listener/keystroke";
 
 export class Player {
@@ -13,7 +15,8 @@ export class Player {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
-  private JUMP_STRENGTH = 5;
+  private JUMP_STRENGTH = 3;
+  private GRAVITY: number = 0.05;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
@@ -87,6 +90,24 @@ export class Player {
   }
 
   public move(): void {
+
+
+    if (isKeyPressed('w')) {
+      if (this.getVelocity().getY() === 0) {
+        this.getVelocity().setY(-this.JUMP_STRENGTH);
+      }
+    }
+    this.velocity.setX(0);
+
+    if(isKeyPressed('a')) {
+      this.velocity.setX(-this.MAX_SPEED);
+    }
+
+    if(isKeyPressed('d')) {
+      this.velocity.setX(this.MAX_SPEED);
+    }
+    
+
     this.position.setX(this.position.getX() + this.velocity.getX());
     this.position.setY(this.position.getY() + this.velocity.getY());
     this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
@@ -95,47 +116,106 @@ export class Player {
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
 
-    if (isKeyPressed('w') && this.isOnGround()) {
-      this.getVelocity().setY(-this.JUMP_STRENGTH);
-    }
-    if ((!isKeyPressed('a') || !isKeyPressed('d')) && this.isOnGround()) {
-      this.getVelocity().setX(0);
-    } else {
-      if (this.getVelocity().getX() !== 0) {
-        this.getVelocity().setX(this.getVelocity().getX() + (Math.sign(this.getVelocity().getX()) == -1 ? 0.01 : -0.01));
-      }
-    }
+    //Gravity
+
+    this.checkHorizontalCollisions();
+    this.applyGravity();
+    this.checkVerticalCollisions();
 
 
-    //TODO Acceleration
-    if (isKeyPressed('a')) {
-      //if(this.getVelocity().getX() <= this.MAX_SPEED * -1) this.getVelocity().setX(this.MAX_SPEED * -1);
-      this.getVelocity().setX(-this.MAX_SPEED);
+
+    if(this.isOnGround()) {
+      this.velocity.setY(0);
+      this.position.setY(GameComponent.canvasHeight - this.getHeight());
     }
 
-    if (isKeyPressed('d')) {
-      //if(this.getVelocity().getX() >= this.MAX_SPEED) this.getVelocity().setX(this.MAX_SPEED);
-      this.getVelocity().setX(this.MAX_SPEED);
-    }
 
-    if (this.isOnGround() && !isKeyPressed('w')) {
-      this.getVelocity().setY(0);
-      this.getPosition().setY(GameComponent.canvasHeight - this.getHeight());
-
-    } else this.getVelocity().setY(this.getVelocity().getY() + 0.05);
 
 
   }
 
+
+  public applyGravity(): void {
+    this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
+    this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
+  }
+
+  public checkVerticalCollisions() {
+    for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
+      const block = level1.getCollisionBlocks()[i];
+      if (!this.checkForCollision(block)) continue;
+
+      const offset = 0.01;
+
+      if (this.getVelocity().getY() < 0) {
+        this.velocity.setY(0);
+        this.position.setY(block.getPosition().getY() + block.getHeight() + offset);
+        break;
+      }
+
+      if (this.getVelocity().getY() > 0) {
+        this.velocity.setY(0);
+        this.position.setY(block.getPosition().getY() - this.getHeight() - offset);
+        break;
+      }
+
+    }
+
+  }
+
+  public checkForCollision(block: CollisionBlock): boolean {
+
+
+    return this.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
+      this.getPosition().getX() + this.getWidth() >= block.getPosition().getX() &&
+      this.getPosition().getY() + this.getHeight() >= block.getPosition().getY() &&
+      this.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
+  }
+
+  public checkHorizontalCollisions() {
+
+    for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
+
+      const block = level1.getCollisionBlocks()[i];
+      //if CollisionBlock collides with player
+
+      if (!this.checkForCollision(block)) continue;
+
+      console.log("collision detected");
+      const offset = 0.01;
+      //Collision on x axis going to the left
+      if (this.getVelocity().getX() < 0) {
+        this.velocity.setX(0);
+        this.position.setX(block.getPosition().getX() + block.getWidth() + offset);
+        break;
+      }
+
+      if (this.getVelocity().getX() > 0) {
+        this.velocity.setX(0);
+        this.position.setX(block.getPosition().getX() - this.getWidth() - offset);
+        break;
+      }
+
+
+    }
+
+  }
 
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
+
+    //Hitbox
+    context.fillStyle = "rgba(240, 52, 52, 0.3)";
+    context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
+
   }
 
   public update(context: CanvasRenderingContext2D): void {
-
-    this.move();
     this.draw(context);
+    this.move();
+
+
+
 
 
   }
