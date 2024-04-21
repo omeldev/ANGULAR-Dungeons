@@ -15,7 +15,10 @@ export class Level {
     this.getCollisionsMap().forEach((row, y) => {
       row.forEach((symbol, x) => {
         if (symbol === 292) {
-          this.collisionBlocks.push(new CollisionBlock(new Position(x * 64, y * 64)));
+          const block = new CollisionBlock(new Position(x * 64, y * 64));
+          this.collisionBlocks.push(block);
+          console.log("collision block added")
+          console.log(block.getPosition().getX(), block.getPosition().getY())
         }
       })
     });
