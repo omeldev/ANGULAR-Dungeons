@@ -20,7 +20,7 @@ export class Player {
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
-    this.sprite.getScale().setScale(3);
+    this.sprite.getScale().setScale(2);
 
     this.position = position;
     this.velocity = new Velocity(0, 0);
@@ -98,7 +98,6 @@ export class Player {
       }
     }
     this.velocity.setX(0);
-
     if(isKeyPressed('a')) {
       this.velocity.setX(-this.MAX_SPEED);
     }
@@ -115,11 +114,14 @@ export class Player {
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
+
     //Gravity
 
     this.checkHorizontalCollisions();
     this.applyGravity();
     this.checkVerticalCollisions();
+
+
 
     if(this.isOnGround()) {
       this.velocity.setY(0);
@@ -190,8 +192,8 @@ export class Player {
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
     //Hitbox Debug Draw
-    context.fillStyle = "rgba(240, 52, 52, 0.3)";
-    context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
+   // context.fillStyle = "rgba(240, 52, 52, 0.3)";
+   // context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
 
   }
 
