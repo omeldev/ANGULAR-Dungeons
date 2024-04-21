@@ -6,6 +6,7 @@ import {PlayerSide, Side} from "./sides";
 import {level1} from "../levels/levels";
 import {CollisionBlock} from "./collision/CollisionBlock";
 import {isKeyPressed} from "../listener/keystroke";
+import {Level} from "./level";
 
 export class Player {
   private readonly sprite: Sprite;
@@ -17,6 +18,7 @@ export class Player {
   private MAX_SPEED = 3;
   private JUMP_STRENGTH = 2.8;
   private GRAVITY: number = 0.05;
+  private currentLevel: Level;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
@@ -31,6 +33,17 @@ export class Player {
       left: new PlayerSide(Side.LEFT, new Position(this.position.getX(), this.position.getY()))
     };
 
+    this.currentLevel = level1;
+
+  }
+
+
+  public getCurrentLevel(): Level {
+    return this.currentLevel;
+  }
+
+  public setCurrentLevel(level: Level): void {
+    this.currentLevel = level;
   }
 
   public getBottomSide(): PlayerSide {
@@ -137,8 +150,8 @@ export class Player {
   }
 
   public checkVerticalCollisions() {
-    for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
-      const block = level1.getCollisionBlocks()[i];
+    for (let i = 0; i < this.getCurrentLevel().getCollisionBlocks().length; i++) {
+      const block = this.getCurrentLevel().getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) continue;
       const offset = 0.01;
 
@@ -166,9 +179,9 @@ export class Player {
 
   public checkHorizontalCollisions() {
 
-    for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
+    for (let i = 0; i < this.getCurrentLevel().getCollisionBlocks().length; i++) {
 
-      const block = level1.getCollisionBlocks()[i];
+      const block = this.getCurrentLevel().getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) continue;
 
       console.log("collision detected");
