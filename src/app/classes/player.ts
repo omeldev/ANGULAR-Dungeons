@@ -15,7 +15,7 @@ export class Player {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
-  private JUMP_STRENGTH = 2;
+  private JUMP_STRENGTH = 2.8;
   private GRAVITY: number = 0.05;
 
   constructor(position: Position, sprite: Sprite) {
@@ -97,6 +97,7 @@ export class Player {
         this.getVelocity().setY(-this.JUMP_STRENGTH);
       }
     }
+
     this.velocity.setX(0);
     if(isKeyPressed('a')) {
       this.velocity.setX(-this.MAX_SPEED);
@@ -108,7 +109,6 @@ export class Player {
 
 
     this.position.setX(this.position.getX() + this.velocity.getX());
-    this.position.setY(this.position.getY() + this.velocity.getY());
     this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
     this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
@@ -133,6 +133,7 @@ export class Player {
   public applyGravity(): void {
     this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
     this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
+
   }
 
   public checkVerticalCollisions() {
@@ -142,7 +143,6 @@ export class Player {
       const offset = 0.01;
 
       if (this.getVelocity().getY() < 0) {
-        this.velocity.setY(0);
         this.position.setY(block.getPosition().getY() + block.getHeight() + offset);
         break;
       }
