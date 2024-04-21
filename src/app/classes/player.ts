@@ -17,6 +17,7 @@ export class Player {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
+  private ACCELERATION = 0.02;
   private JUMP_STRENGTH = 4;
   private GRAVITY: number = 0.05;
   private currentLevel: Level;
@@ -115,13 +116,21 @@ export class Player {
       }
     }
 
+    if(!isKeyPressed('a') && !isKeyPressed('d'))
     this.velocity.setX(0);
     if(isKeyPressed('a')) {
-      this.velocity.setX(-this.MAX_SPEED);
+      if(this.velocity.getX() > -this.MAX_SPEED) {
+        this.velocity.setX(this.velocity.getX() - this.ACCELERATION);
+      } else this.velocity.setX(-this.MAX_SPEED);
     }
 
     if(isKeyPressed('d')) {
-      this.velocity.setX(this.MAX_SPEED);
+      if(this.velocity.getX() < this.MAX_SPEED) {
+        this.velocity.setX(this.velocity.getX() + this.ACCELERATION);
+        console.log(this.velocity.getX());
+      } else this.velocity.setX(this.MAX_SPEED);
+
+
     }
 
 
