@@ -15,7 +15,7 @@ export class Player {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   private MAX_SPEED = 3;
-  private JUMP_STRENGTH = 3;
+  private JUMP_STRENGTH = 2;
   private GRAVITY: number = 0.05;
 
   constructor(position: Position, sprite: Sprite) {
