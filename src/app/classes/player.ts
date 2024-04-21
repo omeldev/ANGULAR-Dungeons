@@ -115,25 +115,18 @@ export class Player {
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
-
     //Gravity
 
     this.checkHorizontalCollisions();
     this.applyGravity();
     this.checkVerticalCollisions();
 
-
-
     if(this.isOnGround()) {
       this.velocity.setY(0);
       this.position.setY(GameComponent.canvasHeight - this.getHeight());
     }
 
-
-
-
   }
-
 
   public applyGravity(): void {
     this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
@@ -144,7 +137,6 @@ export class Player {
     for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
       const block = level1.getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) continue;
-
       const offset = 0.01;
 
       if (this.getVelocity().getY() < 0) {
@@ -164,8 +156,6 @@ export class Player {
   }
 
   public checkForCollision(block: CollisionBlock): boolean {
-
-
     return this.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
       this.getPosition().getX() + this.getWidth() >= block.getPosition().getX() &&
       this.getPosition().getY() + this.getHeight() >= block.getPosition().getY() &&
@@ -177,13 +167,10 @@ export class Player {
     for (let i = 0; i < level1.getCollisionBlocks().length; i++) {
 
       const block = level1.getCollisionBlocks()[i];
-      //if CollisionBlock collides with player
-
       if (!this.checkForCollision(block)) continue;
 
       console.log("collision detected");
       const offset = 0.01;
-      //Collision on x axis going to the left
       if (this.getVelocity().getX() < 0) {
         this.velocity.setX(0);
         this.position.setX(block.getPosition().getX() + block.getWidth() + offset);
@@ -196,15 +183,13 @@ export class Player {
         break;
       }
 
-
     }
 
   }
 
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
-
-    //Hitbox
+    //Hitbox Debug Draw
     context.fillStyle = "rgba(240, 52, 52, 0.3)";
     context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
 
@@ -213,11 +198,6 @@ export class Player {
   public update(context: CanvasRenderingContext2D): void {
     this.draw(context);
     this.move();
-
-
-
-
-
   }
 
 
