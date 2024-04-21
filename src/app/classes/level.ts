@@ -6,6 +6,7 @@ export class Level {
   private collisions: number[];
   private background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
+  private spawnPoint: Position = new Position(0, 0);
 
   constructor(background: Sprite, collisions: number[]) {
     this.collisions = collisions;
@@ -33,6 +34,16 @@ export class Level {
 
     return rows;
   }
+
+  public getSpawnPoint(): Position {
+    return this.spawnPoint;
+  }
+
+  public setSpawnPoint(spawnPoint: Position): void {
+    this.spawnPoint = spawnPoint;
+  }
+
+
 
   public draw(context: CanvasRenderingContext2D): void {
     this.background.draw(context);
