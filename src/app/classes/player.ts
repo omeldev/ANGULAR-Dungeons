@@ -106,7 +106,7 @@ export class Player {
     if(isKeyPressed('d')) {
       this.velocity.setX(this.MAX_SPEED);
     }
-    
+
 
     this.position.setX(this.position.getX() + this.velocity.getX());
     this.position.setY(this.position.getY() + this.velocity.getY());
