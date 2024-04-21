@@ -25,6 +25,7 @@ export class GameKey {
 
 export const KEYS: GameKey[] = [
   new GameKey('w', false),
+  new GameKey(' ', false),
   new GameKey('a', false),
   new GameKey('d', false),
 ];
@@ -44,6 +45,11 @@ export function registerKeystrokes(): void {
   window.addEventListener('keydown', (event) => {
     const key = event.key;
 
+    if(event.keyCode === 32) {
+      setKeyPressed('w', true);
+      return;
+    }
+
     switch (key) {
       case 'w':
         setKeyPressed('w', true);
@@ -62,6 +68,11 @@ export function registerKeystrokes(): void {
 
   window.addEventListener('keyup', (event) => {
     const key = event.key;
+
+    if(event.keyCode === 32) {
+      setKeyPressed('w', false);
+      return;
+    }
 
     switch (key) {
       case 'w':

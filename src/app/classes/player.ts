@@ -109,7 +109,7 @@ export class Player {
   public move(): void {
 
 
-    if (isKeyPressed('w')) {
+    if (isKeyPressed('w') || isKeyPressed(' ')) {
       if (this.getVelocity().getY() === 0) {
         this.getVelocity().setY(-this.JUMP_STRENGTH);
       }
