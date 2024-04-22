@@ -3,7 +3,7 @@ import {Velocity} from "./velocity";
 import {Sprite} from "./sprite";
 import {GameComponent} from "../components/game/game.component";
 import {PlayerSide, Side} from "./sides";
-import {level1, level2} from "../levels/levels";
+import {level2} from "../levels/levels";
 import {CollisionBlock} from "./collision/CollisionBlock";
 import {isKeyPressed} from "../listener/keystroke";
 import {Level} from "./level";
@@ -116,17 +116,15 @@ export class Player {
       }
     }
 
-    if(isKeyPressed('a') || isKeyPressed('d')) console.log('Velocity X: ',this.velocity.getX());
-
-    if(!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
-    if(isKeyPressed('a')) {
-      if(this.velocity.getX() > -this.MAX_SPEED) {
+    if (!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
+    if (isKeyPressed('a')) {
+      if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION);
       } else this.velocity.setX(-this.MAX_SPEED);
     }
 
-    if(isKeyPressed('d')) {
-      if(this.velocity.getX() < this.MAX_SPEED) {
+    if (isKeyPressed('d')) {
+      if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION);
 
       } else this.velocity.setX(this.MAX_SPEED);
@@ -150,8 +148,7 @@ export class Player {
     this.checkVerticalCollisions();
 
 
-
-    if(this.isOnGround()) {
+    if (this.isOnGround()) {
       this.velocity.setY(0);
       this.position.setY(GameComponent.canvasHeight - this.getHeight());
       this.hitbox.getPosition().setY(this.position.getY());
@@ -164,7 +161,6 @@ export class Player {
     this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
     this.hitbox.getPosition().setY(this.position.getY());
 
-    console.log('Velocity Y: ', this.velocity.getY());
   }
 
   public checkVerticalCollisions() {
