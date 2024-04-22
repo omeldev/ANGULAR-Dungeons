@@ -73,8 +73,6 @@ export class GameComponent implements AfterViewInit {
     this.player.update(this.context!);
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
-      console.log("DOOOOOOR")
-      console.log(GameComponent.getCurrentLevel());
       //FIXME weird behavior when giving the reference of the SpawnPoint to the player
       //FIXME Dont give the reference, but the values
       this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
