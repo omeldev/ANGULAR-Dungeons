@@ -219,9 +219,13 @@ export class Player {
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
 
+    if (!GameComponent.isProductionMode()) {
+      this.drawSpriteBox(context)
+      this.hitbox.draw(context);
+    }
   }
 
-  public drawHitbox(context: CanvasRenderingContext2D): void {
+  public drawSpriteBox(context: CanvasRenderingContext2D): void {
     context.fillStyle = "rgba(240, 52, 52, 0.3)";
     context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
   }
@@ -229,7 +233,7 @@ export class Player {
   public update(context: CanvasRenderingContext2D): void {
     this.draw(context);
     this.move();
-    //this.drawHitbox(context)
+
   }
 
 

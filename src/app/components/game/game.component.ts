@@ -17,12 +17,15 @@ export class GameComponent implements AfterViewInit {
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   private player: Player;
+  private static productionMode: boolean = false;
+  public isProductionMode = GameComponent.isProductionMode;
+
+
 
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(100, 100));
     spr.setIsBackground(true);
     this.player = new Player(new Position(356, 250), spr);
-
   }
 
   ngAfterViewInit(): void {
@@ -42,10 +45,19 @@ export class GameComponent implements AfterViewInit {
   private animate() {
     window.requestAnimationFrame(() => this.animate());
     this.player.getCurrentLevel().draw(this.context!);
-    //TODO JUST FOR TESTING
-    // level1.drawCollisionBlocks(this.context!);
-    //TODO JUST FOR TESTING
+
+    if(this.isProductionMode()) {
+      this.player.getCurrentLevel().drawCollisionBlocks(this.context!);
+    }
     this.player.update(this.context!);
+  }
+
+  public static toggleProductionMode(): void {
+    this.productionMode = !this.productionMode;
+  }
+
+  public static isProductionMode(): boolean {
+    return this.productionMode;
   }
 
 
