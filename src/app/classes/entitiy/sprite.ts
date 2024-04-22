@@ -25,7 +25,7 @@ export class Sprite {
 
     this.image.src = this.imageSrc;
     this.dirty = true;
-    this.isBackground = false;
+    this.isBackground = true;
 
     this.scale = new Scale(1);
 
