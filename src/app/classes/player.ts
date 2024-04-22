@@ -116,8 +116,9 @@ export class Player {
       }
     }
 
-    if(!isKeyPressed('a') && !isKeyPressed('d'))
-    this.velocity.setX(0);
+    if(isKeyPressed('a') || isKeyPressed('d')) console.log('Velocity X: ',this.velocity.getX());
+
+    if(!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
     if(isKeyPressed('a')) {
       if(this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION);
@@ -127,7 +128,7 @@ export class Player {
     if(isKeyPressed('d')) {
       if(this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION);
-        console.log(this.velocity.getX());
+
       } else this.velocity.setX(this.MAX_SPEED);
 
 
@@ -162,6 +163,8 @@ export class Player {
     this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
     this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
     this.hitbox.getPosition().setY(this.position.getY());
+
+    console.log('Velocity Y: ', this.velocity.getY());
   }
 
   public checkVerticalCollisions() {
@@ -230,6 +233,7 @@ export class Player {
   public update(context: CanvasRenderingContext2D): void {
     this.draw(context);
     this.move();
+    //this.drawHitbox(context)
   }
 
 
