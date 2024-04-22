@@ -9,15 +9,15 @@ import {Hitbox} from "../hitbox";
 
 export class Player {
   private readonly sprite: Sprite;
-  private position: Position;
+  private readonly position: Position;
   private velocity: Velocity;
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
-  private MAX_SPEED = 3;
-  private ACCELERATION = 0.02;
-  private JUMP_STRENGTH = 4;
-  private GRAVITY: number = 0.05;
+  private MAX_SPEED = 7;
+  private ACCELERATION = 1;
+  private JUMP_STRENGTH = 20;
+  private GRAVITY: number = 1;
   private hitbox: Hitbox;
 
   constructor(position: Position, sprite: Sprite) {
@@ -96,14 +96,12 @@ export class Player {
     return this.getBottomSide().getPosition().getY() >= GameComponent.canvasHeight;
   }
 
+
   public move(): void {
 
+    if(this.getVelocity().getY() === 0)
+    console.log(this.getVelocity().getY());
 
-    if (isKeyPressed('w') || isKeyPressed(' ')) {
-      if (this.getVelocity().getY() === 0) {
-        this.getVelocity().setY(-this.JUMP_STRENGTH);
-      }
-    }
 
     if (!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
     if (isKeyPressed('a')) {
@@ -137,12 +135,12 @@ export class Player {
     this.checkVerticalCollisions();
 
 
-    if (this.isOnGround()) {
-      this.velocity.setY(0);
-      this.position.setY(GameComponent.canvasHeight - this.getHeight());
-      this.hitbox.getPosition().setY(this.position.getY());
-    }
 
+    if (isKeyPressed('w') || isKeyPressed(' ')) {
+      if (this.getVelocity().getY() === 0) {
+        this.getVelocity().setY(-this.JUMP_STRENGTH);
+      }
+    }
   }
 
   public applyGravity(): void {
