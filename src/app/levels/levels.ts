@@ -1,6 +1,6 @@
-import {Level} from "../classes/level";
-import {Sprite} from "../classes/sprite";
-import {Position} from "../classes/position";
+import {Level} from "../classes/level/level";
+import {Sprite} from "../classes/entitiy/sprite";
+import {Position} from "../classes/entitiy/position";
 
 export const level1 = new Level(new Sprite('../../../assets/maps/level1.png', new Position(0, 0)), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -1,13 +1,13 @@
-import {Position} from "./position";
-import {Velocity} from "./velocity";
-import {Sprite} from "./sprite";
-import {GameComponent} from "../components/game/game.component";
-import {PlayerSide, Side} from "./sides";
-import {level2} from "../levels/levels";
-import {CollisionBlock} from "./collision/CollisionBlock";
-import {isKeyPressed} from "../listener/keystroke";
-import {Level} from "./level";
-import {Hitbox} from "./hitbox";
+import {Position} from "../position";
+import {Velocity} from "../velocity";
+import {Sprite} from "../sprite";
+import {GameComponent} from "../../../components/game/game.component";
+import {PlayerSide, Side} from "../sides";
+import {level2} from "../../../levels/levels";
+import {CollisionBlock} from "../../collision/CollisionBlock";
+import {isKeyPressed} from "../../../listener/keystroke";
+import {Level} from "../../level/level";
+import {Hitbox} from "../hitbox";
 
 export class Player {
   private readonly sprite: Sprite;

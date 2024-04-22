@@ -1,6 +1,6 @@
-import {CollisionBlock} from "./collision/CollisionBlock";
-import {Position} from "./position";
-import {Sprite} from "./sprite";
+import {CollisionBlock} from "../collision/CollisionBlock";
+import {Position} from "../entitiy/position";
+import {Sprite} from "../entitiy/sprite";
 
 export class Level {
   private collisions: number[];

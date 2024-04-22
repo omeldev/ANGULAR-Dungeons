@@ -1,4 +1,4 @@
-import {Sprite} from "./sprite";
+import {Sprite} from "./entitiy/sprite";
 
 export class Animation {
   private sprites: Sprite[];

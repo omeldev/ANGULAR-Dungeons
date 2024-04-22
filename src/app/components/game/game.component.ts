@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {Player} from "../../classes/player";
-import {Sprite} from "../../classes/sprite";
-import {Position} from "../../classes/position";
+import {Player} from "../../classes/entitiy/player/player";
+import {Sprite} from "../../classes/entitiy/sprite";
+import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
 import {level1} from "../../levels/levels";
 
