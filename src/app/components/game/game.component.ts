@@ -53,8 +53,7 @@ export class GameComponent implements AfterViewInit {
     window.requestAnimationFrame(() => this.animate());
     this.changeCanvasSize(this.player.getCurrentLevel().getBackground().getWidth(), this.player.getCurrentLevel().getBackground().getHeight());
     this.player.getCurrentLevel().draw(this.context!);
-    this.player.getCurrentLevel().getFinalDoor().setPosition(this.player.getPosition())
-    this.player.getCurrentLevel().getFinalDoor().draw(this.context!);
+
 
     if(!GameComponent.productionMode) {
       this.player.getCurrentLevel().drawCollisionBlocks(this.context!);
@@ -64,10 +63,12 @@ export class GameComponent implements AfterViewInit {
 
     if(this.player.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
       console.log("DOOOOOOR")
-      this.player.setCurrentLevel(level2);
+      console.log(this.player.getCurrentLevel());
+
       this.player.setPosition(this.player.getCurrentLevel().getSpawnPoint());
 
     }
+    this.player.getCurrentLevel().getFinalDoor().draw(this.context!);
   }
 
   public static toggleProductionMode(): void {
