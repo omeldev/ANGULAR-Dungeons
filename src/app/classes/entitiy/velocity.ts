@@ -2,7 +2,6 @@ export class Velocity {
 
 
   constructor(private x: number, private y: number) {
-
   }
 
   public setX(x: number): void {

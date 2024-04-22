@@ -1,18 +1,21 @@
 import {CollisionBlock} from "../collision/CollisionBlock";
 import {Position} from "../entitiy/position";
 import {Sprite} from "../entitiy/sprite";
+import {Door} from "../door/door";
 
 export class Level {
   private collisions: number[];
   private background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
   private spawnPoint: Position = new Position(0, 0);
+  private finalDoor: Door;
 
 
-  constructor(background: Sprite, collisions: number[]) {
+  constructor(background: Sprite, collisions: number[], finalDoor?: Door) {
     this.collisions = collisions;
     this.background = background;
     this.background.setIsBackground(true);
+    this.finalDoor = finalDoor ? finalDoor : new Door(new Position(13 * 64, 64 + 16), true, new Door(new Position(0, 0), true));
 
     this.getCollisionsMap().forEach((row, y) => {
       row.forEach((symbol, x) => {
@@ -63,6 +66,10 @@ export class Level {
 
   public getBackground(): Sprite {
     return this.background;
+  }
+
+  public getFinalDoor(): Door {
+    return this.finalDoor;
   }
 
 }

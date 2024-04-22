@@ -3,7 +3,7 @@ import {Player} from "../../classes/entitiy/player/player";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
-import {level1} from "../../levels/levels";
+import {level1, level2} from "../../levels/levels";
 
 @Component({
   selector: 'app-game',
@@ -17,7 +17,7 @@ export class GameComponent implements AfterViewInit {
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   private player: Player;
-  public static productionMode: boolean = true;
+  public static productionMode: boolean = false;
 
   public prodMode: boolean = GameComponent.productionMode;
 
@@ -53,11 +53,20 @@ export class GameComponent implements AfterViewInit {
     window.requestAnimationFrame(() => this.animate());
     this.changeCanvasSize(this.player.getCurrentLevel().getBackground().getWidth(), this.player.getCurrentLevel().getBackground().getHeight());
     this.player.getCurrentLevel().draw(this.context!);
+    this.player.getCurrentLevel().getFinalDoor().setPosition(this.player.getPosition())
+    this.player.getCurrentLevel().getFinalDoor().draw(this.context!);
 
     if(!GameComponent.productionMode) {
       this.player.getCurrentLevel().drawCollisionBlocks(this.context!);
+
     }
     this.player.update(this.context!);
+
+    if(this.player.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
+
+      console.log("DOOOOOOR")
+      this.player.setCurrentLevel(level2);
+    }
   }
 
   public static toggleProductionMode(): void {
