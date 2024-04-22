@@ -63,9 +63,10 @@ export class GameComponent implements AfterViewInit {
     this.player.update(this.context!);
 
     if(this.player.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
-
       console.log("DOOOOOOR")
       this.player.setCurrentLevel(level2);
+      this.player.setPosition(this.player.getCurrentLevel().getSpawnPoint());
+
     }
   }
 

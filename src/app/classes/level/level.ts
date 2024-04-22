@@ -7,16 +7,17 @@ export class Level {
   private collisions: number[];
   private background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
-  private spawnPoint: Position = new Position(0, 0);
+  private spawnPoint: Position;
   private finalDoor: Door;
 
 
-  constructor(background: Sprite, collisions: number[], finalDoor?: Door) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door) {
     this.collisions = collisions;
     this.background = background;
     this.background.setIsBackground(true);
     this.finalDoor = finalDoor ? finalDoor : new Door(new Position(13 * 64, 64 + 16), true, new Door(new Position(0, 0), true));
 
+    this.spawnPoint = spawnPoint;
     this.getCollisionsMap().forEach((row, y) => {
       row.forEach((symbol, x) => {
         if (symbol === 292) {
