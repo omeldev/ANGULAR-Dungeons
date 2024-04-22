@@ -3,7 +3,7 @@ import {Player} from "../../classes/entitiy/player/player";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
-import {level1} from "../../levels/levels";
+import {level1, level2} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 
 @Component({
@@ -14,7 +14,7 @@ import {Level} from "../../classes/level/level";
 export class GameComponent implements AfterViewInit {
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
-  public static productionMode: boolean = false;
+  public static productionMode: boolean = true;
   private static currentLevel = level1;
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
@@ -74,13 +74,17 @@ export class GameComponent implements AfterViewInit {
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
       //FIXME weird behavior when giving the reference of the SpawnPoint to the player
-      //FIXME Dont give the reference, but the values
-      this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-
-
-
-
+      //FIXME Dont give the reference, but the value
+      this.levelChange();
     }
+
+  }
+
+  public levelChange(): void {
+    const levels = [level1, level2];
+    const index = levels.indexOf(GameComponent.getCurrentLevel());
+    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+    this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
   }
 
