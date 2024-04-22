@@ -3,10 +3,8 @@ import {Velocity} from "../velocity";
 import {Sprite} from "../sprite";
 import {GameComponent} from "../../../components/game/game.component";
 import {PlayerSide, Side} from "../sides";
-import {debugLevel, level1, level2} from "../../../levels/levels";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
-import {Level} from "../../level/level";
 import {Hitbox} from "../hitbox";
 
 export class Player {
@@ -20,7 +18,6 @@ export class Player {
   private ACCELERATION = 0.02;
   private JUMP_STRENGTH = 4;
   private GRAVITY: number = 0.05;
-  private currentLevel: Level;
   private hitbox: Hitbox;
 
   constructor(position: Position, sprite: Sprite) {
@@ -38,18 +35,9 @@ export class Player {
       left: new PlayerSide(Side.LEFT, new Position(this.position.getX(), this.position.getY()))
     };
 
-    this.currentLevel = level1;
 
   }
 
-
-  public getCurrentLevel(): Level {
-    return this.currentLevel;
-  }
-
-  public setCurrentLevel(level: Level): void {
-    this.currentLevel = level;
-  }
 
   public getBottomSide(): PlayerSide {
     return this.sides.bottom;
@@ -96,7 +84,8 @@ export class Player {
   }
 
   public setPosition(position: Position): void {
-    this.position = position;
+    this.position.setY(position.getY());
+    this.position.setX(position.getX());
   }
 
   public setVelocity(velocity: Velocity): void {
@@ -164,8 +153,8 @@ export class Player {
   }
 
   public checkVerticalCollisions() {
-    for (let i = 0; i < this.getCurrentLevel().getCollisionBlocks().length; i++) {
-      const block = this.getCurrentLevel().getCollisionBlocks()[i];
+    for (let i = 0; i < GameComponent.getCurrentLevel().getCollisionBlocks().length; i++) {
+      const block = GameComponent.getCurrentLevel().getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) continue;
       const offset = 0.01;
 
@@ -193,9 +182,9 @@ export class Player {
 
   public checkHorizontalCollisions() {
 
-    for (let i = 0; i < this.getCurrentLevel().getCollisionBlocks().length; i++) {
+    for (let i = 0; i < GameComponent.getCurrentLevel().getCollisionBlocks().length; i++) {
 
-      const block = this.getCurrentLevel().getCollisionBlocks()[i];
+      const block = GameComponent.getCurrentLevel().getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) continue;
 
       console.log("collision detected");

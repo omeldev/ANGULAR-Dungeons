@@ -46,8 +46,7 @@ export function registerKeystrokes(): void {
     const key = event.key;
 
 
-
-    if(event.code === 'Space') {
+    if (event.code === 'Space') {
       setKeyPressed('w', true);
       return;
     }
@@ -71,7 +70,7 @@ export function registerKeystrokes(): void {
   window.addEventListener('keyup', (event) => {
     const key = event.key;
 
-    if(event.code === 'Space') {
+    if (event.code === 'Space') {
       setKeyPressed('w', false);
       return;
     }

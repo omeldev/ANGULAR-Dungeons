@@ -51,7 +51,6 @@ export class Level {
   }
 
 
-
   public draw(context: CanvasRenderingContext2D): void {
     this.background.draw(context);
   }

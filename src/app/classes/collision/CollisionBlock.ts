@@ -1,5 +1,4 @@
 import {Position} from "../entitiy/position";
-import {Player} from "../entitiy/player/player";
 
 export class CollisionBlock {
   private position: Position;
