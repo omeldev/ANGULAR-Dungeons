@@ -3,7 +3,7 @@ import {Velocity} from "../velocity";
 import {Sprite} from "../sprite";
 import {GameComponent} from "../../../components/game/game.component";
 import {PlayerSide, Side} from "../sides";
-import {level2} from "../../../levels/levels";
+import {debugLevel, level1, level2} from "../../../levels/levels";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Level} from "../../level/level";
@@ -38,7 +38,7 @@ export class Player {
       left: new PlayerSide(Side.LEFT, new Position(this.position.getX(), this.position.getY()))
     };
 
-    this.currentLevel = level2;
+    this.currentLevel = level1;
 
   }
 
@@ -219,7 +219,7 @@ export class Player {
   public draw(context: CanvasRenderingContext2D): void {
     this.sprite.update(context, this.position);
 
-    if (!GameComponent.isProductionMode()) {
+    if (!GameComponent.productionMode) {
       this.drawSpriteBox(context)
       this.hitbox.draw(context);
     }

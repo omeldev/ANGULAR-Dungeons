@@ -17,8 +17,9 @@ export class GameComponent implements AfterViewInit {
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   private player: Player;
-  private static productionMode: boolean = false;
-  public isProductionMode = GameComponent.isProductionMode;
+  public static productionMode: boolean = true;
+
+  public prodMode: boolean = GameComponent.productionMode;
 
 
 
@@ -41,12 +42,19 @@ export class GameComponent implements AfterViewInit {
     this.animate();
   }
 
+  private changeCanvasSize(width: number, height: number) {
+    this.canvas!.nativeElement.width = width;
+    this.canvas!.nativeElement.height = height;
+
+  }
+
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
+    this.changeCanvasSize(this.player.getCurrentLevel().getBackground().getWidth(), this.player.getCurrentLevel().getBackground().getHeight());
     this.player.getCurrentLevel().draw(this.context!);
 
-    if(this.isProductionMode()) {
+    if(!GameComponent.productionMode) {
       this.player.getCurrentLevel().drawCollisionBlocks(this.context!);
     }
     this.player.update(this.context!);
@@ -56,9 +64,6 @@ export class GameComponent implements AfterViewInit {
     this.productionMode = !this.productionMode;
   }
 
-  public static isProductionMode(): boolean {
-    return this.productionMode;
-  }
 
 
 }

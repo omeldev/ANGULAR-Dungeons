@@ -8,6 +8,7 @@ export class Level {
   private collisionBlocks: CollisionBlock[] = [];
   private spawnPoint: Position = new Position(0, 0);
 
+
   constructor(background: Sprite, collisions: number[]) {
     this.collisions = collisions;
     this.background = background;
@@ -28,6 +29,8 @@ export class Level {
 
   public getCollisionsMap(): number[][] {
     const rows: number[][] = [];
+
+    const chunkSize = this.getBackground().getWidth() / 64;
     for (let i = 0; i < this.collisions.length; i += 16) {
       rows.push(this.collisions.slice(i, 16 + i));
     }
@@ -56,6 +59,10 @@ export class Level {
 
   public getCollisionBlocks(): CollisionBlock[] {
     return this.collisionBlocks;
+  }
+
+  public getBackground(): Sprite {
+    return this.background;
   }
 
 }
