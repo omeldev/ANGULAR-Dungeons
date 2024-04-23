@@ -25,7 +25,6 @@ export class GameKey {
 
 export const KEYS: GameKey[] = [
   new GameKey('w', false),
-  new GameKey(' ', false),
   new GameKey('a', false),
   new GameKey('d', false),
 ];
@@ -41,54 +40,39 @@ export function isKeyPressed(key: string): boolean {
 }
 
 export function registerKeystrokes(): void {
-
-  window.addEventListener('keydown', (event) => {
+  const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
     const key = event.key;
 
-
     if (event.code === 'Space') {
-      setKeyPressed('w', true);
+      setKeyPressed('w', pressed);
       return;
     }
 
     switch (key) {
       case 'w':
-        setKeyPressed('w', true);
+      case 'ArrowUp':
+        setKeyPressed('w', pressed);
         break;
       case 'a':
-        setKeyPressed('a', true);
+      case 'ArrowLeft':
+        setKeyPressed('a', pressed);
         break;
       case 'd':
-        setKeyPressed('d', true);
+      case 'ArrowRight':
+        setKeyPressed('d', pressed);
         break;
 
       default:
         break;
     }
+  }
+
+  window.addEventListener('keydown', (event) => {
+    handleKeyEvent(event, true);
   });
 
   window.addEventListener('keyup', (event) => {
-    const key = event.key;
-
-    if (event.code === 'Space') {
-      setKeyPressed('w', false);
-      return;
-    }
-
-    switch (key) {
-      case 'w':
-        setKeyPressed('w', false);
-        break;
-      case 'a':
-        setKeyPressed('a', false);
-        break;
-      case 'd':
-        setKeyPressed('d', false);
-        break;
-
-      default:
-        break;
-    }
+    handleKeyEvent(event, false);
   });
 
 }
