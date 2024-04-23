@@ -99,10 +99,6 @@ export class Player {
 
   public move(delta: number): void {
 
-    if (this.getVelocity().getY() === 0)
-      console.log(this.getVelocity().getY());
-
-
     if (!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
     if (isKeyPressed('a')) {
       if (this.velocity.getX() > -this.MAX_SPEED) {
