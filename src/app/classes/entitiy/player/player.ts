@@ -14,10 +14,10 @@ export class Player {
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
-  private MAX_SPEED = 7;
-  private ACCELERATION = 1;
-  private JUMP_STRENGTH = 20;
-  private GRAVITY: number = 1;
+  private MAX_SPEED = 3;
+  private ACCELERATION = 0.1;
+  private JUMP_STRENGTH = 4;
+  private GRAVITY: number = 0.05;
   private hitbox: Hitbox;
 
   constructor(position: Position, sprite: Sprite) {
