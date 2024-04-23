@@ -145,6 +145,11 @@ export class Player {
     this.position.setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
     this.hitbox.getPosition().setY(this.position.getY());
 
+    if(this.getBottomSide().getPosition().getY() >= GameComponent.canvasHeight) {
+      this.velocity.setY(0);
+      this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+    }
+
   }
 
   public checkVerticalCollisions() {
