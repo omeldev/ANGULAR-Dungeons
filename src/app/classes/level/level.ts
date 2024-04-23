@@ -11,7 +11,7 @@ export class Level {
   private finalDoor: Door;
 
 
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, otherDoors?: Door[]) {
     this.collisions = collisions;
     this.background = background;
     this.background.setIsBackground(true);
@@ -53,6 +53,7 @@ export class Level {
 
   public draw(context: CanvasRenderingContext2D): void {
     this.background.draw(context);
+    this.getFinalDoor().draw(context);
   }
 
   public drawCollisionBlocks(context: CanvasRenderingContext2D): void {

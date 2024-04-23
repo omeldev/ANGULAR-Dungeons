@@ -14,15 +14,15 @@ export class Player {
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
-  private MAX_SPEED = 3;
-  private ACCELERATION = 0.1;
-  private JUMP_STRENGTH = 4;
-  private GRAVITY: number = 0.05;
+  private MAX_SPEED = 1500;
+  private ACCELERATION = 400;
+  private JUMP_STRENGTH = 600;
+  private GRAVITY: number = 1200;
   private hitbox: Hitbox;
 
   constructor(position: Position, sprite: Sprite) {
     this.sprite = sprite;
-    this.sprite.getScale().setScale(2);
+    this.sprite.getScale().setScale(1.5);
 
     this.position = position;
     this.velocity = new Velocity(0, 0);
@@ -97,22 +97,22 @@ export class Player {
   }
 
 
-  public move(): void {
+  public move(delta: number): void {
 
-    if(this.getVelocity().getY() === 0)
-    console.log(this.getVelocity().getY());
+    if (this.getVelocity().getY() === 0)
+      console.log(this.getVelocity().getY());
 
 
     if (!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
     if (isKeyPressed('a')) {
       if (this.velocity.getX() > -this.MAX_SPEED) {
-        this.velocity.setX(this.velocity.getX() - this.ACCELERATION);
+        this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
     }
 
     if (isKeyPressed('d')) {
       if (this.velocity.getX() < this.MAX_SPEED) {
-        this.velocity.setX(this.velocity.getX() + this.ACCELERATION);
+        this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
 
       } else this.velocity.setX(this.MAX_SPEED);
 
@@ -120,7 +120,7 @@ export class Player {
     }
 
 
-    this.position.setX(this.position.getX() + this.velocity.getX());
+    this.position.setX(this.position.getX() + this.velocity.getX() * delta);
     this.hitbox.getPosition().setX(this.position.getX());
     this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
     this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
@@ -131,21 +131,18 @@ export class Player {
     //Gravity
 
     this.checkHorizontalCollisions();
-    this.applyGravity();
+    this.applyGravity(delta);
     this.checkVerticalCollisions();
 
 
-
-    if (isKeyPressed('w') || isKeyPressed(' ')) {
-      if (this.getVelocity().getY() === 0) {
-        this.getVelocity().setY(-this.JUMP_STRENGTH);
-      }
+    if (isKeyPressed('w') && this.getVelocity().getY() === 0) {
+      this.getVelocity().setY(-this.JUMP_STRENGTH );
     }
   }
 
-  public applyGravity(): void {
-    this.velocity.setY(this.getVelocity().getY() + this.GRAVITY);
-    this.position.setY(this.getPosition().getY() + this.getVelocity().getY());
+  public applyGravity(delta: number): void {
+    this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
+    this.position.setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
     this.hitbox.getPosition().setY(this.position.getY());
 
   }
@@ -217,10 +214,8 @@ export class Player {
     context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
   }
 
-  public update(context: CanvasRenderingContext2D): void {
-    this.draw(context);
-    this.move();
-
+  public update(context: CanvasRenderingContext2D, delta: number): void {
+    this.move(delta);
   }
 
 

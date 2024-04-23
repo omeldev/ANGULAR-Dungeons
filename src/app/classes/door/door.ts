@@ -13,7 +13,6 @@ export class Door {
     this.isFinalDoor = false;
     this.destination = this;
     this.sprite = new Sprite('../../../assets/sprites/door/door.png', position);
-    this.sprite.setIsBackground(true);
   }
 
   public getPosition(): Position {

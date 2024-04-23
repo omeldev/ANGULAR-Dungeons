@@ -13,8 +13,8 @@ export class Sprite {
 
   private scale: Scale;
 
-  constructor(imageSrc: string, position: Position) {
-    this.position = position;
+  constructor(imageSrc: string, position?: Position) {
+    this.position = position ? position : new Position(0, 0);
     this.image = new Image();
     this.imageSrc = imageSrc;
 

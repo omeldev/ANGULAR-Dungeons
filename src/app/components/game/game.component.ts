@@ -21,6 +21,7 @@ export class GameComponent implements AfterViewInit {
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
   private player: Player;
+  private delta: number = 1;
 
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(100, 100));
@@ -42,10 +43,10 @@ export class GameComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
-    this.iniCanvas();
+    this.initializeCanvas();
   }
 
-  private iniCanvas() {
+  private initializeCanvas() {
     this.canvas!.nativeElement.width = GameComponent.canvasWidth;
     this.canvas!.nativeElement.height = GameComponent.canvasHeight;
 
@@ -59,9 +60,13 @@ export class GameComponent implements AfterViewInit {
 
   }
 
+  private oldFrameTime: number = 1;
   private animate() {
     window.requestAnimationFrame(() => this.animate());
+
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
+
+
     GameComponent.getCurrentLevel().draw(this.context!);
 
 
@@ -70,7 +75,12 @@ export class GameComponent implements AfterViewInit {
 
     }
     GameComponent.getCurrentLevel().getFinalDoor().draw(this.context!);
-    this.player.update(this.context!);
+
+    const delta = (performance.now() - this.oldFrameTime) / 1000;
+    console.log("delta", delta);
+    this.player.update(this.context!, delta);
+    this.oldFrameTime = performance.now();
+    this.player.draw(this.context!);
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
       //FIXME weird behavior when giving the reference of the SpawnPoint to the player
