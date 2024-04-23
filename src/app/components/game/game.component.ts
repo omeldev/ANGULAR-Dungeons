@@ -77,7 +77,6 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getFinalDoor().draw(this.context!);
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
-    console.log("delta", delta);
     this.player.update(this.context!, delta);
     this.oldFrameTime = performance.now();
     this.player.draw(this.context!);
