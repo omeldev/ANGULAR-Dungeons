@@ -3,7 +3,7 @@ import {Position} from "../entitiy/position";
 import {Sprite} from "../entitiy/sprite";
 import {Door} from "../door/door";
 
-export class Level {
+export class Level extends Sprite {
   private collisions: number[];
   private readonly background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
@@ -12,6 +12,7 @@ export class Level {
 
 
   constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, otherDoors?: Door[]) {
+    super(background.getImage().src, background.getPosition());
     this.collisions = collisions;
     this.background = background;
     this.finalDoor = finalDoor ? finalDoor : new Door(new Position(13 * 64, 64 + 16), true, new Door(new Position(0, 0), true));
@@ -48,13 +49,7 @@ export class Level {
   public setSpawnPoint(spawnPoint: Position): void {
     this.spawnPoint = spawnPoint;
   }
-
-
-  public draw(context: CanvasRenderingContext2D): void {
-    this.background.drawSprite(context!);
-    this.getFinalDoor().drawSprite(context!)
-  }
-
+  
   public drawCollisionBlocks(context: CanvasRenderingContext2D): void {
 
     this.collisionBlocks.forEach(block => block.draw(context!));

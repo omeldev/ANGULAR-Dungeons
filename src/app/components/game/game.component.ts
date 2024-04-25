@@ -67,7 +67,7 @@ export class GameComponent implements AfterViewInit {
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
 
-    GameComponent.getCurrentLevel().draw(this.context!);
+    GameComponent.getCurrentLevel().drawSprite(this.context!);
 
 
     if (!GameComponent.productionMode) {
