@@ -65,7 +65,7 @@ export class Animation {
 
   private draw(context: CanvasRenderingContext2D, spriteIndex: number): void {
     const sprite = this.getSprite(spriteIndex);
-    sprite.draw(context);
+    sprite.drawSprite(context);
   }
 
 }
