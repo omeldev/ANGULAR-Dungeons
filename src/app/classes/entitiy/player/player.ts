@@ -5,6 +5,7 @@ import {GameComponent} from "../../../components/game/game.component";
 import {PlayerSide, Side} from "../sides";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
+import {Coin} from "../../coin/coin";
 
 export class Player extends Sprite {
   private readonly sprite: Sprite;
@@ -179,6 +180,14 @@ export class Player extends Sprite {
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
     }
 
+    const coins = GameComponent.getCurrentLevel().getCoins();
+    for(let i = 0; i < coins.length; i++) {
+      if(this.checkForCoinCollision(coins[i])) {
+        GameComponent.getCurrentLevel().getCoins().splice(i, 1);
+        break;
+      }
+    }
+
   }
 
 
@@ -220,6 +229,13 @@ export class Player extends Sprite {
       this.getPosition().getX() + this.getSprite().getWidth() >= block.getPosition().getX() &&
       this.getPosition().getY() + this.getSprite().getHeight() >= block.getPosition().getY() &&
       this.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
+  }
+
+  public checkForCoinCollision(coin: Coin): boolean {
+    return this.getPosition().getX() < coin.getPosition().getX() + coin.getWidth() &&
+      this.getPosition().getX() + this.getSprite().getWidth() > coin.getPosition().getX() &&
+      this.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
+      this.getPosition().getY() + this.getSprite().getHeight() > coin.getPosition().getY();
   }
 
 
