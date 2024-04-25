@@ -5,16 +5,15 @@ import {Door} from "../door/door";
 
 export class Level {
   private collisions: number[];
-  private background: Sprite;
+  private readonly background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
   private spawnPoint: Position;
-  private finalDoor: Door;
+  private readonly finalDoor: Door;
 
 
   constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, otherDoors?: Door[]) {
     this.collisions = collisions;
     this.background = background;
-    this.background.setIsBackground(true);
     this.finalDoor = finalDoor ? finalDoor : new Door(new Position(13 * 64, 64 + 16), true, new Door(new Position(0, 0), true));
 
     this.spawnPoint = spawnPoint;
@@ -52,7 +51,7 @@ export class Level {
 
 
   public draw(context: CanvasRenderingContext2D): void {
-    this.background.draw(context);
+    this.background.drawSprite(context!);
     this.getFinalDoor().draw(context);
   }
 
