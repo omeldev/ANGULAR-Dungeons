@@ -82,7 +82,7 @@ export class Level extends Sprite {
    * @param context {CanvasRenderingContext2D} of the Canvas
    */
   public drawCollisionBlocks(context: CanvasRenderingContext2D): void {
-    this.collisionBlocks.forEach(block => block.draw(context!));
+    this.collisionBlocks.forEach(block => block.drawBoundaries(context!));
   }
 
   /**
