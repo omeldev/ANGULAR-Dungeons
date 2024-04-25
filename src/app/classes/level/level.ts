@@ -7,7 +7,7 @@ export class Level extends Sprite {
   private collisions: number[];
   private readonly background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
-  private spawnPoint: Position;
+  private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
 
 
@@ -47,9 +47,10 @@ export class Level extends Sprite {
   }
 
   public setSpawnPoint(spawnPoint: Position): void {
-    this.spawnPoint = spawnPoint;
+    this.getSpawnPoint().setX(spawnPoint.getX());
+    this.getSpawnPoint().setY(spawnPoint.getY());
   }
-  
+
   public drawCollisionBlocks(context: CanvasRenderingContext2D): void {
 
     this.collisionBlocks.forEach(block => block.draw(context!));
