@@ -11,52 +11,95 @@ export class Sprite {
 
   private scale: Scale;
 
+  /**
+   * Create a new Sprite
+   * @param imageSrc path to the image
+   * @param position {Position} of the Sprite
+   */
   constructor(imageSrc: string, position?: Position) {
     this.position = position ? position : new Position(0, 0);
     this.image = new Image();
     this.imageSrc = imageSrc;
 
+    /**
+     * Set the width and height of the image
+     * when the image is loaded
+     */
     this.image.onload = () => {
       this.width = this.image.width;
       this.height = this.image.height;
     }
+
+
     this.image.src = this.imageSrc;
     this.scale = new Scale(1);
   }
 
+  /**
+   * Get the image Element of the Sprite
+   * @returns {HTMLImageElement} of the Sprite
+   */
   public getImage(): HTMLImageElement {
     return this.image;
   }
 
+  /**
+   * Get the position of the Sprite
+   * @returns {Position} of the Sprite
+   */
   public getPosition(): Position {
     return this.position;
   }
 
+  /**
+   * Set the position of the Sprite
+   * @param position {Position} of the Sprite
+   */
   public setPosition(position: Position): void {
     this.getPosition().setY(position.getY());
     this.getPosition().setX(position.getX());
   }
 
+  /**
+   * Set the scale of the Sprite
+   * @param scale {Scale} of the Sprite
+   */
   public setScale(scale: Scale): void {
-    this.scale = scale;
+    this.getScale().setScale(scale.getScale());
     this.height = this.image.height * this.scale.getScale();
     this.width = this.image.width * this.scale.getScale();
   }
 
+  /**
+   * Get the width of the Sprite
+   * @returns {number} width
+   */
   public getWidth(): number {
     return (this.width * this.getScale().getScale());
   }
 
+  /**
+   * Get the height of the Sprite
+   * @returns {number} height
+   */
   public getHeight(): number {
     return this.height * this.getScale().getScale();
   }
 
+  /**
+   * Get the scale of the Sprite
+   * @returns {Scale} of the Sprite
+   */
   public getScale(): Scale {
     return this.scale;
   }
 
+  /**
+   * Draw the Sprite on the canvas
+   * @param context {CanvasRenderingContext2D} of the canvas
+   */
   public drawSprite(context: CanvasRenderingContext2D): void {
-      context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
+    context.drawImage(this.image, this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
   }
 
 }
