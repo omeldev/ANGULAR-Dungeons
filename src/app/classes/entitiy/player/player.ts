@@ -7,9 +7,8 @@ import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Hitbox} from "../hitbox";
 
-export class Player {
+export class Player extends Sprite {
   private readonly sprite: Sprite;
-  private readonly position: Position;
   private velocity: Velocity;
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
@@ -18,21 +17,19 @@ export class Player {
   private ACCELERATION = 400;
   private JUMP_STRENGTH = 600;
   private GRAVITY: number = 1200;
-  private hitbox: Hitbox;
+  //private hitbox: Hitbox = new Hitbox(new Position(0, 0), this.getSprite().getWidth(), this.getSprite().getHeight());
 
-  constructor(position: Position, sprite: Sprite) {
+  constructor(sprite: Sprite) {
+    super(sprite.getImage().src, sprite.getPosition());
     this.sprite = sprite;
     this.sprite.getScale().setScale(1.5);
-
-    this.position = position;
     this.velocity = new Velocity(0, 0);
 
-    this.hitbox = new Hitbox(this.position, this.sprite.getWidth(), this.sprite.getHeight());
     this.sides = {
-      top: new PlayerSide(Side.TOP, this.position),
-      right: new PlayerSide(Side.RIGHT, new Position(this.position.getX() + this.getWidth(), this.position.getY())),
-      bottom: new PlayerSide(Side.BOTTOM, new Position(this.position.getX(), this.position.getY() + this.getHeight())),
-      left: new PlayerSide(Side.LEFT, new Position(this.position.getX(), this.position.getY()))
+      top: new PlayerSide(Side.TOP, this.getPosition()),
+      right: new PlayerSide(Side.RIGHT, new Position(this.getPosition().getX() + this.getSprite().getWidth(), this.getPosition().getY())),
+      bottom: new PlayerSide(Side.BOTTOM, new Position(this.getPosition().getX(), this.getPosition().getY() + this.getSprite().getHeight())),
+      left: new PlayerSide(Side.LEFT, new Position(this.getPosition().getX(), this.getPosition().getY()))
     };
 
 
@@ -59,42 +56,11 @@ export class Player {
     return this.sprite;
   }
 
-  public getPosition(): Position {
-    return this.position;
-  }
-
-  public getWidth(): number {
-    return this.sprite.getWidth();
-  }
-
-  public getHeight(): number {
-    return this.sprite.getHeight()
-  }
-
-  public setWidth(width: number): void {
-    this.sprite.setWidth(width);
-  }
-
-  public setHeight(height: number): void {
-    this.sprite.setHeight(height);
-  }
 
   public getVelocity(): Velocity {
     return this.velocity;
   }
 
-  public setPosition(position: Position): void {
-    this.position.setY(position.getY());
-    this.position.setX(position.getX());
-  }
-
-  public setVelocity(velocity: Velocity): void {
-    this.velocity = velocity;
-  }
-
-  public isOnGround(): boolean {
-    return this.getBottomSide().getPosition().getY() >= GameComponent.canvasHeight;
-  }
 
 
   public move(delta: number): void {
@@ -116,10 +82,10 @@ export class Player {
     }
 
 
-    this.position.setX(this.position.getX() + this.velocity.getX() * delta);
-    this.hitbox.getPosition().setX(this.position.getX());
-    this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
-    this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
+    this.getPosition().setX(this.getPosition().getX() + this.velocity.getX() * delta);
+    //this.hitbox.getPosition().setX(this.get.getX());
+    this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getSprite().getHeight());
+    this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getSprite().getWidth());
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
@@ -138,8 +104,8 @@ export class Player {
 
   public applyGravity(delta: number): void {
     this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
-    this.position.setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
-    this.hitbox.getPosition().setY(this.position.getY());
+    this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
+   // this.hitbox.getPosition().setY(this.position.getY());
 
     if(this.getBottomSide().getPosition().getY() >= GameComponent.canvasHeight) {
       this.velocity.setY(0);
@@ -155,13 +121,13 @@ export class Player {
       const offset = 0.01;
 
       if (this.getVelocity().getY() < 0) {
-        this.position.setY(block.getPosition().getY() + block.getHeight() + offset);
+        this.getPosition().setY(block.getPosition().getY() + block.getHeight() + offset);
         break;
       }
 
       if (this.getVelocity().getY() > 0) {
         this.velocity.setY(0);
-        this.position.setY(block.getPosition().getY() - this.getHeight() - offset);
+        this.getPosition().setY(block.getPosition().getY() - this.getSprite().getHeight() - offset);
         break;
       }
 
@@ -171,8 +137,8 @@ export class Player {
 
   public checkForCollision(block: CollisionBlock): boolean {
     return this.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
-      this.getPosition().getX() + this.getWidth() >= block.getPosition().getX() &&
-      this.getPosition().getY() + this.getHeight() >= block.getPosition().getY() &&
+      this.getPosition().getX() + this.getSprite().getWidth() >= block.getPosition().getX() &&
+      this.getPosition().getY() + this.getSprite().getHeight() >= block.getPosition().getY() &&
       this.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
   }
 
@@ -187,13 +153,13 @@ export class Player {
       const offset = 0.01;
       if (this.getVelocity().getX() < 0) {
         this.velocity.setX(0);
-        this.position.setX(block.getPosition().getX() + block.getWidth() + offset);
+        this.getPosition().setX(block.getPosition().getX() + block.getWidth() + offset);
         break;
       }
 
       if (this.getVelocity().getX() > 0) {
         this.velocity.setX(0);
-        this.position.setX(block.getPosition().getX() - this.getWidth() - offset);
+        this.getPosition().setX(block.getPosition().getX() - this.getSprite().getWidth() - offset);
         break;
       }
 
@@ -202,17 +168,17 @@ export class Player {
   }
 
   public draw(context: CanvasRenderingContext2D): void {
-    this.sprite.update(context, this.position);
 
     if (!GameComponent.productionMode) {
-      this.drawSpriteBox(context)
-      this.hitbox.draw(context);
+      this.drawSpriteBox(context);
     }
+
+    this.getSprite().drawSprite(context);
   }
 
   public drawSpriteBox(context: CanvasRenderingContext2D): void {
     context.fillStyle = "rgba(240, 52, 52, 0.3)";
-    context.fillRect(this.position.getX(), this.position.getY(), this.getWidth(), this.getHeight());
+    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getSprite().getWidth(), this.getSprite().getHeight());
   }
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
@@ -221,3 +187,4 @@ export class Player {
 
 
 }
+
