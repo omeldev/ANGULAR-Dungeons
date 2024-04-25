@@ -22,6 +22,7 @@ export class GameComponent implements AfterViewInit {
   public prodMode: boolean = GameComponent.productionMode;
   private player: Player;
   private delta: number = 1;
+  private oldFrameTime: number = 1;
 
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
@@ -45,6 +46,14 @@ export class GameComponent implements AfterViewInit {
     this.initializeCanvas();
   }
 
+  public levelChange(): void {
+    const levels = [level1, level2];
+    const index = levels.indexOf(GameComponent.getCurrentLevel());
+    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+    this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+
+  }
+
   private initializeCanvas() {
     this.canvas!.nativeElement.width = GameComponent.canvasWidth;
     this.canvas!.nativeElement.height = GameComponent.canvasHeight;
@@ -58,8 +67,6 @@ export class GameComponent implements AfterViewInit {
     this.canvas!.nativeElement.height = height;
 
   }
-
-  private oldFrameTime: number = 1;
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
@@ -86,14 +93,6 @@ export class GameComponent implements AfterViewInit {
       //FIXME Dont give the reference, but the value
       this.levelChange();
     }
-
-  }
-
-  public levelChange(): void {
-    const levels = [level1, level2];
-    const index = levels.indexOf(GameComponent.getCurrentLevel());
-    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
-    this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
   }
 
