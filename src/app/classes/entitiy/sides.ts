@@ -42,6 +42,13 @@ export class PlayerSide {
 
 }
 
+/**
+ * Enum for the side of an Object
+ * TOP = top side
+ * RIGHT = right side
+ * BOTTOM = bottom side
+ * LEFT = left side
+ */
 export enum Side {
   TOP = 'TOP',
   RIGHT = 'RIGHT',
