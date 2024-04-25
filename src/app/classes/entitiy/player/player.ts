@@ -82,16 +82,22 @@ export class Player extends Sprite {
 
 
     this.getPosition().setX(this.getPosition().getX() + this.velocity.getX() * delta);
-    //this.hitbox.getPosition().setX(this.get.getX());
+    /**
+     * Update the sides
+     */
     this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getSprite().getHeight());
     this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getSprite().getWidth());
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
 
-    //Gravity
-
+    /**
+     * Check for collisions
+     */
     this.checkHorizontalCollisions();
+    /**
+     * Apply gravity
+     */
     this.applyGravity(delta);
     this.checkVerticalCollisions();
 
