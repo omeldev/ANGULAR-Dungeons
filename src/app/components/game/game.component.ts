@@ -74,7 +74,7 @@ export class GameComponent implements AfterViewInit {
       GameComponent.getCurrentLevel().drawCollisionBlocks(this.context!);
 
     }
-    GameComponent.getCurrentLevel().getFinalDoor().draw(this.context!);
+    GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!);
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     this.player.update(this.context!, delta);
