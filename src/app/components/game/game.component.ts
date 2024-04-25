@@ -14,7 +14,7 @@ import {Level} from "../../classes/level/level";
 export class GameComponent implements AfterViewInit {
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
-  public static productionMode: boolean = true;
+  public static productionMode: boolean = false;
   private static currentLevel = level1;
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
@@ -24,9 +24,8 @@ export class GameComponent implements AfterViewInit {
   private delta: number = 1;
 
   constructor() {
-    const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(100, 100));
-    spr.setIsBackground(true);
-    this.player = new Player(new Position(356, 250), spr);
+    const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
+    this.player = new Player(spr);
   }
 
   public static getCurrentLevel(): Level {
@@ -61,6 +60,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   private oldFrameTime: number = 1;
+
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
