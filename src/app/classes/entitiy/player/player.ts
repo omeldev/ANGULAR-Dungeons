@@ -10,6 +10,7 @@ import {Coin} from "../../coin/coin";
 export class Player extends Sprite {
   private readonly sprite: Sprite;
   private readonly velocity: Velocity;
+  private collectedCoins: number = 0;
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
@@ -184,6 +185,8 @@ export class Player extends Sprite {
     for(let i = 0; i < coins.length; i++) {
       if(this.checkForCoinCollision(coins[i])) {
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
+        this.collectedCoins++;
+        console.log(this.collectedCoins, 'Collected Coins');
         break;
       }
     }
