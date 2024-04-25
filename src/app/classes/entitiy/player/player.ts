@@ -9,7 +9,7 @@ import {Hitbox} from "../hitbox";
 
 export class Player extends Sprite {
   private readonly sprite: Sprite;
-  private velocity: Velocity;
+  private readonly velocity: Velocity;
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
@@ -17,7 +17,6 @@ export class Player extends Sprite {
   private ACCELERATION = 400;
   private JUMP_STRENGTH = 600;
   private GRAVITY: number = 1200;
-  //private hitbox: Hitbox = new Hitbox(new Position(0, 0), this.getSprite().getWidth(), this.getSprite().getHeight());
 
   constructor(sprite: Sprite) {
     super(sprite.getImage().src, sprite.getPosition());
@@ -126,7 +125,7 @@ export class Player extends Sprite {
       }
 
       if (this.getVelocity().getY() > 0) {
-        this.velocity.setY(0);
+        this.getVelocity().setY(0);
         this.getPosition().setY(block.getPosition().getY() - this.getSprite().getHeight() - offset);
         break;
       }
@@ -152,13 +151,13 @@ export class Player extends Sprite {
       console.log("collision detected");
       const offset = 0.01;
       if (this.getVelocity().getX() < 0) {
-        this.velocity.setX(0);
+        this.getVelocity().setX(0);
         this.getPosition().setX(block.getPosition().getX() + block.getWidth() + offset);
         break;
       }
 
       if (this.getVelocity().getX() > 0) {
-        this.velocity.setX(0);
+        this.getVelocity().setX(0);
         this.getPosition().setX(block.getPosition().getX() - this.getSprite().getWidth() - offset);
         break;
       }
