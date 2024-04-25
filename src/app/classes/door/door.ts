@@ -40,8 +40,7 @@ export class Door {
   }
 
   public draw(context: CanvasRenderingContext2D): void {
-    //this.sprite.setPosition(this.position)
-    this.sprite.draw(context);
+    this.sprite.drawSprite(context);
   }
 
   public checkCollision(player: Player): boolean {
