@@ -3,7 +3,7 @@ import {Player} from "../../classes/entitiy/player/player";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
-import {level1, level2} from "../../levels/levels";
+import {debugLevel, level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 
 @Component({
@@ -14,14 +14,13 @@ import {Level} from "../../classes/level/level";
 export class GameComponent implements AfterViewInit {
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
-  public static productionMode: boolean = false;
+  public static productionMode: boolean = true;
   private static currentLevel = level1;
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
-  private player: Player;
-  private delta: number = 1;
+  private readonly player: Player;
   private oldFrameTime: number = 1;
 
   constructor() {
@@ -47,9 +46,13 @@ export class GameComponent implements AfterViewInit {
   }
 
   public levelChange(): void {
-    const levels = [level1, level2];
+    const levels = [level1, level2, level3, debugLevel];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+
+    GameComponent.canvasHeight = GameComponent.getCurrentLevel().getBackground().getHeight();
+    GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
+
     this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
   }
@@ -65,6 +68,8 @@ export class GameComponent implements AfterViewInit {
   private changeCanvasSize(width: number, height: number) {
     this.canvas!.nativeElement.width = width;
     this.canvas!.nativeElement.height = height;
+    GameComponent.canvasWidth = width;
+    GameComponent.canvasHeight = height;
 
   }
 
@@ -86,6 +91,8 @@ export class GameComponent implements AfterViewInit {
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     this.player.update(this.context!, delta);
     this.oldFrameTime = performance.now();
+    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
+
     this.player.draw(this.context!);
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
@@ -93,6 +100,8 @@ export class GameComponent implements AfterViewInit {
       //FIXME Dont give the reference, but the value
       this.levelChange();
     }
+
+
 
   }
 
