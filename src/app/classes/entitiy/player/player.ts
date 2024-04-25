@@ -182,8 +182,8 @@ export class Player extends Sprite {
     }
 
     const coins = GameComponent.getCurrentLevel().getCoins();
-    for(let i = 0; i < coins.length; i++) {
-      if(this.checkForCoinCollision(coins[i])) {
+    for (let i = 0; i < coins.length; i++) {
+      if (this.checkForCoinCollision(coins[i])) {
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
         this.collectedCoins++;
         GameComponent.nextCoin(this.collectedCoins);

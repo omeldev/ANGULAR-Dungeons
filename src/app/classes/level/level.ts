@@ -34,7 +34,7 @@ export class Level extends Sprite {
       });
 
 
-      if(coins){
+      if (coins) {
         this.setCoins(coins);
       }
 
@@ -53,7 +53,7 @@ export class Level extends Sprite {
 
   }
 
-  public setCoins(coins: number[]){
+  public setCoins(coins: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
     if (this.getWidth() % 64 !== 0) throw new Error("invalid width");

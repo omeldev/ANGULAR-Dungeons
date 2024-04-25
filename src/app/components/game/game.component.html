@@ -1,11 +1,9 @@
 <ng-container class="game-container">
-<div class="stat-container">
-  <h1>{{this.coins$ | async}} Coins</h1>
-</div>
-<div [ngClass]="{'canvas-container': prodMode}">
-  <canvas #canvas></canvas>
-
-</div>
-
+  <div class="stat-container">
+    <h1>{{ this.coins$ | async }} Coins</h1>
+  </div>
+  <div [ngClass]="{'canvas-container': prodMode}">
+    <canvas #canvas></canvas>
+  </div>
 </ng-container>
 

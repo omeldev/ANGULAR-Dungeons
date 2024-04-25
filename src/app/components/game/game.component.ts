@@ -3,9 +3,9 @@ import {Player} from "../../classes/entitiy/player/player";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
-import {debugLevel, level1, level2, level3} from "../../levels/levels";
+import {level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
-import {BehaviorSubject, ReplaySubject} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-game',
@@ -17,16 +17,15 @@ export class GameComponent implements AfterViewInit {
   public static canvasHeight = 64 * 9;
   public static productionMode: boolean = true;
   private static currentLevel = level1;
+  private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public static coins$ = GameComponent.coinSubject$.asObservable();
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
+  public coins$ = GameComponent.coins$;
   private readonly player: Player;
   private oldFrameTime: number = 1;
-
-  private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  public static coins$ = GameComponent.coinSubject$.asObservable();
-  public coins$ = GameComponent.coins$;
 
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
@@ -110,7 +109,6 @@ export class GameComponent implements AfterViewInit {
       //FIXME Dont give the reference, but the value
       this.levelChange();
     }
-
 
 
   }
