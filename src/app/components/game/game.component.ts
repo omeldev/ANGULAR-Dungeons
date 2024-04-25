@@ -5,6 +5,7 @@ import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
 import {debugLevel, level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
+import {BehaviorSubject, ReplaySubject} from "rxjs";
 
 @Component({
   selector: 'app-game',
@@ -23,6 +24,10 @@ export class GameComponent implements AfterViewInit {
   private readonly player: Player;
   private oldFrameTime: number = 1;
 
+  private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public static coins$ = GameComponent.coinSubject$.asObservable();
+  public coins$ = GameComponent.coins$;
+
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
     this.player = new Player(spr);
@@ -30,6 +35,10 @@ export class GameComponent implements AfterViewInit {
 
   public static getCurrentLevel(): Level {
     return this.currentLevel;
+  }
+
+  public static nextCoin(coin: number): void {
+    GameComponent.coinSubject$.next(coin);
   }
 
   public static setCurrentLevel(level: Level): void {
@@ -45,8 +54,9 @@ export class GameComponent implements AfterViewInit {
     this.initializeCanvas();
   }
 
+
   public levelChange(): void {
-    const levels = [level1, level2, level3, debugLevel];
+    const levels = [level1, level2, level3];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 
