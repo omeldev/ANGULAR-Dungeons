@@ -13,7 +13,7 @@ export class Player extends Sprite {
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
-  private MAX_SPEED = 1500;
+  private MAX_SPEED = 350;
   private ACCELERATION = 400;
   private JUMP_STRENGTH = 600;
   private GRAVITY: number = 1200;
