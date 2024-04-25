@@ -15,8 +15,9 @@ export class Sprite {
    * Create a new Sprite
    * @param imageSrc path to the image
    * @param position {Position} of the Sprite
+   * @param funcOnLoad {() => void} function to call when the image is loaded
    */
-  constructor(imageSrc: string, position?: Position) {
+  constructor(imageSrc: string, position?: Position, funcOnLoad?: () => void) {
     this.position = position ? position : new Position(0, 0);
     this.image = new Image();
     this.imageSrc = imageSrc;
@@ -28,6 +29,9 @@ export class Sprite {
     this.image.onload = () => {
       this.width = this.image.width;
       this.height = this.image.height;
+
+      funcOnLoad?.();
+
     }
 
 
@@ -84,6 +88,14 @@ export class Sprite {
    */
   public getHeight(): number {
     return this.height * this.getScale().getScale();
+  }
+
+  public setWidth(width: number): void {
+    this.width = width;
+  }
+
+  public setHeight(height: number): void {
+    this.height = height;
   }
 
   /**
