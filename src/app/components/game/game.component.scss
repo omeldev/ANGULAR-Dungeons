@@ -2,6 +2,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+}
+
+.stat-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  width: 100vw;
 }
