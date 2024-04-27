@@ -5,10 +5,18 @@
 
 }
 
+.volume-container {
+  //all Elements on One Line
+  display: flex;
+  flex-direction: row; /* Ensures children are displayed in a row */
+  align-items: center; /* Align items vertically centered */
+}
+
 .stat-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .hide {

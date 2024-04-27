@@ -26,6 +26,7 @@ export class GameComponent implements AfterViewInit {
   public coins$ = GameComponent.coins$;
   private readonly player: Player;
   private oldFrameTime: number = 1;
+  public volume: number = 1.0;
 
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));

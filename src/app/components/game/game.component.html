@@ -1,14 +1,20 @@
-
-<audio class="hide" autoplay loop>
+<audio class="hide" autoplay loop [volume]="volume">
   <source src="assets/sound/background/Dungeon%20Explorer.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
 <ng-container class="game-container">
+
   <div class="stat-container">
     <h1>{{ this.coins$ | async }} Coins</h1>
+    <ng-container class="volume-container">
+      <div>Volume</div>
+      <input type="range" min="0" max="1" step="0.01" [(ngModel)]="volume">
+    </ng-container>
   </div>
   <div [ngClass]="{'canvas-container': prodMode}">
     <canvas #canvas></canvas>
   </div>
+
+
 </ng-container>
 
