@@ -189,6 +189,7 @@ export class Player extends Sprite {
         GameComponent.nextCoin(this.collectedCoins);
         console.log(this.collectedCoins, 'Collected Coins');
         const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
+        audio.volume = GameComponent.volume;
         audio.play();
         break;
       }

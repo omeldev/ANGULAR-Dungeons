@@ -47,7 +47,7 @@ export function registerKeystrokes(): void {
       GameComponent.hasInteracted = true;
 
       GameComponent.backgroundMusic.loop = true;
-      
+
       GameComponent.backgroundMusic.play().then(r => console.log('Music started'));
 
 

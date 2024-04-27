@@ -26,7 +26,7 @@ export class GameComponent implements AfterViewInit {
   public coins$ = GameComponent.coins$;
   private readonly player: Player;
   private oldFrameTime: number = 1;
-  public volume: number = 1.0;
+  public static volume: number = 1.0;
 
   public static hasInteracted: boolean = false;
 
@@ -89,10 +89,12 @@ export class GameComponent implements AfterViewInit {
 
   }
   public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
+  public volume: any = 1.0;
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-    GameComponent.backgroundMusic.volume = this.volume;
+    GameComponent.volume = this.volume;
+    GameComponent.backgroundMusic.volume = GameComponent.volume;
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
