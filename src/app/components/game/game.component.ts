@@ -28,7 +28,7 @@ export class GameComponent implements AfterViewInit {
   private oldFrameTime: number = 1;
 
   constructor() {
-    const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
+    const spr = new Sprite('../../../assets/img/sprites/player/guard_1.png', new Position(356, 250));
     this.player = new Player(spr);
   }
 
