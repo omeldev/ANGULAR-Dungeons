@@ -28,6 +28,8 @@ export class GameComponent implements AfterViewInit {
   private oldFrameTime: number = 1;
   public volume: number = 1.0;
 
+  public static hasInteracted: boolean = false;
+
   constructor() {
     const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
     this.player = new Player(spr);
@@ -49,18 +51,12 @@ export class GameComponent implements AfterViewInit {
     this.productionMode = !this.productionMode;
   }
 
-  public backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
     this.initializeCanvas();
 
-    this.backgroundMusic.volume = this.volume;
-    this.backgroundMusic.loop = true;
 
-    this.backgroundMusic.onload = () => {
-      this.backgroundMusic.play().then(r => console.log('Music started'));
-    }
 
   }
 
@@ -92,10 +88,12 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasHeight = height;
 
   }
+  public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-    this.backgroundMusic.volume = this.volume;
+    GameComponent.backgroundMusic.volume = this.volume;
+
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
     GameComponent.getCurrentLevel().drawSprite(this.context!);
@@ -122,6 +120,7 @@ export class GameComponent implements AfterViewInit {
 
 
   }
+
 
 
 }

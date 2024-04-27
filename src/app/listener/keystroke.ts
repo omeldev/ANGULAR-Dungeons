@@ -1,3 +1,5 @@
+import {GameComponent} from "../components/game/game.component";
+
 export class GameKey {
   private readonly key: string;
   private pressed: boolean;
@@ -41,6 +43,15 @@ export function isKeyPressed(key: string): boolean {
 
 export function registerKeystrokes(): void {
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
+    if(!GameComponent.hasInteracted){
+      GameComponent.hasInteracted = true;
+
+      GameComponent.backgroundMusic.loop = true;
+      
+      GameComponent.backgroundMusic.play().then(r => console.log('Music started'));
+
+
+    }
     const key = event.key;
 
     if (event.code === 'Space') {
