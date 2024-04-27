@@ -13,7 +13,7 @@ export class Door extends Sprite {
    * @param destination {Door} of the Door
    */
   constructor(position: Position, isFinalDoor?: boolean, destination?: Door) {
-    super('../../../assets/img/sprites/door/door.png', position);
+    super('../../../assets/sprites/door/door.png', position);
     this.isFinalDoor = false;
     this.destination = this;
   }

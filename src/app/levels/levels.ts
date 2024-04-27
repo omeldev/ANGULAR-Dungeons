@@ -3,7 +3,7 @@ import {Sprite} from "../classes/entitiy/sprite";
 import {Position} from "../classes/entitiy/position";
 import {endDoorDebug, endDoorLevel1, endDoorLevel2, endDoorLevel3} from "./doors/doors";
 
-export const level1 = new Level(new Sprite('../../../assets/img/maps/level1.png'), new Position(64 * 5, 64 * 4), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+export const level1 = new Level(new Sprite('../../../assets/maps/level1.png'), new Position(64 * 5, 64 * 4), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 0,
   0, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 0,
@@ -13,7 +13,7 @@ export const level1 = new Level(new Sprite('../../../assets/img/maps/level1.png'
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292], endDoorLevel1);
 
-export const level2 = new Level(new Sprite('../../../assets/img/maps/level2.png'), new Position(64 * 3, 64 + 16),
+export const level2 = new Level(new Sprite('../../../assets/maps/level2.png'), new Position(64 * 3, 64 + 16),
   [292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292,
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
@@ -24,7 +24,7 @@ export const level2 = new Level(new Sprite('../../../assets/img/maps/level2.png'
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
     292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292], endDoorLevel2);
 
-export const level3 = new Level(new Sprite('../../../assets/img/maps/level3.png'), new Position(64 * 2, 2 * 64 + 16),
+export const level3 = new Level(new Sprite('../../../assets/maps/level3.png'), new Position(64 * 2, 2 * 64 + 16),
   [292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292,
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
     292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 0, 0, 292,
@@ -42,7 +42,7 @@ export const level3 = new Level(new Sprite('../../../assets/img/maps/level3.png'
     0, 0, 0, 0, 293, 293, 293, 293, 293, 293, 293, 293, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-export const debugLevel = new Level(new Sprite('../../../assets/img/maps/map5.png'), new Position(64 * 3, 64 + 13),
+export const debugLevel = new Level(new Sprite('../../../assets/maps/map5.png'), new Position(64 * 3, 64 + 13),
   [292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292,
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
     292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292,
