@@ -6,6 +6,7 @@ import {PlayerSide, Side} from "../sides";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
+import {delay} from "rxjs";
 
 export class Player extends Sprite {
   private readonly sprite: Sprite;
@@ -184,13 +185,17 @@ export class Player extends Sprite {
     const coins = GameComponent.getCurrentLevel().getCoins();
     for (let i = 0; i < coins.length; i++) {
       if (this.checkForCoinCollision(coins[i])) {
-        GameComponent.getCurrentLevel().getCoins().splice(i, 1);
         this.collectedCoins++;
         GameComponent.nextCoin(this.collectedCoins);
         console.log(this.collectedCoins, 'Collected Coins');
-        const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
-        audio.volume = GameComponent.volume;
-        audio.play();
+        GameComponent.getCurrentLevel().getCoins().splice(i, 1);
+
+        setTimeout(() =>  {
+
+          const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
+          audio.volume = GameComponent.volume;
+          audio.play().then( );
+        },20);
         break;
       }
     }
