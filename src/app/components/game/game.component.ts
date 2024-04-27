@@ -49,9 +49,19 @@ export class GameComponent implements AfterViewInit {
     this.productionMode = !this.productionMode;
   }
 
+  public backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
+
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
     this.initializeCanvas();
+
+    this.backgroundMusic.volume = this.volume;
+    this.backgroundMusic.loop = true;
+
+    this.backgroundMusic.onload = () => {
+      this.backgroundMusic.play().then(r => console.log('Music started'));
+    }
+
   }
 
 
@@ -85,9 +95,8 @@ export class GameComponent implements AfterViewInit {
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-
+    this.backgroundMusic.volume = this.volume;
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
-
 
     GameComponent.getCurrentLevel().drawSprite(this.context!);
 

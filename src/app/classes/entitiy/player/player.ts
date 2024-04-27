@@ -188,6 +188,8 @@ export class Player extends Sprite {
         this.collectedCoins++;
         GameComponent.nextCoin(this.collectedCoins);
         console.log(this.collectedCoins, 'Collected Coins');
+        const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
+        audio.play();
         break;
       }
     }
