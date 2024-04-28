@@ -31,8 +31,7 @@ export class GameComponent implements AfterViewInit {
   public static hasInteracted: boolean = false;
 
   constructor() {
-    const spr = new Sprite('../../../assets/sprites/player/guard_1.png', new Position(356, 250));
-    this.player = new Player(spr);
+    this.player = new Player('../../../assets/sprites/player/animation/idle.png');
   }
 
   public static getCurrentLevel(): Level {
@@ -91,6 +90,7 @@ export class GameComponent implements AfterViewInit {
   public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
   public volume: any = 1.0;
 
+
   private animate() {
     window.requestAnimationFrame(() => this.animate());
     GameComponent.volume = this.volume;
@@ -112,8 +112,7 @@ export class GameComponent implements AfterViewInit {
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
 
-    this.player.draw(this.context!);
-
+    this.player.drawSprite(this.context!, delta);
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
       //FIXME weird behavior when giving the reference of the SpawnPoint to the player
       //FIXME Dont give the reference, but the value

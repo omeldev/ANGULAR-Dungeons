@@ -60,9 +60,9 @@ export class Door extends Sprite {
    * @returns {boolean} true if the player collides with the door
    */
   public checkCollision(player: Player): boolean {
-    return this.getPosition().getX() < player.getPosition().getX() + player.getSprite().getWidth() &&
+    return this.getPosition().getX() < player.getPosition().getX() + player.getWidth() &&
       this.getPosition().getX() + this.getWidth() > player.getPosition().getX() &&
-      this.getPosition().getY() < player.getPosition().getY() + player.getSprite().getHeight() &&
+      this.getPosition().getY() < player.getPosition().getY() + player.getHeight() &&
       this.getPosition().getY() + this.getHeight() > player.getPosition().getY();
 
   }

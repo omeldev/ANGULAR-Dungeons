@@ -9,7 +9,6 @@ import {Coin} from "../../coin/coin";
 import {delay} from "rxjs";
 
 export class Player extends Sprite {
-  private readonly sprite: Sprite;
   private readonly velocity: Velocity;
   private collectedCoins: number = 0;
 
@@ -22,12 +21,14 @@ export class Player extends Sprite {
 
   /**
    * Create a new player
-   * @param sprite {Sprite} of the player
+   * @param spriteSrc
    */
-  constructor(sprite: Sprite) {
-    super(sprite.getImage().src, sprite.getPosition());
-    this.sprite = sprite;
-    this.sprite.getScale().setScale(1.5);
+  constructor(spriteSrc: string) {
+    super(spriteSrc, new Position(356, 250), () => {
+      console.log(this.image.width / 11);
+
+    }, 11);
+    this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
 
     /**
@@ -36,8 +37,8 @@ export class Player extends Sprite {
      */
     this.sides = {
       top: new PlayerSide(Side.TOP, this.getPosition()),
-      right: new PlayerSide(Side.RIGHT, new Position(this.getPosition().getX() + this.getSprite().getWidth(), this.getPosition().getY())),
-      bottom: new PlayerSide(Side.BOTTOM, new Position(this.getPosition().getX(), this.getPosition().getY() + this.getSprite().getHeight())),
+      right: new PlayerSide(Side.RIGHT, new Position(this.getPosition().getX() + this.getWidth(), this.getPosition().getY())),
+      bottom: new PlayerSide(Side.BOTTOM, new Position(this.getPosition().getX(), this.getPosition().getY() + this.getHeight())),
       left: new PlayerSide(Side.LEFT, new Position(this.getPosition().getX(), this.getPosition().getY()))
     };
 
@@ -76,13 +77,6 @@ export class Player extends Sprite {
     return this.sides.left;
   }
 
-  /**
-   * Get the Sprite of the player
-   * @returns {Sprite} of the player
-   */
-  public getSprite(): Sprite {
-    return this.sprite;
-  }
 
   /**
    * Get the Velocity of the player
@@ -137,8 +131,8 @@ export class Player extends Sprite {
     /**
      * Update the sides
      */
-    this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getSprite().getHeight());
-    this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getSprite().getWidth());
+    this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
+    this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
     this.getLeftSide().getPosition().setX(this.getPosition().getX());
     this.getTopSide().getPosition().setY(this.getPosition().getY());
 
@@ -224,7 +218,7 @@ export class Player extends Sprite {
 
       if (this.getVelocity().getY() > 0) {
         this.getVelocity().setY(0);
-        this.getPosition().setY(block.getPosition().getY() - this.getSprite().getHeight() - offset);
+        this.getPosition().setY(block.getPosition().getY() - this.getHeight() - offset);
         break;
       }
 
@@ -238,16 +232,16 @@ export class Player extends Sprite {
    */
   public checkForCollision(block: CollisionBlock): boolean {
     return this.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
-      this.getPosition().getX() + this.getSprite().getWidth() >= block.getPosition().getX() &&
-      this.getPosition().getY() + this.getSprite().getHeight() >= block.getPosition().getY() &&
+      this.getPosition().getX() + this.getWidth() >= block.getPosition().getX() &&
+      this.getPosition().getY() + this.getHeight() >= block.getPosition().getY() &&
       this.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
   }
 
   public checkForCoinCollision(coin: Coin): boolean {
     return this.getPosition().getX() < coin.getPosition().getX() + coin.getWidth() &&
-      this.getPosition().getX() + this.getSprite().getWidth() > coin.getPosition().getX() &&
+      this.getPosition().getX() + this.getWidth() > coin.getPosition().getX() &&
       this.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
-      this.getPosition().getY() + this.getSprite().getHeight() > coin.getPosition().getY();
+      this.getPosition().getY() + this.getHeight() > coin.getPosition().getY();
   }
 
 
@@ -273,7 +267,7 @@ export class Player extends Sprite {
 
       if (this.getVelocity().getX() > 0) {
         this.getVelocity().setX(0);
-        this.getPosition().setX(block.getPosition().getX() - this.getSprite().getWidth() - offset);
+        this.getPosition().setX(block.getPosition().getX() - this.getWidth() - offset);
         break;
       }
 
@@ -291,7 +285,11 @@ export class Player extends Sprite {
     if (!GameComponent.productionMode) {
     }
 
-    this.getSprite().drawSprite(context);
+    this.drawSprite(context);
+
+    console.log(this.getWidth())
+    context.fillStyle = 'rgba(240, 52, 52, 0.3)';
+    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
   }
 
   /**
@@ -300,7 +298,7 @@ export class Player extends Sprite {
    */
   public drawSpriteBox(context: CanvasRenderingContext2D): void {
     context.fillStyle = "rgba(240, 52, 52, 0.3)";
-    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getSprite().getWidth(), this.getSprite().getHeight());
+    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
   }
 
   /**
