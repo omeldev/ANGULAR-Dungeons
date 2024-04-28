@@ -88,7 +88,6 @@ export class Level extends Sprite {
 
     if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
 
-    console.log(rowSize);
 
     for (let i = 0; i < this.collisions.length; i += rowSize) {
       rows.push(this.collisions.slice(i, rowSize + i));

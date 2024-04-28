@@ -60,6 +60,12 @@ export class Gizmo extends Sprite {
       this.collide.left = false;
       this.collide.right = false;
       this.pauseBuffer = Math.random() * 3 + 1;
+      const switchDirection = (Math.random() < 0.5);
+      if (switchDirection) {
+        this.lastDirection = this.lastDirection === Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
+        this.collide.left = false;
+        this.collide.right = false;
+      }
     } else {
       this.pause += delta;
     }
@@ -71,6 +77,7 @@ export class Gizmo extends Sprite {
     this.checkVerticalCollisions();
 
     if (!this.pausedMovement) {
+
       if (!this.collide.left && !this.collide.right) {
         if (this.lastDirection === Direction.LEFT) {
           this.move(Direction.LEFT, delta);
@@ -195,7 +202,6 @@ export class Gizmo extends Sprite {
         break;
       case Direction.RIGHT:
         this.velocity.setX(this.SPEED);
-        console.log(this.velocity.getX());
         break;
       case Direction.UP:
         this.velocity.setY(-this.JUMP_STRENGTH);

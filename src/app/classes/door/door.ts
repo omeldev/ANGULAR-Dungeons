@@ -19,7 +19,7 @@ export class Door extends Sprite {
     this.frameBuffer = 7;
     this.loop = false;
     this.autoPlay = false;
-    console.log(this.frameRate, 'FrameRate');
+
   }
 
 
