@@ -2,7 +2,7 @@ import {Position} from "./position";
 import {Scale} from "./scale";
 
 export class Sprite {
-  private readonly position: Position;
+  protected readonly position: Position;
   protected image: HTMLImageElement;
   private readonly imageSrc: string;
   private isSpriteSheet: boolean = false;

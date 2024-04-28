@@ -4,6 +4,7 @@ import {isKeyPressed, registerKeystrokes} from "../../listener/keystroke";
 import {level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
+import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
 
 @Component({
   selector: 'app-game',
@@ -27,6 +28,7 @@ export class GameComponent implements AfterViewInit {
   public static volume: number = 1.0;
 
   public static hasInteracted: boolean = false;
+  public gizmo: Gizmo;
 
   constructor() {
     this.player = new Player('../../../assets/sprites/player/animation/idle.png',
@@ -66,7 +68,39 @@ export class GameComponent implements AfterViewInit {
           onComplete: () => {
             this.levelChange();
             this.player.preventInput = false;
+            this.gizmo.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
           }
+        },
+        leaveDoor: {
+          frameRate: 8,
+          frameBuffer: 12,
+          loop: false,
+          imageSrc: '../../../assets/sprites/player/animation/leaveDoor.png',
+          onComplete: () => {
+            this.player.preventInput = false;
+          }
+        }
+      });
+
+    this.gizmo = new Gizmo('../../../assets/sprites/pig/animation/runLeft.png',
+      {
+        idle: {
+          frameRate: 11,
+          frameBuffer: 4,
+          loop: true,
+          imageSrc: '../../../assets/sprites/pig/animation/idle.png'
+        },
+        runLeft: {
+          frameRate: 6,
+          frameBuffer: 4,
+          loop: true,
+          imageSrc: '../../../assets/sprites/pig/animation/runLeft.png'
+        },
+        runRight: {
+          frameRate: 6,
+          frameBuffer: 4,
+          loop: true,
+          imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
         }
       });
   }
@@ -146,11 +180,14 @@ export class GameComponent implements AfterViewInit {
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     this.player.update(this.context!, delta);
+    this.gizmo.update(this.context!, delta);
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
 
     this.player.drawSprite(this.context!, delta);
 
+    this.gizmo.drawSprite(this.context!, delta);
+    
     if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w')){
       GameComponent.getCurrentLevel().getFinalDoor().play();
       this.player.getVelocity().setY(0);

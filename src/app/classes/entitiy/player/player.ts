@@ -15,11 +15,11 @@ export class Player extends Sprite {
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
-  private MAX_SPEED = 350;
-  private ACCELERATION = 400;
-  private JUMP_STRENGTH = 600;
-  private GRAVITY: number = 1200;
-  private lastDirection: string = 'right';
+  protected MAX_SPEED = 350;
+  protected ACCELERATION = 400;
+  protected JUMP_STRENGTH = 600;
+  protected GRAVITY: number = 1200;
+  public lastDirection: string = 'right';
   public preventInput = false;
 
   /**
@@ -174,10 +174,10 @@ export class Player extends Sprite {
      * 2. Apply gravity
      * 3. Check for vertical collisions
      */
-    this.updateHitbox();
+    this.updateHitbox(67, 34);
     this.checkHorizontalCollisions();
     this.applyGravity(delta);
-    this.updateHitbox();
+    this.updateHitbox(67, 34);
     this.checkVerticalCollisions();
 
 
@@ -191,9 +191,8 @@ export class Player extends Sprite {
     }
   }
 
-  private updateHitbox(): void {
-    const offsetX = 67;
-    const offsetY = 34;
+  protected updateHitbox(offsetX: number, offsetY: number): void {
+
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
     this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
 
