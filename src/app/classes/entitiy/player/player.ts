@@ -255,7 +255,7 @@ export class Player extends Sprite {
 
       if (this.getVelocity().getY() < 0) {
         const offset = this.hitbox.getPosition().getY() - this.getPosition().getY();
-
+        this.getVelocity().setY(0.01)
         this.getPosition().setY(block.getPosition().getY() + block.getHeight() - offset + collisionOffset);
         break;
       }

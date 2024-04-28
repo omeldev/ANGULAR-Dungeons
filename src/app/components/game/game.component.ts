@@ -28,7 +28,7 @@ export class GameComponent implements AfterViewInit {
   public static volume: number = 1.0;
 
   public static hasInteracted: boolean = false;
-  public gizmo: Gizmo;
+  public gizmo: Gizmo[];
 
   constructor() {
     this.player = new Player('../../../assets/sprites/player/animation/idle.png',
@@ -68,7 +68,10 @@ export class GameComponent implements AfterViewInit {
           onComplete: () => {
             this.levelChange();
             this.player.preventInput = false;
-            this.gizmo.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+            for(let i = 0; i < this.gizmo.length; i++){
+              this.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+
+            }
           }
         },
         leaveDoor: {
@@ -82,27 +85,31 @@ export class GameComponent implements AfterViewInit {
         }
       });
 
-    this.gizmo = new Gizmo('../../../assets/sprites/pig/animation/runLeft.png',
-      {
-        idle: {
-          frameRate: 11,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/pig/animation/idle.png'
-        },
-        runLeft: {
-          frameRate: 6,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/pig/animation/runLeft.png'
-        },
-        runRight: {
-          frameRate: 6,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
-        }
-      });
+    this.gizmo = [];
+
+    for(let i = 0; i < 5; i++){
+      this.gizmo.push(new Gizmo('../../../assets/sprites/pig/animation/runLeft.png',
+        {
+          idle: {
+            frameRate: 11,
+            frameBuffer: 4,
+            loop: true,
+            imageSrc: '../../../assets/sprites/pig/animation/idle.png'
+          },
+          runLeft: {
+            frameRate: 6,
+            frameBuffer: 4,
+            loop: true,
+            imageSrc: '../../../assets/sprites/pig/animation/runLeft.png'
+          },
+          runRight: {
+            frameRate: 6,
+            frameBuffer: 4,
+            loop: true,
+            imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
+          }
+        }))
+    }
   }
 
   public static getCurrentLevel(): Level {
@@ -180,14 +187,17 @@ export class GameComponent implements AfterViewInit {
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     this.player.update(this.context!, delta);
-    this.gizmo.update(this.context!, delta);
+    for(let i = 0; i < this.gizmo.length; i++){
+      this.gizmo[i].update(this.context!, delta);
+    }
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
 
     this.player.drawSprite(this.context!, delta);
 
-    this.gizmo.drawSprite(this.context!, delta);
-    
+    for(let i = 0; i < this.gizmo.length; i++){
+      this.gizmo[i].drawSprite(this.context!, delta);
+    }
     if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w')){
       GameComponent.getCurrentLevel().getFinalDoor().play();
       this.player.getVelocity().setY(0);

@@ -13,6 +13,9 @@ export class Gizmo extends Sprite {
   private readonly GRAVITY = 250;
   private readonly hitbox;
   private readonly velocity = new Velocity(0, 0);
+  private pausedMovement = false;
+  private lastDirection: Direction = Direction.RIGHT;
+
 
   private collide = {
     left: false,
@@ -45,8 +48,21 @@ export class Gizmo extends Sprite {
     this.currentAnimation.isActive = false;
   }
 
+  public pause: number = 0;
+  public pauseBuffer = 3;
+
   public update(context: CanvasRenderingContext2D, delta: number): void {
 
+
+    if (this.pause >= this.pauseBuffer) {
+      this.pause = 0;
+      this.pausedMovement = !this.pausedMovement;
+      this.collide.left = false;
+      this.collide.right = false;
+      this.pauseBuffer = Math.random() * 3 + 1;
+    } else {
+      this.pause += delta;
+    }
 
     this.updateHitbox(8, 4);
     this.checkHorizontalCollisions();
@@ -54,18 +70,27 @@ export class Gizmo extends Sprite {
     this.updateHitbox(8, 4);
     this.checkVerticalCollisions();
 
-    if (!this.collide.left && !this.collide.right) {
-      this.move(Direction.RIGHT, delta);
-      this.switchSprite('runRight');
-    }
-    if (this.collide.left) {
-      this.move(Direction.RIGHT, delta);
-      this.switchSprite('runRight');
-    } else if (this.collide.right) {
-      this.move(Direction.LEFT, delta);
-      this.switchSprite('runLeft');
-    }
+    if (!this.pausedMovement) {
+      if (!this.collide.left && !this.collide.right) {
+        if (this.lastDirection === Direction.LEFT) {
+          this.move(Direction.LEFT, delta);
+          this.switchSprite('runLeft');
+        } else if (this.lastDirection === Direction.RIGHT) {
+          this.move(Direction.RIGHT, delta);
+          this.switchSprite('runRight');
+        }
+      }
+      if (this.collide.left) {
+        this.move(Direction.RIGHT, delta);
+        this.switchSprite('runRight');
+      } else if (this.collide.right) {
+        this.move(Direction.LEFT, delta);
+        this.switchSprite('runLeft');
+      }
 
+    } else {
+      this.switchSprite('idle');
+    }
 
   }
 
@@ -158,6 +183,7 @@ export class Gizmo extends Sprite {
 
   public move(direction: Direction, delta: number): void {
     this.getPosition().setX(this.getPosition().getX() + this.velocity.getX() * delta);
+    this.lastDirection = direction;
 
     switch (direction) {
       case Direction.LEFT:
