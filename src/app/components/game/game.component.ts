@@ -34,22 +34,29 @@ export class GameComponent implements AfterViewInit {
         idleRight: {
           frameRate: 11,
           frameBuffer: 2,
-          loop: true
+          loop: true,
+          imageSrc: '../../../assets/sprites/player/animation/idle.png'
         },
         idleLeft: {
           frameRate: 11,
           frameBuffer: 2,
-          loop: true
+          loop: true,
+          imageSrc: '../../../assets/sprites/player/animation/idleLeft.png'
+
         },
         runRight: {
           frameRate: 8,
           frameBuffer: 2,
-          loop: true
+          loop: true,
+          imageSrc: '../../../assets/sprites/player/animation/runRight.png'
+
         },
         runLeft: {
           frameRate: 8,
           frameBuffer: 2,
-          loop: true
+          loop: true,
+          imageSrc: '../../../assets/sprites/player/animation/runLeft.png'
+
         }
       });
   }

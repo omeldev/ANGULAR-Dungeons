@@ -6,7 +6,6 @@ import {PlayerSide, Side} from "../sides";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
-import {delay} from "rxjs";
 import {Hitbox} from "../../collision/hitbox";
 
 export class Player extends Sprite {
@@ -20,6 +19,7 @@ export class Player extends Sprite {
   private ACCELERATION = 400;
   private JUMP_STRENGTH = 600;
   private GRAVITY: number = 1200;
+  private lastDirection: string = 'right';
 
   /**
    * Create a new player
@@ -94,13 +94,20 @@ export class Player extends Sprite {
     return this.velocity;
   }
 
+  public switchSprite(name: string) {
+    if (this.image === this.animations[name].image) return;
+    this.currentFrame = 0;
+
+    this.image = this.animations[name].image;
+    this.frameRate = this.animations[name].frameRate;
+    this.frameBuffer = this.animations[name].frameBuffer;
+  }
+
   /**
    * Move the player, apply gravity and check for collisions
    * @param delta {number} time since the last update
    */
   public move(delta: number): void {
-
-
 
 
     /**
@@ -111,19 +118,31 @@ export class Player extends Sprite {
     /**
      * Set the velocity to 0 on the X axis if neither a | d is pressed
      */
-    if (!isKeyPressed('a') && !isKeyPressed('d')) this.velocity.setX(0);
+    if (!isKeyPressed('a') && !isKeyPressed('d')) {
+      if (this.lastDirection === 'left') {
+        this.switchSprite('idleLeft')
+      } else {
+        this.switchSprite('idleRight')
+      }
+
+      this.velocity.setX(0);
+    }
 
 
     /**
      * Check if a | d is pressed, then apply acceleration
      */
     if (isKeyPressed('a')) {
+      this.lastDirection = 'left';
+      this.switchSprite('runLeft')
       if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
     }
 
     if (isKeyPressed('d')) {
+      this.lastDirection = 'right';
+      this.switchSprite('runRight')
       if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
       } else this.velocity.setX(this.MAX_SPEED);
@@ -205,12 +224,12 @@ export class Player extends Sprite {
         console.log(this.collectedCoins, 'Collected Coins');
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
 
-        setTimeout(() =>  {
+        setTimeout(() => {
 
           const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
           audio.volume = GameComponent.volume;
-          audio.play().then( );
-        },20);
+          audio.play().then();
+        }, 20);
         break;
       }
     }

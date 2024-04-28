@@ -3,14 +3,14 @@ import {Scale} from "./scale";
 
 export class Sprite {
   private readonly position: Position;
-  protected readonly image: HTMLImageElement;
+  protected image: HTMLImageElement;
   private readonly imageSrc: string;
   private isSpriteSheet: boolean = false;
 
   public frameRate;
   public currentFrame: number = 0;
   public elapsedFrames = 0;
-  public frameBuffer = 3;
+  public frameBuffer = 2;
 
   private width: number = 0;
   private height: number = 0;
@@ -49,6 +49,15 @@ export class Sprite {
 
     this.image.src = this.imageSrc;
     this.scale = new Scale(1);
+
+    if (this.animations) {
+      //assign the image to the animations
+      for (let key in this.animations) {
+        const image = new Image();
+        image.src = this.animations[key].imageSrc;
+        this.animations[key].image = image;
+      }
+    }
   }
 
   public setSpriteSheet(isSpriteSheet: boolean): void {
