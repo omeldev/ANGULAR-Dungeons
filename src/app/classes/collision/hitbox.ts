@@ -1,4 +1,4 @@
-import {Position} from "./position";
+import {Position} from "../entitiy/position";
 
 export class Hitbox {
   private position: Position;
@@ -6,7 +6,7 @@ export class Hitbox {
   private height: number;
 
   constructor(position: Position, width: number, height: number) {
-    this.position = position;
+    this.position = new Position(position.getX(), position.getY());
     this.width = width;
     this.height = height;
   }
@@ -25,7 +25,8 @@ export class Hitbox {
   }
 
   public setPosition(position: Position): void {
-    this.position = position;
+    this.position.setY(position.getY());
+    this.position.setX(position.getX());
   }
 
   public setWidth(width: number): void {

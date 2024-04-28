@@ -7,9 +7,11 @@ import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
 import {delay} from "rxjs";
+import {Hitbox} from "../../collision/hitbox";
 
 export class Player extends Sprite {
   private readonly velocity: Velocity;
+  private readonly hitbox: Hitbox;
   private collectedCoins: number = 0;
 
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
@@ -27,10 +29,11 @@ export class Player extends Sprite {
     super(spriteSrc, new Position(356, 250), () => {
       console.log(this.image.width / 11);
 
+
     }, 11);
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
-
+    this.hitbox = new Hitbox(this.getPosition(), 30, 54);
     /**
      * Initialize the sides
      * @type {{top: PlayerSide; right: PlayerSide; bottom: PlayerSide; left: PlayerSide}}
@@ -43,6 +46,10 @@ export class Player extends Sprite {
     };
 
 
+  }
+
+  public getHitbox(): Hitbox {
+    return this.hitbox;
   }
 
   /**
@@ -91,6 +98,8 @@ export class Player extends Sprite {
    * @param delta {number} time since the last update
    */
   public move(delta: number): void {
+
+
 
 
     /**
@@ -143,8 +152,10 @@ export class Player extends Sprite {
      * 2. Apply gravity
      * 3. Check for vertical collisions
      */
+    this.updateHitbox();
     this.checkHorizontalCollisions();
     this.applyGravity(delta);
+    this.updateHitbox();
     this.checkVerticalCollisions();
 
 
@@ -155,6 +166,15 @@ export class Player extends Sprite {
     if (isKeyPressed('w') && this.getVelocity().getY() === 0) {
       this.getVelocity().setY(-this.JUMP_STRENGTH);
     }
+  }
+
+  private updateHitbox(): void {
+    const offsetX = 67;
+    const offsetY = 34;
+    this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
+    this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
+
+
   }
 
   /**
@@ -208,17 +228,20 @@ export class Player extends Sprite {
       /**
        * Offset to prevent the player from getting stuck in the block
        */
-      const offset = 0.01;
+      const collisionOffset = 0.01;
 
 
       if (this.getVelocity().getY() < 0) {
-        this.getPosition().setY(block.getPosition().getY() + block.getHeight() + offset);
+        const offset = this.hitbox.getPosition().getY() - this.getPosition().getY();
+
+        this.getPosition().setY(block.getPosition().getY() + block.getHeight() - offset + collisionOffset);
         break;
       }
 
       if (this.getVelocity().getY() > 0) {
         this.getVelocity().setY(0);
-        this.getPosition().setY(block.getPosition().getY() - this.getHeight() - offset);
+        const offset = this.hitbox.getPosition().getY() - this.getPosition().getY() + this.hitbox.getHeight();
+        this.getPosition().setY(block.getPosition().getY() - offset - collisionOffset);
         break;
       }
 
@@ -231,17 +254,17 @@ export class Player extends Sprite {
    * @param block {CollisionBlock} to check for collision
    */
   public checkForCollision(block: CollisionBlock): boolean {
-    return this.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
-      this.getPosition().getX() + this.getWidth() >= block.getPosition().getX() &&
-      this.getPosition().getY() + this.getHeight() >= block.getPosition().getY() &&
-      this.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
+    return this.hitbox.getPosition().getX() <= block.getPosition().getX() + block.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() >= block.getPosition().getX() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() >= block.getPosition().getY() &&
+      this.hitbox.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
   }
 
   public checkForCoinCollision(coin: Coin): boolean {
-    return this.getPosition().getX() < coin.getPosition().getX() + coin.getWidth() &&
-      this.getPosition().getX() + this.getWidth() > coin.getPosition().getX() &&
-      this.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
-      this.getPosition().getY() + this.getHeight() > coin.getPosition().getY();
+    return this.hitbox.getPosition().getX() < coin.getPosition().getX() + coin.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > coin.getPosition().getX() &&
+      this.hitbox.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > coin.getPosition().getY();
   }
 
 
@@ -258,16 +281,18 @@ export class Player extends Sprite {
       /**
        * Offset to prevent the player from getting stuck in the block
        */
-      const offset = 0.01;
-      if (this.getVelocity().getX() < 0) {
+      const collisionOffset = 0.01;
+      if (this.getVelocity().getX() < -0) {
         this.getVelocity().setX(0);
-        this.getPosition().setX(block.getPosition().getX() + block.getWidth() + offset);
+        const offset = this.hitbox.getPosition().getX() - this.getPosition().getX();
+        this.getPosition().setX(block.getPosition().getX() + block.getWidth() - offset + collisionOffset);
         break;
       }
 
       if (this.getVelocity().getX() > 0) {
         this.getVelocity().setX(0);
-        this.getPosition().setX(block.getPosition().getX() - this.getWidth() - offset);
+        const offset = this.hitbox.getPosition().getX() - this.getPosition().getX() + this.hitbox.getWidth();
+        this.getPosition().setX(block.getPosition().getX() - offset - collisionOffset);
         break;
       }
 
@@ -299,6 +324,10 @@ export class Player extends Sprite {
   public drawSpriteBox(context: CanvasRenderingContext2D): void {
     context.fillStyle = "rgba(240, 52, 52, 0.3)";
     context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
+  }
+
+  public drawHitbox(context: CanvasRenderingContext2D): void {
+    this.hitbox.draw(context);
   }
 
   /**

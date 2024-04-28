@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
-import {Sprite} from "../../classes/entitiy/sprite";
-import {Position} from "../../classes/entitiy/position";
 import {registerKeystrokes} from "../../listener/keystroke";
 import {level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
@@ -56,7 +54,6 @@ export class GameComponent implements AfterViewInit {
     this.initializeCanvas();
 
 
-
   }
 
 
@@ -87,6 +84,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasHeight = height;
 
   }
+
   public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
   public volume: any = 1.0;
 
@@ -121,7 +119,6 @@ export class GameComponent implements AfterViewInit {
 
 
   }
-
 
 
 }
