@@ -5,6 +5,7 @@ import {level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
 import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
+import {Animation, AnimationSet} from "../../classes/animation";
 
 @Component({
   selector: 'app-game',
@@ -29,6 +30,15 @@ export class GameComponent implements AfterViewInit {
 
   public static hasInteracted: boolean = false;
   public gizmo: Gizmo[];
+
+  public gizmoAnimations = new AnimationSet([
+    new Animation('idle', '../../../assets/sprites/pig/animation/idle.png', 11, 4, true, true, () => {
+    }),
+    new Animation('runLeft', '../../../assets/sprites/pig/animation/runLeft.png', 6, 4, true, true, () => {
+    }),
+    new Animation('runRight', '../../../assets/sprites/pig/animation/runRight.png', 6, 4, true, true, () => {
+    })
+  ]);
 
   constructor() {
     this.player = new Player('../../../assets/sprites/player/animation/idle.png',

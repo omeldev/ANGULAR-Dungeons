@@ -106,6 +106,10 @@ export class Gizmo extends Sprite {
   public applyGravity(delta: number): void {
     this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
     this.position.setY(this.position.getY() + this.velocity.getY() * delta);
+
+    if(this.position.getY() > GameComponent.canvasHeight){
+      this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint())
+    }
   }
 
 
