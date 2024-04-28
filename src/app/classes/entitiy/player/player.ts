@@ -21,6 +21,7 @@ export class Player extends Sprite {
   protected GRAVITY: number = 1200;
   public lastDirection: string = 'right';
   public preventInput = false;
+  public isAttacking = false;
 
   /**
    * Create a new player
@@ -120,11 +121,23 @@ export class Player extends Sprite {
     /**
      * Set the velocity to 0 on the X axis if neither a | d is pressed
      */
+    if(this.isAttacking && this.animations['attack'].frameRate - 1 === this.animations['attack'].currentFrame){
+      this.isAttacking = false;
+
+    }
+    if(isKeyPressed('space') && !this.isAttacking){
+
+      //this.isAttacking = true;
+      //this.switchSprite('attack');
+      console.log('Attack')
+    }
+
+
     if (!isKeyPressed('a') && !isKeyPressed('d')) {
       if (this.lastDirection === 'left') {
-        if(!this.preventInput)  this.switchSprite('idleLeft')
+        if(!this.preventInput && !this.isAttacking)  this.switchSprite('idleLeft')
       } else {
-        if(!this.preventInput) this.switchSprite('idleRight')
+        if(!this.preventInput&& !this.isAttacking) this.switchSprite('idleRight')
       }
 
       this.velocity.setX(0);
@@ -136,7 +149,7 @@ export class Player extends Sprite {
      */
     if (isKeyPressed('a') && !this.preventInput) {
       this.lastDirection = 'left';
-      if(!this.preventInput)  this.switchSprite('runLeft')
+      if(!this.preventInput && !this.isAttacking)  this.switchSprite('runLeft')
       if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
@@ -144,7 +157,7 @@ export class Player extends Sprite {
 
     if (isKeyPressed('d') && !this.preventInput) {
       this.lastDirection = 'right';
-      if(!this.preventInput) this.switchSprite('runRight')
+      if(!this.preventInput && !this.isAttacking) this.switchSprite('runRight')
       if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
       } else this.velocity.setX(this.MAX_SPEED);

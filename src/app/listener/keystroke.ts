@@ -29,6 +29,9 @@ export const KEYS: GameKey[] = [
   new GameKey('w', false),
   new GameKey('a', false),
   new GameKey('d', false),
+  new GameKey('space', false)
+
+
 ];
 
 export function setKeyPressed(key: string, pressed: boolean): void {
@@ -55,7 +58,7 @@ export function registerKeystrokes(): void {
     const key = event.key;
 
     if (event.code === 'Space') {
-      setKeyPressed('w', pressed);
+      setKeyPressed('space', pressed);
       return;
     }
 

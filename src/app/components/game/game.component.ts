@@ -92,7 +92,18 @@ export class GameComponent implements AfterViewInit {
           onComplete: () => {
             this.player.preventInput = false;
           }
+        },
+        attack: {
+          frameRate: 3,
+          frameBuffer: 111,
+          loop: false,
+          imageSrc: '../../../assets/sprites/player/animation/attack.png',
+          onComplete: () => {
+            this.player.isAttacking = false;
+            console.log("Attack done")
+          }
         }
+
       });
 
     this.gizmo = [];
