@@ -29,7 +29,29 @@ export class GameComponent implements AfterViewInit {
   public static hasInteracted: boolean = false;
 
   constructor() {
-    this.player = new Player('../../../assets/sprites/player/animation/idle.png');
+    this.player = new Player('../../../assets/sprites/player/animation/idle.png',
+      {
+        idleRight: {
+          frameRate: 11,
+          frameBuffer: 2,
+          loop: true
+        },
+        idleLeft: {
+          frameRate: 11,
+          frameBuffer: 2,
+          loop: true
+        },
+        runRight: {
+          frameRate: 8,
+          frameBuffer: 2,
+          loop: true
+        },
+        runLeft: {
+          frameRate: 8,
+          frameBuffer: 2,
+          loop: true
+        }
+      });
   }
 
   public static getCurrentLevel(): Level {

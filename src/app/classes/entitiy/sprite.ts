@@ -16,6 +16,7 @@ export class Sprite {
   private height: number = 0;
 
   private readonly scale: Scale;
+  public animations: any;
 
   /**
    * Create a new Sprite
@@ -24,11 +25,12 @@ export class Sprite {
    * @param funcOnLoad {() => void} function to call when the image is loaded
    * @param frameRate {number} if the image is a sprite sheet, the frame rate of the sprite sheet (1 Frame per Sprite)
    */
-  constructor(imageSrc: string, position?: Position, funcOnLoad?: () => void, frameRate?: number) {
+  constructor(imageSrc: string, position?: Position, funcOnLoad?: () => void, frameRate?: number, animations?: any) {
     this.position = position ? position : new Position(0, 0);
     this.image = new Image();
     this.imageSrc = imageSrc;
     this.frameRate = frameRate ?? 1;
+    this.animations = animations;
 
     /**
      * Set the width and height of the image

@@ -24,13 +24,14 @@ export class Player extends Sprite {
   /**
    * Create a new player
    * @param spriteSrc
+   * @param animations
    */
-  constructor(spriteSrc: string) {
+  constructor(spriteSrc: string, animations: any) {
     super(spriteSrc, new Position(356, 250), () => {
       console.log(this.image.width / 11);
 
 
-    }, 11);
+    }, 11, animations);
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
     this.hitbox = new Hitbox(this.getPosition(), 30, 54);
