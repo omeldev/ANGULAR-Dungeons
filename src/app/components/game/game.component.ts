@@ -166,12 +166,17 @@ export class GameComponent implements AfterViewInit {
   }
 
   public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
-  public volume: any = 1.0;
+  public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-    GameComponent.volume = this.volume;
+
+    GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
+
+    localStorage.setItem('volume', this.volume.toString());
+
+
     GameComponent.backgroundMusic.volume = GameComponent.volume;
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
