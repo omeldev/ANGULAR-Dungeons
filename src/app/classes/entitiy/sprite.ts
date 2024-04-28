@@ -158,7 +158,7 @@ export class Sprite {
       this.getWidth(),
       this.getHeight());
 
-    this.nextFrame(delta!);
+    if(delta) this.nextFrame(delta);
 
   }
 
