@@ -13,9 +13,13 @@ export class Door extends Sprite {
    * @param destination {Door} of the Door
    */
   constructor(position: Position, isFinalDoor?: boolean, destination?: Door) {
-    super('../../../assets/sprites/door/door.png', position);
+    super('../../../assets/sprites/door/doorOpen.png', position, () => {}, 5);
     this.isFinalDoor = false;
     this.destination = this;
+    this.frameBuffer = 7;
+    this.loop = false;
+    this.autoPlay = false;
+    console.log(this.frameRate, 'FrameRate');
   }
 
 
@@ -60,10 +64,10 @@ export class Door extends Sprite {
    * @returns {boolean} true if the player collides with the door
    */
   public checkCollision(player: Player): boolean {
-    return this.getPosition().getX() < player.getHitbox().getPosition().getX() + player.getHitbox().getWidth() &&
-      this.getPosition().getX() + this.getWidth() > player.getHitbox().getPosition().getX() &&
-      this.getPosition().getY() < player.getHitbox().getPosition().getY() + player.getHitbox().getHeight() &&
-      this.getPosition().getY() + this.getHeight() > player.getHitbox().getPosition().getY();
+    return player.getHitbox().getPosition().getX() + player.getHitbox().getWidth() <= this.getPosition().getX() + this.getWidth() &&
+      player.getHitbox().getPosition().getX() >= this.getPosition().getX() &&
+      player.getHitbox().getPosition().getY() + player.getHitbox().getHeight() >= this.getPosition().getY() &&
+      player.getHitbox().getPosition().getY() <= this.getPosition().getY() + this.getHeight();;
 
   }
 

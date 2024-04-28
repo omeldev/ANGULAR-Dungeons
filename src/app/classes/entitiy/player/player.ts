@@ -20,6 +20,7 @@ export class Player extends Sprite {
   private JUMP_STRENGTH = 600;
   private GRAVITY: number = 1200;
   private lastDirection: string = 'right';
+  public preventInput = false;
 
   /**
    * Create a new player
@@ -28,9 +29,6 @@ export class Player extends Sprite {
    */
   constructor(spriteSrc: string, animations: any) {
     super(spriteSrc, new Position(356, 250), () => {
-      console.log(this.image.width / 11);
-
-
     }, 11, animations);
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
@@ -101,6 +99,10 @@ export class Player extends Sprite {
     this.image = this.animations[name].image;
     this.frameRate = this.animations[name].frameRate;
     this.frameBuffer = this.animations[name].frameBuffer;
+    this.loop = this.animations[name].loop;
+
+    this.currentAnimation = this.animations[name];
+    this.currentAnimation.isActive = false;
   }
 
   /**
@@ -120,9 +122,9 @@ export class Player extends Sprite {
      */
     if (!isKeyPressed('a') && !isKeyPressed('d')) {
       if (this.lastDirection === 'left') {
-        this.switchSprite('idleLeft')
+        if(!this.preventInput)  this.switchSprite('idleLeft')
       } else {
-        this.switchSprite('idleRight')
+        if(!this.preventInput) this.switchSprite('idleRight')
       }
 
       this.velocity.setX(0);
@@ -132,17 +134,17 @@ export class Player extends Sprite {
     /**
      * Check if a | d is pressed, then apply acceleration
      */
-    if (isKeyPressed('a')) {
+    if (isKeyPressed('a') && !this.preventInput) {
       this.lastDirection = 'left';
-      this.switchSprite('runLeft')
+      if(!this.preventInput)  this.switchSprite('runLeft')
       if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
     }
 
-    if (isKeyPressed('d')) {
+    if (isKeyPressed('d') && !this.preventInput) {
       this.lastDirection = 'right';
-      this.switchSprite('runRight')
+      if(!this.preventInput) this.switchSprite('runRight')
       if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
       } else this.velocity.setX(this.MAX_SPEED);
@@ -184,6 +186,7 @@ export class Player extends Sprite {
      * If so, apply the jump strength
      */
     if (isKeyPressed('w') && this.getVelocity().getY() === 0) {
+      if (!this.preventInput)
       this.getVelocity().setY(-this.JUMP_STRENGTH);
     }
   }

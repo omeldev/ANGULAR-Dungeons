@@ -10,7 +10,11 @@ export class Sprite {
   public frameRate;
   public currentFrame: number = 0;
   public elapsedFrames = 0;
-  public frameBuffer = 2;
+  public frameBuffer = 4;
+
+  public loop = true;
+  public autoPlay = true;
+  public currentAnimation: any;
 
   private width: number = 0;
   private height: number = 0;
@@ -24,9 +28,10 @@ export class Sprite {
    * @param position {Position} of the Sprite
    * @param funcOnLoad {() => void} function to call when the image is loaded
    * @param frameRate {number} if the image is a sprite sheet, the frame rate of the sprite sheet (1 Frame per Sprite)
+   * @param animations
    */
   constructor(imageSrc: string, position?: Position, funcOnLoad?: () => void, frameRate?: number, animations?: any) {
-    this.position = position ? position : new Position(0, 0);
+    this.position = position ? new Position(position.getX(), position.getY()) : new Position(0, 0);
     this.image = new Image();
     this.imageSrc = imageSrc;
     this.frameRate = frameRate ?? 1;
@@ -60,13 +65,6 @@ export class Sprite {
     }
   }
 
-  public setSpriteSheet(isSpriteSheet: boolean): void {
-    this.isSpriteSheet = isSpriteSheet;
-  }
-
-  public getIsSpriteSheet(): boolean {
-    return this.isSpriteSheet;
-  }
 
   /**
    * Get the image Element of the Sprite
@@ -164,7 +162,15 @@ export class Sprite {
 
   }
 
+  public play() {
+    this.autoPlay = true;
+  }
+
   private nextFrame(delta: number): void {
+
+    if (!this.autoPlay) return;
+
+
 
     this.elapsedFrames = this.elapsedFrames + delta * 60;
 
@@ -172,13 +178,23 @@ export class Sprite {
 
       if (this.currentFrame < this.frameRate - 1) {
         this.currentFrame = this.currentFrame + 1;
-      } else {
+      } else if (this.loop) {
         this.currentFrame = 0;
+      }
+
+      if (this.currentAnimation?.onComplete) {
+
+        if(this.currentFrame >= this.frameRate - 1 && !this.currentAnimation.isActive) {
+          this.currentAnimation.onComplete();
+          this.currentAnimation.isActive = true;
+        }
       }
 
       this.elapsedFrames = 0;
 
     }
+
+
   }
 
 }

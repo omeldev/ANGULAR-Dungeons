@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
-import {registerKeystrokes} from "../../listener/keystroke";
+import {isKeyPressed, registerKeystrokes} from "../../listener/keystroke";
 import {level1, level2, level3} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
@@ -33,30 +33,40 @@ export class GameComponent implements AfterViewInit {
       {
         idleRight: {
           frameRate: 11,
-          frameBuffer: 2,
+          frameBuffer: 4,
           loop: true,
           imageSrc: '../../../assets/sprites/player/animation/idle.png'
         },
         idleLeft: {
           frameRate: 11,
-          frameBuffer: 2,
+          frameBuffer: 4,
           loop: true,
           imageSrc: '../../../assets/sprites/player/animation/idleLeft.png'
 
         },
         runRight: {
           frameRate: 8,
-          frameBuffer: 2,
+          frameBuffer: 4,
           loop: true,
           imageSrc: '../../../assets/sprites/player/animation/runRight.png'
 
         },
         runLeft: {
           frameRate: 8,
-          frameBuffer: 2,
+          frameBuffer: 4,
           loop: true,
           imageSrc: '../../../assets/sprites/player/animation/runLeft.png'
 
+        },
+        enterDoor: {
+          frameRate: 8,
+          frameBuffer: 12,
+          loop: false,
+          imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
+          onComplete: () => {
+            this.levelChange();
+            this.player.preventInput = false;
+          }
         }
       });
   }
@@ -132,20 +142,23 @@ export class GameComponent implements AfterViewInit {
       GameComponent.getCurrentLevel().drawCollisionBlocks(this.context!);
 
     }
-    GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!);
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
+    GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     this.player.update(this.context!, delta);
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
 
     this.player.drawSprite(this.context!, delta);
-    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player)) {
-      //FIXME weird behavior when giving the reference of the SpawnPoint to the player
-      //FIXME Dont give the reference, but the value
-      this.levelChange();
-    }
 
+    if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w')){
+      GameComponent.getCurrentLevel().getFinalDoor().play();
+      this.player.getVelocity().setY(0);
+      this.player.getVelocity().setX(0);
+      this.player.preventInput = true;
+      this.player.switchSprite('enterDoor');
+
+    }
 
   }
 
