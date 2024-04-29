@@ -5,7 +5,7 @@ import {Flashlight} from "../../entitiy/shaders/flashlight";
 export class Shine extends Sprite {
 
 
-  private swapBuffer = 0.5;
+  private swapBuffer;
   private swapCounter = 0;
 
   private swap = false;
@@ -17,6 +17,8 @@ export class Shine extends Sprite {
     this.frameBuffer = 5;
     this.loop = true;
     this.autoPlay = true;
+
+    this.swapBuffer = Math.random();
 
     this.getPosition().setY(this.getPosition().getY() + 32);
     this.getPosition().setX(this.getPosition().getX() + 32);
@@ -37,7 +39,7 @@ export class Shine extends Sprite {
       if (this.swap) {
         this.getPosition().setY(this.getPosition().getY() - 30 * delta!);
       } else {
-        this.getPosition().setY(this.getPosition().getY() + 30 * delta!);
+        this.getPosition().setY(this.getPosition().getY() + 30  * delta!);
       }
     }
 
