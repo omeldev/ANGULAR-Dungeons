@@ -218,7 +218,7 @@ export class GameComponent implements AfterViewInit {
     }
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
-    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!));
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     this.player.drawSprite(this.context!, delta);
 
     for(let i = 0; i < this.gizmo.length; i++){
