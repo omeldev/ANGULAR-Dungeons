@@ -29,13 +29,16 @@ export class Flashlight {
     shaderContext.fillStyle = 'rgba(0,0,0,0.5)';
     shaderContext.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
 
-    shaderContext.globalCompositeOperation = 'destination-out';
-    shaderContext.beginPath();
-    shaderContext.arc(position.getX() + 80, position.getY() + 50, radius, 0, 2 * Math.PI);
-    shaderContext.fill();
-    shaderContext.closePath();
-    shaderContext.globalCompositeOperation = 'source-over';
+    if(this.isActive){
 
+      shaderContext.globalCompositeOperation = 'destination-out';
+      shaderContext.beginPath();
+      shaderContext.arc(position.getX() + 80, position.getY() + 50, radius, 0, 2 * Math.PI);
+      shaderContext.fill();
+      shaderContext.closePath();
+      shaderContext.globalCompositeOperation = 'source-over';
+
+    }
 
     for(let shine of GameComponent.getCurrentLevel().getShines()) {
       shaderContext.globalCompositeOperation = 'destination-out';

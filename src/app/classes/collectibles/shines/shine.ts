@@ -4,7 +4,6 @@ import {Flashlight} from "../../entitiy/shaders/flashlight";
 
 export class Shine extends Sprite {
 
-  private flashLight: Flashlight;
 
   private swapBuffer = 0.5;
   private swapCounter = 0;
@@ -22,9 +21,6 @@ export class Shine extends Sprite {
     this.getPosition().setY(this.getPosition().getY() + 32);
     this.getPosition().setX(this.getPosition().getX() + 32);
 
-    this.flashLight = new Flashlight();
-    this.flashLight.drawDarkness = false;
-    this.flashLight.isActive = true;
 
 
   }
