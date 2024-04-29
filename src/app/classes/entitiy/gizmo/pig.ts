@@ -1,8 +1,11 @@
 import {Gizmo, SpeechBubble, SpeechBubbleType} from "./gizmo";
 import {GameComponent} from "../../../components/game/game.component";
+import {delay} from "rxjs";
 
 export class Pig extends Gizmo {
   protected speechBubbles: SpeechBubble[];
+  private currentBubble: number = 0;
+  private shouldSpeak: boolean = false;
 
   constructor(spriteSrc?: string, animations?: any, frameRate?: number) {
     super(spriteSrc || '../../../assets/sprites/pig/animation/idle.png', animations || {
@@ -42,11 +45,30 @@ export class Pig extends Gizmo {
       bubble.getPosition().setX(this.getPosition().getX());
     }
 
+    if(this.shouldSpeak) {
+      this.speechBubbles[this.currentBubble].show(context, delta);
+      return;
+    }
+
     if (this.collidesWithPlayer(GameComponent.getPlayer())) {
-      this.speechBubbles[1].show(context, delta);
+      if(this instanceof KingPig){
+        this.speechBubbles[0].show(context, delta);
+      }else{
+        this.speechBubbles[1].show(context, delta);
+      }
     }
 
 
+  }
+
+  onSwitch(context: CanvasRenderingContext2D, delta: number): void {
+    if(this.currentBubble === 0) {
+      this.currentBubble = 1;
+    }else {
+      this.currentBubble = 0;
+    }
+
+    this.shouldSpeak = Math.random() < 0.10;
   }
 
 
@@ -81,20 +103,6 @@ export class KingPig extends Pig {
   }
 
 
-  public override update(context: CanvasRenderingContext2D, delta: number) {
-    super.update(context, delta);
-
-    for (const bubble of this.speechBubbles) {
-      bubble.getPosition().setY(this.getPosition().getY() - 10);
-      bubble.getPosition().setX(this.getPosition().getX());
-    }
-
-    if (this.collidesWithPlayer(GameComponent.getPlayer())) {
-      this.speechBubbles[0].show(context, delta);
-    }
-
-
-  }
 
 
 }

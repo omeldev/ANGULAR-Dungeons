@@ -6,7 +6,7 @@ import {CollisionBlock} from "../../collision/CollisionBlock";
 import {GameComponent} from "../../../components/game/game.component";
 import {Player} from "../player/player";
 
-export class Gizmo extends Sprite {
+export abstract class Gizmo extends Sprite {
 
   private readonly SPEED = 100;
   private readonly JUMP_STRENGTH = 10;
@@ -59,9 +59,13 @@ export class Gizmo extends Sprite {
   public pause: number = 0;
   public pauseBuffer = 3;
 
+  public abstract onSwitch(context: CanvasRenderingContext2D, delta: number): void;
+
+
   public update(context: CanvasRenderingContext2D, delta: number): void {
 
     if (this.pause >= this.pauseBuffer) {
+      this.onSwitch(context, delta);
       this.pause = 0;
       this.pausedMovement = !this.pausedMovement;
       this.collide.left = false;
