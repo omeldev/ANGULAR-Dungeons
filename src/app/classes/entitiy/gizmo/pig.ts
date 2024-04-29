@@ -51,6 +51,12 @@ export class Pig extends Gizmo {
     }
 
     this.shouldSpeak = Math.random() < 0.10;
+
+    if(Math.random() < 0.1) {
+      const audio = new Audio('../../../assets/sound/game/pig/grunt.mp3');
+      audio.volume = GameComponent.volume;
+      audio.play().then();
+    }
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
@@ -95,6 +101,11 @@ export class KingPig extends Gizmo {
   }
 
   onSwitch(context: CanvasRenderingContext2D, delta: number): void {
+    if(Math.random() < 0.10) {
+      const audio = new Audio('../../../assets/sound/game/pig/grunt.mp3');
+      audio.volume = GameComponent.volume;
+      audio.play().then();
+    }
   }
 
 
