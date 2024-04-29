@@ -179,6 +179,9 @@ export class GameComponent implements AfterViewInit {
 
     this.isFlashlightOn = true;
     GameComponent.player.collectedShines = 0;
+    this.flashCount = 0;
+    this.flashIterations = 0;
+
 
 
   }
@@ -262,18 +265,38 @@ export class GameComponent implements AfterViewInit {
 
 
     if(GameComponent.player.collectedShines >= 3){
-      this.isFlashlightOn = false;
-    }
-    if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 100);
+      if(this.flashIterations < 200) {
+
+
+        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta,250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5 );
+        if (this.flashCount < this.flashBuffer) {
+          this.flashCount += delta;
+
+        } else {
+          this.flashCount = 0;
+          this.flashIterations++;
+          if(this.flashIterations == 200){
+            this.flashIterations = 0;
+            this.flashCount = 0;
+            this.isFlashlightOn = false;
+            GameComponent.player.collectedShines = 0;
+            console.log("Flashlight off")
+          }
+        }
+      }
+      return;
+    }else if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 50);
 
     if(isKeyPressed('f') && !(this.flashLight.cooldown > 0)){
       this.flashLight.toggle();
     }
 
-    for(let i = 0; i < GameComponent.getCurrentLevel().getShines().length; i++){
-    }
 
   }
+
+  private flashCount = 0;
+  private flashBuffer = 0.005;
+  private flashIterations = 0;
 
 
 }
