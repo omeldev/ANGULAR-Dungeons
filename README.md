@@ -1,27 +1,20 @@
 # Dungeons the Game
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.1.
+## Description
+Dungeons the Game is written with TypeScript and Angular.
+You can explore the dungeons, fight monsters, and collect coins and treasures.
+You also need to collect keys to open doors and find the exit to the next level.
 
-## Development server
+## How to play
+# Move
+- A, ArrowLeft: Move left
+- D, ArrowRight: Move right
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+# Enter Door
+- W, ArrowUp: in front of the door
 
-## Code scaffolding
+# Jump
+- W, ArrowUp: Jump
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# Attack
+- Space: Attack

@@ -3,12 +3,14 @@ import {Position} from "../entitiy/position";
 import {Sprite} from "../entitiy/sprite";
 import {Door} from "../door/door";
 import {Coin} from "../coin/coin";
+import {Key} from "../collectibles/key/key";
 
 export class Level extends Sprite {
   private collisions: number[];
   private readonly background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
   private readonly coins: Coin[] = [];
+  private readonly key: Key[] = [];
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
 
@@ -22,7 +24,7 @@ export class Level extends Sprite {
    * @param otherDoors {Door[]} of the Level
    * @param coins
    */
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[]) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
@@ -36,6 +38,10 @@ export class Level extends Sprite {
 
       if (coins) {
         this.setCoins(coins);
+      }
+
+      if (key) {
+        this.setKey(key);
       }
 
     });
@@ -63,12 +69,35 @@ export class Level extends Sprite {
       rows.push(coins.slice(i, rowSize + i));
     }
 
+
     rows.forEach(((row, y) => {
       row.forEach((symbol, x) => {
         if (symbol === 293) {
           const coin = new Coin(new Position(x * 64, (y + 1.5) * 64));
 
           this.coins.push(coin);
+        }
+      });
+    }));
+
+  }
+
+  public setKey(key: number[]) {
+    const rows: number[][] = [];
+    const rowSize = this.getWidth() / 64;
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < key.length; i += rowSize) {
+      rows.push(key.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const key = new Key(new Position(x * 64, (y + 0.5) * 64));
+          this.key.push(key);
         }
       });
     }));
@@ -131,6 +160,10 @@ export class Level extends Sprite {
 
   public getCoins(): Coin[] {
     return this.coins;
+  }
+
+  public getKey(): Key[] {
+    return this.key;
   }
 
   public drawCoins(context: CanvasRenderingContext2D): void {

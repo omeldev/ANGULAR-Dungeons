@@ -7,6 +7,7 @@ import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
 import {Hitbox} from "../../collision/hitbox";
+import {Key} from "../../collectibles/key/key";
 
 export class Player extends Sprite {
   private readonly velocity: Velocity;
@@ -22,6 +23,7 @@ export class Player extends Sprite {
   public lastDirection: string = 'right';
   public preventInput = false;
   public isAttacking = false;
+  public collectedKeys: number = 0;
 
   /**
    * Create a new player
@@ -231,6 +233,15 @@ export class Player extends Sprite {
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
     }
 
+    const keys = GameComponent.getCurrentLevel().getKey();
+    for(let i = 0; i < keys.length; i++){
+      if(this.checkForKeyCollision(keys[i])){
+        GameComponent.getCurrentLevel().getKey().splice(i, 1);
+        this.collectedKeys++;
+        break;
+      }
+    }
+
     const coins = GameComponent.getCurrentLevel().getCoins();
     for (let i = 0; i < coins.length; i++) {
       if (this.checkForCoinCollision(coins[i])) {
@@ -300,6 +311,13 @@ export class Player extends Sprite {
       this.hitbox.getPosition().getX() + this.hitbox.getWidth() > coin.getPosition().getX() &&
       this.hitbox.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
       this.hitbox.getPosition().getY() + this.hitbox.getHeight() > coin.getPosition().getY();
+  }
+
+  public checkForKeyCollision(key: Key): boolean {
+    return this.hitbox.getPosition().getX() < key.getPosition().getX() + key.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > key.getPosition().getX() &&
+      this.hitbox.getPosition().getY() < key.getPosition().getY() + key.getHeight() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > key.getPosition().getY();
   }
 
 

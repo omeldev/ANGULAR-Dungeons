@@ -218,14 +218,15 @@ export class GameComponent implements AfterViewInit {
     }
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
-
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!));
     this.player.drawSprite(this.context!, delta);
 
     for(let i = 0; i < this.gizmo.length; i++){
       this.gizmo[i].drawSprite(this.context!, delta);
     }
-    if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w')){
+    if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w') && this.player.collectedKeys >= 1){
       GameComponent.getCurrentLevel().getFinalDoor().play();
+      this.player.collectedKeys -= 1;
       this.player.getVelocity().setY(0);
       this.player.getVelocity().setX(0);
       this.player.preventInput = true;
