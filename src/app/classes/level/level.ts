@@ -5,6 +5,7 @@ import {Door} from "../door/door";
 import {Coin} from "../coin/coin";
 import {Key} from "../collectibles/key/key";
 import {Shine} from "../collectibles/shines/shine";
+import {Ladder} from "../collision/ladderblock";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -15,6 +16,7 @@ export class Level extends Sprite {
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
   private shine: Shine[] = [];
+  private ladders: Ladder [] = [];
 
 
   /**
@@ -26,11 +28,11 @@ export class Level extends Sprite {
    * @param otherDoors {Door[]} of the Level
    * @param coins
    */
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[]) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[], ladders?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
-          if (symbol === 292) {
+          if (symbol) {
             const block = new CollisionBlock(new Position(x * 64, y * 64));
             this.collisionBlocks.push(block);
           }
@@ -48,6 +50,10 @@ export class Level extends Sprite {
 
       if(shine) {
         this.setShine(shine);
+      }
+
+      if(ladders) {
+        this.setLadders(ladders);
       }
 
     });
@@ -130,6 +136,8 @@ export class Level extends Sprite {
 
     return rows;
   }
+
+
 
   /**
    * Get the spawn point of the Level
@@ -216,6 +224,35 @@ export class Level extends Sprite {
       });
     }));
 
+
+  }
+
+  public getLadders(): Ladder[] {
+    return this.ladders;
+  }
+
+  private setLadders(ladders: number[]) {
+
+    const rows: number[][] = [];
+
+    const rowSize = this.getWidth() / 64;
+
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < ladders.length; i += rowSize) {
+      rows.push(ladders.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const ladder = new Ladder(new Position(x * 64, y * 64), 64, 64);
+          this.ladders.push(ladder);
+        }
+      });
+    }));
 
   }
 }

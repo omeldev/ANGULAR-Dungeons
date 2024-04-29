@@ -8,6 +8,8 @@ import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
 import {Hitbox} from "../../collision/hitbox";
 import {Key} from "../../collectibles/key/key";
+import {Shine} from "../../collectibles/shines/shine";
+import {Ladder} from "../../collision/ladderblock";
 
 export class Player extends Sprite {
   private readonly velocity: Velocity;
@@ -124,11 +126,11 @@ export class Player extends Sprite {
     /**
      * Set the velocity to 0 on the X axis if neither a | d is pressed
      */
-    if(this.isAttacking && this.animations['attack'].frameRate - 1 === this.animations['attack'].currentFrame){
+    if (this.isAttacking && this.animations['attack'].frameRate - 1 === this.animations['attack'].currentFrame) {
       this.isAttacking = false;
 
     }
-    if(isKeyPressed('space') && !this.isAttacking){
+    if (isKeyPressed('space') && !this.isAttacking) {
 
       //this.isAttacking = true;
       //this.switchSprite('attack');
@@ -138,9 +140,9 @@ export class Player extends Sprite {
 
     if (!isKeyPressed('a') && !isKeyPressed('d')) {
       if (this.lastDirection === 'left') {
-        if(!this.preventInput && !this.isAttacking)  this.switchSprite('idleLeft')
+        if (!this.preventInput && !this.isAttacking) this.switchSprite('idleLeft')
       } else {
-        if(!this.preventInput&& !this.isAttacking) this.switchSprite('idleRight')
+        if (!this.preventInput && !this.isAttacking) this.switchSprite('idleRight')
       }
 
       this.velocity.setX(0);
@@ -152,7 +154,7 @@ export class Player extends Sprite {
      */
     if (isKeyPressed('a') && !this.preventInput) {
       this.lastDirection = 'left';
-      if(!this.preventInput && !this.isAttacking)  this.switchSprite('runLeft')
+      if (!this.preventInput && !this.isAttacking) this.switchSprite('runLeft')
       if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
@@ -160,7 +162,7 @@ export class Player extends Sprite {
 
     if (isKeyPressed('d') && !this.preventInput) {
       this.lastDirection = 'right';
-      if(!this.preventInput && !this.isAttacking) this.switchSprite('runRight')
+      if (!this.preventInput && !this.isAttacking) this.switchSprite('runRight')
       if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
       } else this.velocity.setX(this.MAX_SPEED);
@@ -203,7 +205,7 @@ export class Player extends Sprite {
      */
     if (isKeyPressed('w') && this.getVelocity().getY() === 0) {
       if (!this.preventInput)
-      this.getVelocity().setY(-this.JUMP_STRENGTH);
+        this.getVelocity().setY(-this.JUMP_STRENGTH);
     }
   }
 
@@ -215,6 +217,8 @@ export class Player extends Sprite {
 
   }
 
+  public isOnLadder = false;
+
   /**
    * Apply gravity to the player
    * Formula Velocity Y: Vy = Vy + g * Δ
@@ -222,9 +226,27 @@ export class Player extends Sprite {
    * @param delta {number} time since the last frame
    */
   public applyGravity(delta: number): void {
-    this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
-    this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
 
+    for (let ladder of GameComponent.getCurrentLevel().getLadders()) {
+      if (ladder.checkCollision(GameComponent.player) && isKeyPressed('w')) {
+
+        this.isOnLadder = true;
+        this.velocity.setY(-100);
+        this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);        this.getVelocity().setX(0);
+
+      } else {
+        this.isOnLadder = false;
+      }
+    }
+
+
+
+    if(!this.isOnLadder) {
+
+      this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
+      this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
+
+    }
     /**
      * Check if the player is below the canvas
      * If so, set the velocity to 0 and set the player to the spawn point
@@ -340,6 +362,21 @@ export class Player extends Sprite {
       this.hitbox.getPosition().getX() + this.hitbox.getWidth() > key.getPosition().getX() &&
       this.hitbox.getPosition().getY() < key.getPosition().getY() + key.getHeight() &&
       this.hitbox.getPosition().getY() + this.hitbox.getHeight() > key.getPosition().getY();
+  }
+
+  public checkForShineCollision(shine: Shine): boolean {
+    return this.hitbox.getPosition().getX() < shine.getPosition().getX() + shine.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > shine.getPosition().getX() &&
+      this.hitbox.getPosition().getY() < shine.getPosition().getY() + shine.getHeight() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > shine.getPosition().getY();
+  }
+
+  public checkForLadderCollision(ladder: Ladder): boolean {
+    return this.hitbox.getPosition().getX() < ladder.getPosition().getX() + ladder.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > ladder.getPosition().getX() &&
+      this.hitbox.getPosition().getY() < ladder.getPosition().getY() + ladder.getHeight() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > ladder.getPosition().getY();
+
   }
 
 

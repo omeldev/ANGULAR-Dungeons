@@ -261,9 +261,6 @@ export class GameComponent implements AfterViewInit {
 
 
 
-
-
-
     if(GameComponent.player.collectedShines >= 3){
       if(this.flashIterations < 200) {
 
