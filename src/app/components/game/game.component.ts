@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes} from "../../listener/keystroke";
 import {level1, level2, level3} from "../../levels/levels";
@@ -13,6 +13,15 @@ import {Animation, AnimationSet} from "../../classes/animation";
   styleUrl: './game.component.scss'
 })
 export class GameComponent implements AfterViewInit {
+
+  @HostListener('document:visibilitychange', ['$event'])
+  onVisibilityChange(event: Event): void {
+    if (document.visibilityState === 'hidden') {
+    } else {
+      window.location.reload();
+    }
+  }
+
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static productionMode: boolean = true;
@@ -78,7 +87,7 @@ export class GameComponent implements AfterViewInit {
           onComplete: () => {
             this.levelChange();
             this.player.preventInput = false;
-            for(let i = 0; i < this.gizmo.length; i++){
+            for (let i = 0; i < this.gizmo.length; i++) {
               this.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
             }
@@ -108,7 +117,7 @@ export class GameComponent implements AfterViewInit {
 
     this.gizmo = [];
 
-    for(let i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
       this.gizmo.push(new Gizmo('../../../assets/sprites/pig/animation/runLeft.png',
         {
           idle: {
@@ -213,7 +222,7 @@ export class GameComponent implements AfterViewInit {
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     this.player.update(this.context!, delta);
-    for(let i = 0; i < this.gizmo.length; i++){
+    for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].update(this.context!, delta);
     }
     this.oldFrameTime = performance.now();
@@ -221,10 +230,10 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     this.player.drawSprite(this.context!, delta);
 
-    for(let i = 0; i < this.gizmo.length; i++){
+    for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].drawSprite(this.context!, delta);
     }
-    if(GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w') && this.player.collectedKeys >= 1){
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w') && this.player.collectedKeys >= 1) {
       GameComponent.getCurrentLevel().getFinalDoor().play();
       this.player.collectedKeys -= 1;
       this.player.getVelocity().setY(0);
