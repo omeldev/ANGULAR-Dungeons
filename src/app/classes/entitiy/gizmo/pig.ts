@@ -32,19 +32,17 @@ export class Pig extends Gizmo {
     ];
 
 
-
-
   }
 
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
 
-    for(const bubble of this.speechBubbles){
+    for (const bubble of this.speechBubbles) {
       bubble.getPosition().setY(this.getPosition().getY() - 10);
       bubble.getPosition().setX(this.getPosition().getX());
     }
 
-    if(this.collidesWithPlayer(GameComponent.getPlayer())){
+    if (this.collidesWithPlayer(GameComponent.getPlayer())) {
       this.speechBubbles[1].show(context, delta);
     }
 
@@ -52,11 +50,9 @@ export class Pig extends Gizmo {
   }
 
 
-
 }
 
 export class KingPig extends Pig {
-
 
 
   constructor() {
@@ -82,19 +78,18 @@ export class KingPig extends Pig {
     }, 12);
 
 
-
   }
 
 
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
 
-    for(const bubble of this.speechBubbles){
+    for (const bubble of this.speechBubbles) {
       bubble.getPosition().setY(this.getPosition().getY() - 10);
       bubble.getPosition().setX(this.getPosition().getX());
     }
 
-    if(this.collidesWithPlayer(GameComponent.getPlayer())){
+    if (this.collidesWithPlayer(GameComponent.getPlayer())) {
       this.speechBubbles[0].show(context, delta);
     }
 
