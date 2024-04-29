@@ -46,6 +46,13 @@ export class GameComponent implements AfterViewInit {
 
   public flashLight = new Flashlight();
 
+
+  public isFlashlightOn: boolean = true;
+
+  public switchFlashlight(): void {
+    this.isFlashlightOn = !this.isFlashlightOn;
+  }
+
   public static getPlayer(): Player {
     return GameComponent.player;
   }
@@ -244,8 +251,16 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    this.flashLight.draw(this.context!, GameComponent.player);
 
+
+
+
+
+    if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player, delta);
+
+    if(isKeyPressed('f') && !(this.flashLight.cooldown > 0)){
+      this.flashLight.toggle();
+    }
 
   }
 

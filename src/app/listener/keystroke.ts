@@ -29,7 +29,8 @@ export const KEYS: GameKey[] = [
   new GameKey('w', false),
   new GameKey('a', false),
   new GameKey('d', false),
-  new GameKey('space', false)
+  new GameKey('space', false),
+  new GameKey('f', false)
 
 
 ];
@@ -46,7 +47,7 @@ export function isKeyPressed(key: string): boolean {
 
 export function registerKeystrokes(): void {
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
-    if(!GameComponent.hasInteracted){
+    if (!GameComponent.hasInteracted) {
       GameComponent.hasInteracted = true;
 
       GameComponent.backgroundMusic.loop = true;
@@ -74,6 +75,9 @@ export function registerKeystrokes(): void {
       case 'd':
       case 'ArrowRight':
         setKeyPressed('d', pressed);
+        break;
+      case 'f':
+        setKeyPressed('f', pressed);
         break;
 
       default:
