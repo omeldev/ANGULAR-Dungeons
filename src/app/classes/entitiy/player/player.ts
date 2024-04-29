@@ -272,11 +272,12 @@ export class Player extends Sprite {
         this.collectedShines++;
 
 
-        setTimeout(() => {
-          const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
+          const audio = new Audio('../../../assets/sound/game/shine/collect.mp3');
           audio.volume = GameComponent.volume;
+          audio.playbackRate = 4;
+
           audio.play().then();
-        }, 20);
+
         break;
       }
     }
