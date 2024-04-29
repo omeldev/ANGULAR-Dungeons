@@ -29,6 +29,8 @@ export class Pig extends Gizmo {
       }
     }, frameRate || 11);
 
+    this.getScale().setScale(1)
+
 
 
 
@@ -44,11 +46,8 @@ export class Pig extends Gizmo {
   }
 
   onSwitch(context: CanvasRenderingContext2D, delta: number): void {
-    if(this.currentBubble === 0) {
-      this.currentBubble = 1;
-    }else {
-      this.currentBubble = 0;
-    }
+
+    this.currentBubble = Math.floor(Math.random() * this.speechBubbles.length);
 
     this.shouldSpeak = Math.random() < 0.10;
 
@@ -96,7 +95,7 @@ export class KingPig extends Gizmo {
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
-    
+
     this.speechBubbles[0].show(context, delta);
 
 

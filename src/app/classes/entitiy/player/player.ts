@@ -24,6 +24,7 @@ export class Player extends Sprite {
   public preventInput = false;
   public isAttacking = false;
   public collectedKeys: number = 0;
+  collectedShines: number = 0;
 
   /**
    * Create a new player
@@ -255,6 +256,23 @@ export class Player extends Sprite {
 
         setTimeout(() => {
 
+          const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
+          audio.volume = GameComponent.volume;
+          audio.play().then();
+        }, 20);
+        break;
+      }
+    }
+
+    const shines = GameComponent.getCurrentLevel().getShines();
+    for (let i = 0; i < shines.length; i++) {
+      if (this.checkForCoinCollision(shines[i])) {
+        GameComponent.getCurrentLevel().getShines().splice(i, 1);
+
+        this.collectedShines++;
+
+
+        setTimeout(() => {
           const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
           audio.volume = GameComponent.volume;
           audio.play().then();

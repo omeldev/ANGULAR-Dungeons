@@ -106,7 +106,7 @@ export class Sprite {
    * @returns {number} width
    */
   public getWidth(): number {
-    return (this.width * this.getScale().getScale());
+    return this.width;
   }
 
   /**
@@ -114,7 +114,7 @@ export class Sprite {
    * @returns {number} height
    */
   public getHeight(): number {
-    return this.height * this.getScale().getScale();
+    return this.height;
   }
 
   public setWidth(width: number): void {
@@ -155,10 +155,12 @@ export class Sprite {
       cropbox.height,
       this.position.getX(),
       this.position.getY(),
-      this.getWidth(),
-      this.getHeight());
+      this.getWidth() * this.getScale().getScale(),
+      this.getHeight() * this.getScale().getScale());
 
     if(delta) this.nextFrame(delta);
+
+
 
   }
 

@@ -39,6 +39,7 @@ export abstract class Gizmo extends Sprite {
     this.speechBubbles = [
       new SpeechBubble(SpeechBubbleType.SHOUT, this.getPosition(), 3, 8),
       new SpeechBubble(SpeechBubbleType.HELLO, this.getPosition(), 3, 8),
+      new SpeechBubble(SpeechBubbleType.HI, this.getPosition(), 3, 8),
     ];
   }
 
@@ -132,6 +133,7 @@ export abstract class Gizmo extends Sprite {
 
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
     this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
+
 
 
   }
@@ -246,6 +248,8 @@ export class SpeechBubble extends Sprite {
       this.loop = true;
       this.autoPlay = true;
 
+      this.getScale().setScale(1.5)
+
 
     }
 
@@ -261,7 +265,8 @@ export class SpeechBubble extends Sprite {
 
 export enum SpeechBubbleType {
   SHOUT = '../../../assets/sprites/messagebox/!!!In.png',
-  HELLO = '../../../assets/sprites/messagebox/hello.png'
+  HELLO = '../../../assets/sprites/messagebox/hello.png',
+  HI = '../../../assets/sprites/messagebox/hi.png',
 }
 
 export enum Direction {

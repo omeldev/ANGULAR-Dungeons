@@ -4,6 +4,7 @@ import {Sprite} from "../entitiy/sprite";
 import {Door} from "../door/door";
 import {Coin} from "../coin/coin";
 import {Key} from "../collectibles/key/key";
+import {Shine} from "../collectibles/shines/shine";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -13,6 +14,7 @@ export class Level extends Sprite {
   private readonly key: Key[] = [];
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
+  private shine: Shine[] = [];
 
 
   /**
@@ -24,7 +26,7 @@ export class Level extends Sprite {
    * @param otherDoors {Door[]} of the Level
    * @param coins
    */
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[]) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
@@ -42,6 +44,10 @@ export class Level extends Sprite {
 
       if (key) {
         this.setKey(key);
+      }
+
+      if(shine) {
+        this.setShine(shine);
       }
 
     });
@@ -166,6 +172,10 @@ export class Level extends Sprite {
     return this.key;
   }
 
+  public getShines(): Shine[] {
+    return this.shine;
+  }
+
   public drawCoins(context: CanvasRenderingContext2D): void {
     this.coins.forEach(coin => coin.drawSprite(context));
   }
@@ -186,4 +196,26 @@ export class Level extends Sprite {
     return this.finalDoor;
   }
 
+  private setShine(shine: number[]) {
+    const rows: number[][] = [];
+    const rowSize = this.getWidth() / 64;
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < shine.length; i += rowSize) {
+      rows.push(shine.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const shine = new Shine(new Position(x * 64, (y - 0.5) * 64));
+          this.shine.push(shine);
+        }
+      });
+    }));
+
+
+  }
 }

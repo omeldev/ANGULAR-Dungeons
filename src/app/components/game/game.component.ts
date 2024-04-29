@@ -177,6 +177,10 @@ export class GameComponent implements AfterViewInit {
 
     GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
+    this.isFlashlightOn = true;
+    GameComponent.player.collectedShines = 0;
+
+
   }
 
   private initializeCanvas() {
@@ -228,6 +232,7 @@ export class GameComponent implements AfterViewInit {
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
+    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
 
     for (let i = 0; i < this.gizmo.length; i++) {
@@ -256,10 +261,17 @@ export class GameComponent implements AfterViewInit {
 
 
 
-    if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player, delta);
+    if(GameComponent.player.collectedShines >= 3){
+      this.isFlashlightOn = false;
+    }
+    if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 100);
 
     if(isKeyPressed('f') && !(this.flashLight.cooldown > 0)){
       this.flashLight.toggle();
+    }
+
+    for(let i = 0; i < GameComponent.getCurrentLevel().getShines().length; i++){
+      GameComponent.getCurrentLevel().getShines()[i].drawFlashlight(this.context!, delta);
     }
 
   }
