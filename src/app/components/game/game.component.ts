@@ -6,6 +6,9 @@ import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
 import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
 import {Animation, AnimationSet} from "../../classes/animation";
+import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
+import {Sprite} from "../../classes/entitiy/sprite";
+import {Position} from "../../classes/entitiy/position";
 
 @Component({
   selector: 'app-game',
@@ -33,12 +36,16 @@ export class GameComponent implements AfterViewInit {
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
-  private readonly player: Player;
+  public static player: Player;
   private oldFrameTime: number = 1;
   public static volume: number = 1.0;
 
   public static hasInteracted: boolean = false;
-  public gizmo: Gizmo[];
+  public gizmo: Pig[];
+
+  public static getPlayer(): Player {
+    return GameComponent.player;
+  }
 
   public gizmoAnimations = new AnimationSet([
     new Animation('idle', '../../../assets/sprites/pig/animation/idle.png', 11, 4, true, true, () => {
@@ -50,7 +57,7 @@ export class GameComponent implements AfterViewInit {
   ]);
 
   constructor() {
-    this.player = new Player('../../../assets/sprites/player/animation/idle.png',
+    GameComponent.player = new Player('../../../assets/sprites/player/animation/idle.png',
       {
         idleRight: {
           frameRate: 11,
@@ -86,7 +93,7 @@ export class GameComponent implements AfterViewInit {
           imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
           onComplete: () => {
             this.levelChange();
-            this.player.preventInput = false;
+            GameComponent.player.preventInput = false;
             for (let i = 0; i < this.gizmo.length; i++) {
               this.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
@@ -99,7 +106,7 @@ export class GameComponent implements AfterViewInit {
           loop: false,
           imageSrc: '../../../assets/sprites/player/animation/leaveDoor.png',
           onComplete: () => {
-            this.player.preventInput = false;
+            GameComponent.player.preventInput = false;
           }
         },
         attack: {
@@ -108,7 +115,7 @@ export class GameComponent implements AfterViewInit {
           loop: false,
           imageSrc: '../../../assets/sprites/player/animation/attack.png',
           onComplete: () => {
-            this.player.isAttacking = false;
+            GameComponent.player.isAttacking = false;
             console.log("Attack done")
           }
         }
@@ -118,27 +125,10 @@ export class GameComponent implements AfterViewInit {
     this.gizmo = [];
 
     for (let i = 0; i < 5; i++) {
-      this.gizmo.push(new Gizmo('../../../assets/sprites/pig/animation/runLeft.png',
-        {
-          idle: {
-            frameRate: 11,
-            frameBuffer: 4,
-            loop: true,
-            imageSrc: '../../../assets/sprites/pig/animation/idle.png'
-          },
-          runLeft: {
-            frameRate: 6,
-            frameBuffer: 4,
-            loop: true,
-            imageSrc: '../../../assets/sprites/pig/animation/runLeft.png'
-          },
-          runRight: {
-            frameRate: 6,
-            frameBuffer: 4,
-            loop: true,
-            imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
-          }
-        }))
+      this.gizmo.push(new Pig())
+      if(i == 2){
+        this.gizmo.push(new KingPig())
+      }
     }
   }
 
@@ -175,7 +165,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasHeight = GameComponent.getCurrentLevel().getBackground().getHeight();
     GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
 
-    this.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+    GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
   }
 
@@ -199,6 +189,8 @@ export class GameComponent implements AfterViewInit {
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
 
+  protected messageBox = new Sprite("../../../assets/sprites/messagebox/!!!In.png", new Position(0, 0), () => {}, 3);
+
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
@@ -221,25 +213,27 @@ export class GameComponent implements AfterViewInit {
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
-    this.player.update(this.context!, delta);
+    GameComponent.player.update(this.context!, delta);
+
+    this.oldFrameTime = performance.now();
+    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
+    GameComponent.player.drawSprite(this.context!, delta);
+
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].update(this.context!, delta);
     }
-    this.oldFrameTime = performance.now();
-    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!));
-    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
-    this.player.drawSprite(this.context!, delta);
 
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].drawSprite(this.context!, delta);
     }
-    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(this.player) && isKeyPressed('w') && this.player.collectedKeys >= 1) {
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
       GameComponent.getCurrentLevel().getFinalDoor().play();
-      this.player.collectedKeys -= 1;
-      this.player.getVelocity().setY(0);
-      this.player.getVelocity().setX(0);
-      this.player.preventInput = true;
-      this.player.switchSprite('enterDoor');
+      GameComponent.player.collectedKeys -= 1;
+      GameComponent.player.getVelocity().setY(0);
+      GameComponent.player.getVelocity().setX(0);
+      GameComponent.player.preventInput = true;
+      GameComponent.player.switchSprite('enterDoor');
 
     }
 

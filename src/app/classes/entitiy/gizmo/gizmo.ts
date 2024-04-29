@@ -4,6 +4,7 @@ import {Position} from "../position";
 import {Velocity} from "../velocity";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {GameComponent} from "../../../components/game/game.component";
+import {Player} from "../player/player";
 
 export class Gizmo extends Sprite {
 
@@ -13,7 +14,7 @@ export class Gizmo extends Sprite {
   private readonly GRAVITY = 250;
   private readonly hitbox;
   private readonly velocity = new Velocity(0, 0);
-  private pausedMovement = false;
+  private pausedMovement = true;
   private lastDirection: Direction = Direction.RIGHT;
 
 
@@ -35,6 +36,13 @@ export class Gizmo extends Sprite {
     this.hitbox = new Hitbox(this.getPosition(), this.getWidth(), this.getHeight());
   }
 
+  public collidesWithPlayer(player: Player): boolean {
+    return this.hitbox.getPosition().getX() <= player.getHitbox().getPosition().getX() + player.getHitbox().getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() >= player.getHitbox().getPosition().getX() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() >= player.getHitbox().getPosition().getY() &&
+      this.hitbox.getPosition().getY() <= player.getHitbox().getPosition().getY() + player.getHitbox().getHeight();
+  }
+
   public switchSprite(name: string) {
     if (this.image === this.animations[name].image) return;
     this.currentFrame = 0;
@@ -52,7 +60,6 @@ export class Gizmo extends Sprite {
   public pauseBuffer = 3;
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
-
 
     if (this.pause >= this.pauseBuffer) {
       this.pause = 0;
@@ -210,6 +217,32 @@ export class Gizmo extends Sprite {
 
   }
 
+}
+
+export class SpeechBubble extends Sprite {
+
+    constructor(bubbleType: SpeechBubbleType, position: Position, frameRate: number, frameBuffer: number) {
+      super(bubbleType.toString(), new Position(position.getX(), position.getY()), () => {}, frameRate);
+      this.frameBuffer = frameBuffer;
+      this.loop = true;
+      this.autoPlay = true;
+
+
+    }
+
+    public show(context: CanvasRenderingContext2D, delta: number): void {
+
+      context.save();
+      this.drawSprite(context, delta);
+      context.restore();
+    }
+
+
+}
+
+export enum SpeechBubbleType {
+  SHOUT = '../../../assets/sprites/messagebox/!!!In.png',
+  HELLO = '../../../assets/sprites/messagebox/hello.png'
 }
 
 export enum Direction {

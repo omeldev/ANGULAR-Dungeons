@@ -237,6 +237,9 @@ export class Player extends Sprite {
     for(let i = 0; i < keys.length; i++){
       if(this.checkForKeyCollision(keys[i])){
         GameComponent.getCurrentLevel().getKey().splice(i, 1);
+          const audio = new Audio('../../../assets/sound/game/key/pickupKey.mp3');
+          audio.volume = GameComponent.volume;
+          audio.play().then();
         this.collectedKeys++;
         break;
       }
