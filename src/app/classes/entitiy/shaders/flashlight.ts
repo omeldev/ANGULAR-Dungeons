@@ -16,22 +16,40 @@ export class Flashlight {
     }
   }
 
+  public shaderCanvas = document.createElement('canvas');
   public draw(context: CanvasRenderingContext2D, position: Position, delta: number, radius: number = 100): void {
     this.updateCooldown(delta)
-    const offsetX = 80;
-    const offsetY = 50;
-    const gradient = context.createRadialGradient(
-      position.getX() + offsetX, position.getY() + offsetY, 0,
-      position.getX() + offsetX, position.getY() + offsetY, radius
-    );
-    if (this.isActive) {
-      gradient.addColorStop(0, 'rgba(0,0,0,0)'); // Transparent center
+
+
+    this.shaderCanvas.width = GameComponent.canvasWidth;
+    this.shaderCanvas.height = GameComponent.canvasHeight;
+
+    const shaderContext = this.shaderCanvas.getContext('2d')!;
+
+    shaderContext.fillStyle = 'rgba(0,0,0,0.5)';
+    shaderContext.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
+
+    shaderContext.globalCompositeOperation = 'destination-out';
+    shaderContext.beginPath();
+    shaderContext.arc(position.getX() + 80, position.getY() + 50, radius, 0, 2 * Math.PI);
+    shaderContext.fill();
+    shaderContext.closePath();
+    shaderContext.globalCompositeOperation = 'source-over';
+
+
+    for(let shine of GameComponent.getCurrentLevel().getShines()) {
+      shaderContext.globalCompositeOperation = 'destination-out';
+      shaderContext.beginPath();
+      shaderContext.arc(shine.getPosition().getX() + 20, shine.getPosition().getY(), 100, 0, 2 * Math.PI);
+      shaderContext.fill();
+      shaderContext.closePath();
+      shaderContext.globalCompositeOperation = 'source-over';
     }
-    if(this.drawDarkness) {
-      gradient.addColorStop(1, 'rgba(0,0,0,0.7)'); // Opaque edges
-    }
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
+
+    context.drawImage(this.shaderCanvas, 0, 0);
+
+
+
 
 
   }

@@ -271,7 +271,6 @@ export class GameComponent implements AfterViewInit {
     }
 
     for(let i = 0; i < GameComponent.getCurrentLevel().getShines().length; i++){
-      GameComponent.getCurrentLevel().getShines()[i].drawFlashlight(this.context!, delta);
     }
 
   }

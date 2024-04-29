@@ -32,23 +32,19 @@ export class Shine extends Sprite {
   public override drawSprite(context: CanvasRenderingContext2D, delta?: number) {
     super.drawSprite(context, delta);
 
+
     if (this.swapCounter > this.swapBuffer) {
       this.swapCounter = 0;
       this.swap = !this.swap;
     } else {
       this.swapCounter += delta!;
       if (this.swap) {
-        this.getPosition().setY(this.getPosition().getY() - 10 * delta!);
+        this.getPosition().setY(this.getPosition().getY() - 30 * delta!);
       } else {
-        this.getPosition().setY(this.getPosition().getY() + 10 * delta!);
+        this.getPosition().setY(this.getPosition().getY() + 30 * delta!);
       }
     }
 
-
-  }
-
-  public drawFlashlight(context: CanvasRenderingContext2D, delta: number) {
-    this.flashLight.draw(context, this.getPosition(), delta!);
   }
 
 }
