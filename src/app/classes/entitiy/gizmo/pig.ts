@@ -5,7 +5,7 @@ import {delay} from "rxjs";
 export class Pig extends Gizmo {
 
   private currentBubble: number = 0;
-  private shouldSpeak: boolean = false;
+  protected shouldSpeak: boolean = false;
 
   constructor(spriteSrc?: string, animations?: any, frameRate?: number) {
     super(spriteSrc || '../../../assets/sprites/pig/animation/idle.png', animations || {
@@ -60,6 +60,7 @@ export class Pig extends Gizmo {
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
+    if(this.shouldSpeak) return;
     this.speechBubbles[this.currentBubble].show(context, delta);
   }
 
@@ -95,6 +96,7 @@ export class KingPig extends Gizmo {
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
+    
     this.speechBubbles[0].show(context, delta);
 
 

@@ -9,6 +9,7 @@ import {Animation, AnimationSet} from "../../classes/animation";
 import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
+import {Flashlight} from "../../classes/entitiy/shaders/flashlight";
 
 @Component({
   selector: 'app-game',
@@ -42,6 +43,8 @@ export class GameComponent implements AfterViewInit {
 
   public static hasInteracted: boolean = false;
   public gizmo: Gizmo[];
+
+  public flashLight = new Flashlight();
 
   public static getPlayer(): Player {
     return GameComponent.player;
@@ -229,6 +232,10 @@ export class GameComponent implements AfterViewInit {
     }
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
       GameComponent.getCurrentLevel().getFinalDoor().play();
+      const audio = new Audio('../../../assets/sound/game/door/open.mp3');
+      audio.volume = GameComponent.volume;
+      audio.playbackRate = 0.5;
+      audio.play().then();
       GameComponent.player.collectedKeys -= 1;
       GameComponent.player.getVelocity().setY(0);
       GameComponent.player.getVelocity().setX(0);
@@ -236,6 +243,9 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.switchSprite('enterDoor');
 
     }
+
+    this.flashLight.draw(this.context!, GameComponent.player);
+
 
   }
 
