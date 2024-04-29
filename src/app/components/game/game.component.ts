@@ -10,6 +10,7 @@ import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
 import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {Flashlight} from "../../classes/entitiy/shaders/flashlight";
+import {Cat} from "../../classes/entitiy/gizmo/cat";
 
 @Component({
   selector: 'app-game',
@@ -205,11 +206,10 @@ export class GameComponent implements AfterViewInit {
   public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
-
-  protected messageBox = new Sprite("../../../assets/sprites/messagebox/!!!In.png", new Position(0, 0), () => {}, 3);
-
+  private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
   private animate() {
     window.requestAnimationFrame(() => this.animate());
+
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
 
@@ -258,6 +258,11 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.switchSprite('enterDoor');
 
     }
+
+    if(GameComponent.getCurrentLevel() === level1)
+    this.cat.drawSprite(this.context!, delta);
+
+
 
 
 
