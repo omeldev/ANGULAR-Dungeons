@@ -41,7 +41,7 @@ export class GameComponent implements AfterViewInit {
   public static volume: number = 1.0;
 
   public static hasInteracted: boolean = false;
-  public gizmo: Pig[];
+  public gizmo: Gizmo[];
 
   public static getPlayer(): Player {
     return GameComponent.player;

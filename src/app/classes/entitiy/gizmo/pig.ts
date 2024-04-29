@@ -4,6 +4,7 @@ import {delay} from "rxjs";
 
 export class Pig extends Gizmo {
   protected speechBubbles: SpeechBubble[];
+
   private currentBubble: number = 0;
   private shouldSpeak: boolean = false;
 
@@ -50,14 +51,6 @@ export class Pig extends Gizmo {
       return;
     }
 
-    if (this.collidesWithPlayer(GameComponent.getPlayer())) {
-      if(this instanceof KingPig){
-        this.speechBubbles[0].show(context, delta);
-      }else{
-        this.speechBubbles[1].show(context, delta);
-      }
-    }
-
 
   }
 
@@ -71,10 +64,13 @@ export class Pig extends Gizmo {
     this.shouldSpeak = Math.random() < 0.10;
   }
 
+  onCollide(context: CanvasRenderingContext2D, delta: number): void {
+  }
+
 
 }
 
-export class KingPig extends Pig {
+export class KingPig extends Gizmo {
 
 
   constructor() {
@@ -100,6 +96,12 @@ export class KingPig extends Pig {
     }, 12);
 
 
+  }
+
+  onCollide(context: CanvasRenderingContext2D, delta: number): void {
+  }
+
+  onSwitch(context: CanvasRenderingContext2D, delta: number): void {
   }
 
 

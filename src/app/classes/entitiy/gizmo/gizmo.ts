@@ -60,7 +60,7 @@ export abstract class Gizmo extends Sprite {
   public pauseBuffer = 3;
 
   public abstract onSwitch(context: CanvasRenderingContext2D, delta: number): void;
-
+  public abstract onCollide(context: CanvasRenderingContext2D, delta: number): void;
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
 
@@ -86,6 +86,10 @@ export abstract class Gizmo extends Sprite {
     this.applyGravity(delta);
     this.updateHitbox(8, 4);
     this.checkVerticalCollisions();
+
+    if(this.collidesWithPlayer(GameComponent.getPlayer())) {
+      this.onCollide(context, delta);
+    }
 
     if (!this.pausedMovement) {
 
