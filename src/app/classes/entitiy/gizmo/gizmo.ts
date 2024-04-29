@@ -7,6 +7,7 @@ import {GameComponent} from "../../../components/game/game.component";
 import {Player} from "../player/player";
 
 export abstract class Gizmo extends Sprite {
+  protected speechBubbles: SpeechBubble[];
 
   private readonly SPEED = 100;
   private readonly JUMP_STRENGTH = 10;
@@ -34,6 +35,11 @@ export abstract class Gizmo extends Sprite {
       this.getHitbox().setHeight(this.getHeight() - 5);
     }, frameRate, animations);
     this.hitbox = new Hitbox(this.getPosition(), this.getWidth(), this.getHeight());
+
+    this.speechBubbles = [
+      new SpeechBubble(SpeechBubbleType.SHOUT, this.getPosition(), 3, 8),
+      new SpeechBubble(SpeechBubbleType.HELLO, this.getPosition(), 3, 8),
+    ];
   }
 
   public collidesWithPlayer(player: Player): boolean {
@@ -89,6 +95,11 @@ export abstract class Gizmo extends Sprite {
 
     if(this.collidesWithPlayer(GameComponent.getPlayer())) {
       this.onCollide(context, delta);
+    }
+
+    for (const bubble of this.speechBubbles) {
+      bubble.getPosition().setY(this.getPosition().getY() - 10);
+      bubble.getPosition().setX(this.getPosition().getX());
     }
 
     if (!this.pausedMovement) {

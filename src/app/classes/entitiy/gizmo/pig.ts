@@ -3,7 +3,6 @@ import {GameComponent} from "../../../components/game/game.component";
 import {delay} from "rxjs";
 
 export class Pig extends Gizmo {
-  protected speechBubbles: SpeechBubble[];
 
   private currentBubble: number = 0;
   private shouldSpeak: boolean = false;
@@ -30,27 +29,17 @@ export class Pig extends Gizmo {
       }
     }, frameRate || 11);
 
-    this.speechBubbles = [
-      new SpeechBubble(SpeechBubbleType.SHOUT, this.getPosition(), 3, 8),
-      new SpeechBubble(SpeechBubbleType.HELLO, this.getPosition(), 3, 8),
-    ];
+
 
 
   }
 
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
-
-    for (const bubble of this.speechBubbles) {
-      bubble.getPosition().setY(this.getPosition().getY() - 10);
-      bubble.getPosition().setX(this.getPosition().getX());
-    }
-
     if(this.shouldSpeak) {
       this.speechBubbles[this.currentBubble].show(context, delta);
       return;
     }
-
 
   }
 
@@ -65,6 +54,7 @@ export class Pig extends Gizmo {
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
+    this.speechBubbles[this.currentBubble].show(context, delta);
   }
 
 
@@ -99,6 +89,9 @@ export class KingPig extends Gizmo {
   }
 
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
+    this.speechBubbles[0].show(context, delta);
+
+
   }
 
   onSwitch(context: CanvasRenderingContext2D, delta: number): void {
