@@ -17,6 +17,7 @@ import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 import {Princess} from "../../classes/entitiy/gizmo/princess";
 import {Wizard} from "../../classes/entitiy/boss/wizard";
+import {Healthbar} from "../../classes/gui/bar/healthbar";
 
 @Component({
   selector: 'app-game',
@@ -49,17 +50,10 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.preventInput = false;
     }),
   ]);
+
   public gizmo: Gizmo[];
   public flashLight = new Flashlight();
   public isFlashlightOn: boolean = true;
-  public gizmoAnimations = new AnimationSet([
-    new Animation('idle', '../../../assets/sprites/pig/animation/idle.png', 11, 4, true, true, () => {
-    }),
-    new Animation('runLeft', '../../../assets/sprites/pig/animation/runLeft.png', 6, 4, true, true, () => {
-    }),
-    new Animation('runRight', '../../../assets/sprites/pig/animation/runRight.png', 6, 4, true, true, () => {
-    })
-  ]);
   public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   public escapeCooldown = 0;
@@ -248,6 +242,7 @@ export class GameComponent implements AfterViewInit {
 
   }
 
+  private healthbar: Healthbar = new Healthbar(new Position(0, 200));
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
@@ -305,11 +300,19 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.switchSprite('enterDoor');
 
     }
+    this.context!.fillStyle = 'white';
+    this.context!.font = '50px Arial';
+    this.context!.fillText(`Health: ${GameComponent.player.health}`, 10, 80);
 
     if (GameComponent.getCurrentLevel() === level1) {
       this.cat.drawSprite(this.context!, delta);
       this.princess.drawSprite(this.context!, delta);
     }
+
+    this.healthbar.position.setX(GameComponent.player.getPosition().getX() + 30);
+    this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
+
+    this.healthbar.draw(this.context!, 10);
 
 
     if (GameComponent.player.collectedShines >= 3) {

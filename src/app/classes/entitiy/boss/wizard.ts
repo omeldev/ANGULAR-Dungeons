@@ -1,63 +1,85 @@
-import {Gizmo} from "../gizmo/gizmo";
+import {Direction} from "../gizmo/gizmo";
 import {Position} from "../position";
+import {Enemie} from "./enemie";
+import {Hitbox} from "../../collision/hitbox";
+import {Player} from "../player/player";
 
-export class Wizard extends Gizmo {
+const animationDefaults = {
+  frameRate: 8,
+  frameBuffer: 8,
+  loop: true
+}
+
+export class Wizard extends Enemie {
+
+  private collisionDone = new Set<Hitbox>;
 
   constructor(position: Position) {
-    super('../../../assets/sprites/wizard/idleRight.png', position, {
+    super(new Hitbox(position, 50, 50),'../../../assets/sprites/wizard/idleRight.png', position, {
       idle: {
-        frameRate: 8,
-        frameBuffer: 8,
-        loop: true,
+        ...animationDefaults,
         imageSrc: '../../../assets/sprites/wizard/idleRight.png'
       },
       attack1Right: {
-        frameRate: 8,
-        frameBuffer: 8,
-        loop: true,
-        imageSrc: '../../../assets/sprites/wizard/attack1Right.png'
+        ...animationDefaults,
+        imageSrc: '../../../assets/sprites/wizard/attack1Right.png',
+        onComplete: () => {
+          this.attackDone();
+          console.log('done')
+        }
       },
+      attack1Left: {
+        ...animationDefaults,
+        imageSrc: '../../../assets/sprites/wizard/attack1Left.png',
+        onComplete: () => {
+          this.attackDone();
+          console.log('done')
+        }
+      },
+
       attack2Right: {
-        frameRate: 8,
-        frameBuffer: 8,
-        loop: true,
-        imageSrc: '../../../assets/sprites/wizard/attack2Right.png'
+        ...animationDefaults,
+        imageSrc: '../../../assets/sprites/wizard/attack2Right.png',
+        onComplete: () => {
+          this.attackDone();
+          console.log('done')
+        }
+      },
+      attack2Left: {
+        ...animationDefaults,
+        imageSrc: '../../../assets/sprites/wizard/attack2Left.png',
+        onComplete: () => {
+          this.attackDone();
+          console.log('done')
+        }
       },
       death: {
+        ...animationDefaults,
         frameRate: 7,
-        frameBuffer: 8,
-        loop: true,
         imageSrc: '../../../assets/sprites/wizard/death.png'
 
       },
       runRight: {
-        frameRate: 8,
-        frameBuffer: 8,
-        loop: true,
+        ...animationDefaults,
         imageSrc: '../../../assets/sprites/wizard/runRight.png'
       },
       runLeft: {
-        frameRate: 8,
-        frameBuffer: 8,
-        loop: true,
+        ...animationDefaults,
         imageSrc: '../../../assets/sprites/wizard/runLeft.png'
       },
       jumpRight: {
+        ...animationDefaults,
         frameRate: 2,
-        frameBuffer: 8,
-        loop: true,
         imageSrc: '../../../assets/sprites/wizard/jumpRight.png'
       },
       hitRight: {
+        ...animationDefaults,
         frameRate: 3,
-        frameBuffer: 8,
-        loop: true,
         imageSrc: '../../../assets/sprites/wizard/hitRight.png'
       },
       fallRight: {
+        ...animationDefaults,
         frameRate: 2,
-        frameBuffer: 8,
-        loop: true,
         imageSrc: '../../../assets/sprites/wizard/fallRight.png'
       }
 
@@ -66,16 +88,51 @@ export class Wizard extends Gizmo {
     this.getHitbox().setHeight(50);
   }
 
-  onCollide(context: CanvasRenderingContext2D, delta: number): void {
+
+  public override updateHitbox(offsetX: number, offsetY: number): void {
+    super.updateHitbox(offsetX + 100, offsetY + 115);
   }
 
-  onSwitch(context: CanvasRenderingContext2D, delta: number): void {
+  public attack(): void {
+    if(this.lastDirection === Direction.RIGHT) {
+      this.switchSprite('attack1Right');
+    }else {
+      this.switchSprite('attack1Left');
+    }
   }
 
 
-  public override updateHitbox(): void {
-    this.hitbox.getPosition().setX(this.getPosition().getX() + 105);
-    this.hitbox.getPosition().setY(this.getPosition().getY() + 117);
+  private attackDone() {
+    this.isAttacking = false;
+    this.collisionDone.clear();
+  }
+
+  public override moveAi(context: CanvasRenderingContext2D, delta: number): void {
+
+
+    if(this.isAttacking) {
+      this.attack();
+      return;
+    }
+
+    if(Math.random() < 0.001 && !this.isAttacking) {
+      this.isAttacking = true;
+      return;
+    }
+
+
+    super.moveAi(context, delta);
+  }
+
+  public override drawSprite(context: CanvasRenderingContext2D, delta: number): void {
+    super.drawSprite(context, delta);
+  }
+
+  attackBoxCollide(player: Player): void {
+    if (this.collisionDone.has(player.getHitbox())) return;
+    this.collisionDone.add(player.getHitbox());
+    player.health -= 20;
+    console.log(player.health);
   }
 
 

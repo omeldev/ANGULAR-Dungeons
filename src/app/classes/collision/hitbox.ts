@@ -43,5 +43,12 @@ export class Hitbox {
     context.fillRect(this.position.getX(), this.position.getY(), this.width, this.height);
   }
 
+  public collidesWith(hitbox: Hitbox): boolean {
+    return this.position.getX() <= hitbox.getPosition().getX() + hitbox.getWidth() &&
+      this.position.getX() + this.width >= hitbox.getPosition().getX() &&
+      this.position.getY() + this.height >= hitbox.getPosition().getY() &&
+      this.position.getY() <= hitbox.getPosition().getY() + hitbox.getHeight();
+  }
+
 
 }

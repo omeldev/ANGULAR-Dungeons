@@ -17,7 +17,7 @@ export abstract class Gizmo extends Sprite {
   private readonly GRAVITY = 250;
   private readonly velocity = new Velocity(0, 0);
   private pausedMovement = true;
-  private lastDirection: Direction = Direction.RIGHT;
+  protected lastDirection: Direction = Direction.RIGHT;
   private collide = {
     left: false,
     right: false,
@@ -204,7 +204,7 @@ export abstract class Gizmo extends Sprite {
 
   }
 
-  protected updateHitbox(offsetX: number, offsetY: number): void {
+  public updateHitbox(offsetX: number, offsetY: number): void {
 
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
     this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
@@ -212,7 +212,7 @@ export abstract class Gizmo extends Sprite {
 
   }
 
-  private moveAi(context: CanvasRenderingContext2D, delta: number) {
+  protected moveAi(context: CanvasRenderingContext2D, delta: number) {
     if (!this.pausedMovement) {
 
       if (!this.collide.left && !this.collide.right) {

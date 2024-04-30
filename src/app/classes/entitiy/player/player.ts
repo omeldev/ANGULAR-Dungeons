@@ -19,6 +19,7 @@ export class Player extends Sprite {
   public collectedKeys: number = 0;
   collectedShines: number = 0;
   public isOnLadder = false;
+  public health: number = 100;
   protected MAX_SPEED = 350;
   protected ACCELERATION = 400;
   protected JUMP_STRENGTH = 600;
@@ -27,6 +28,7 @@ export class Player extends Sprite {
   private readonly hitbox: Hitbox;
   private collectedCoins: number = 0;
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
+  public maxHealth: number = 100;
 
   /**
    * Create a new player
