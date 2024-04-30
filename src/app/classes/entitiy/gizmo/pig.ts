@@ -8,12 +8,18 @@ export class Pig extends Gizmo {
   private currentBubble: number = 0;
 
   constructor(position: Position) {
-    super('../../../assets/sprites/pig/animation/idle.png', position, {
-      idle: {
+    super('../../../assets/sprites/pig/animation/idleRight.png', position, {
+      idleLeft: {
         frameRate: 11,
         frameBuffer: 4,
         loop: true,
-        imageSrc: '../../../assets/sprites/pig/animation/idle.png'
+        imageSrc: '../../../assets/sprites/pig/animation/idleLeft.png'
+      },
+      idleRight: {
+        frameRate: 11,
+        frameBuffer: 4,
+        loop: true,
+        imageSrc: '../../../assets/sprites/pig/animation/idleRight.png'
       },
       runLeft: {
         frameRate: 6,
@@ -66,13 +72,20 @@ export class KingPig extends Gizmo {
 
 
   constructor(position: Position) {
-    super('../../../assets/sprites/pig/animation/king/idle.png', position, {
-      idle: {
+    super('../../../assets/sprites/pig/animation/king/idleRight.png', position, {
+      idleLeft: {
         frameRate: 12,
         frameBuffer: 6,
         loop: true,
-        imageSrc: '../../../assets/sprites/pig/animation/king/idle.png'
+        imageSrc: '../../../assets/sprites/pig/animation/king/idleLeft.png'
       },
+      idleRight: {
+        frameRate: 12,
+        frameBuffer: 6,
+        loop: true,
+        imageSrc: '../../../assets/sprites/pig/animation/king/idleRight.png'
+      },
+
       runLeft: {
         frameRate: 6,
         frameBuffer: 4,

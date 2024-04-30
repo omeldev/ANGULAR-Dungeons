@@ -4,12 +4,18 @@ import {Position} from "../position";
 export class Bat extends Gizmo {
 
   constructor(position: Position) {
-    super('../../../assets/sprites/bat/idle.png', position, {
-      idle: {
+    super('../../../assets/sprites/bat/idleRight.png', position, {
+      idleLeft: {
         frameRate: 8,
         frameBuffer: 8,
         loop: true,
-        imageSrc: '../../../assets/sprites/bat/idle.png'
+        imageSrc: '../../../assets/sprites/bat/idleLeft.png'
+      },
+      idleRight: {
+        frameRate: 8,
+        frameBuffer: 8,
+        loop: true,
+        imageSrc: '../../../assets/sprites/bat/idleRight.png'
       },
       runLeft: {
         frameRate: 6,
@@ -21,7 +27,7 @@ export class Bat extends Gizmo {
         frameRate: 6,
         frameBuffer: 4,
         loop: true,
-        imageSrc: '../../../assets/sprites/bat/idle.png'
+        imageSrc: '../../../assets/sprites/bat/runRight.png'
       }
     }, 8);
 

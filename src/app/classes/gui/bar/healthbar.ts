@@ -50,8 +50,8 @@ export class Healthbar {
     return hearts;
   }
 
-  public draw(context: CanvasRenderingContext2D, offset: number): void {
-    const hearts = this.calculateHealth(GameComponent.player.health, GameComponent.player.maxHealth);
+  public draw(context: CanvasRenderingContext2D, offset: number, health: number, maxHealth: number): void {
+    const hearts = this.calculateHealth(health, maxHealth);
 
     hearts.forEach((heart, index) => {
       if (heart === 'full') context.drawImage(this.fullHeart, this.position.getX() + index * offset, this.position.getY(), this.fullHeart.width, this.fullHeart.height);

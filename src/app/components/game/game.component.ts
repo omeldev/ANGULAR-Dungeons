@@ -51,104 +51,35 @@ export class GameComponent implements AfterViewInit {
     }),
   ]);
 
-  public gizmo: Gizmo[];
+  public static gizmo: Gizmo[];
   public flashLight = new Flashlight();
-  public isFlashlightOn: boolean = true;
+  public static isFlashlightOn: boolean = true;
   public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   public escapeCooldown = 0;
   private oldFrameTime: number = 1;
   private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
-  private necromancer: Wizard = new Wizard(new Position(347, 280));
-  private flashCount = 0;
-  private flashBuffer = 0.005;
-  private flashIterations = 0;
+  static necromancer: Wizard = new Wizard(new Position(347, 280));
+  public static flashCount = 0;
+  public static flashBuffer = 0.005;
+  public static flashIterations = 0;
 
   constructor() {
-    GameComponent.player = new Player('../../../assets/sprites/player/animation/idle.png',
-      {
-        idleRight: {
-          frameRate: 11,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/player/animation/idle.png'
-        },
-        idleLeft: {
-          frameRate: 11,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/player/animation/idleLeft.png'
-
-        },
-        runRight: {
-          frameRate: 8,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/player/animation/runRight.png'
-
-        },
-        runLeft: {
-          frameRate: 8,
-          frameBuffer: 4,
-          loop: true,
-          imageSrc: '../../../assets/sprites/player/animation/runLeft.png'
-
-        },
-        enterDoor: {
-          frameRate: 8,
-          frameBuffer: 12,
-          loop: false,
-          imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
-          onComplete: () => {
-            this.levelChange();
-            GameComponent.player.preventInput = false;
-
-            //FIXME
-            for (let i = 0; i < this.gizmo.length; i++) {
-              if (this.gizmo[i] instanceof Bat) {
-                this.gizmo[i].setPosition(new Position(GameComponent.getCurrentLevel().getSpawnPoint().getX(), GameComponent.getCurrentLevel().getSpawnPoint().getY() + 48));
-                continue;
-              }
-              this.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-
-            }
-          }
-        },
-        leaveDoor: {
-          frameRate: 8,
-          frameBuffer: 12,
-          loop: false,
-          imageSrc: '../../../assets/sprites/player/animation/leaveDoor.png',
-          onComplete: () => {
-            GameComponent.player.preventInput = false;
-          }
-        },
-        attack: {
-          frameRate: 3,
-          frameBuffer: 111,
-          loop: false,
-          imageSrc: '../../../assets/sprites/player/animation/attack.png',
-          onComplete: () => {
-            GameComponent.player.isAttacking = false;
-            console.log("Attack done")
-          }
-        }
-
-      });
+    GameComponent.player = new Player();
 
     initializeSounds();
 
-    this.gizmo = [];
+    GameComponent.gizmo = [];
 
 
     const bat = new Bat(new Position(64 * 4 + 20, 64 * 3 + 36));
-    this.gizmo.push(bat);
+    GameComponent.gizmo.push(bat);
 
     for (let i = 0; i < 5; i++) {
-      this.gizmo.push(new Pig(new Position(260, 200)))
+      GameComponent.gizmo.push(new Pig(new Position(260, 200)))
 
       if (i == 2) {
-        this.gizmo.push(new KingPig(new Position(260, 200)))
+        GameComponent.gizmo.push(new KingPig(new Position(260, 200)))
       }
     }
     registerGuiListener();
@@ -183,7 +114,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   public switchFlashlight(): void {
-    this.isFlashlightOn = !this.isFlashlightOn;
+    GameComponent.isFlashlightOn = !GameComponent.isFlashlightOn;
   }
 
   ngAfterViewInit(): void {
@@ -193,7 +124,7 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  public levelChange(): void {
+  public static levelChange(): void {
     const levels = [level1, level2, level3, level4];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
@@ -202,12 +133,12 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
 
     GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-    this.necromancer.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+    GameComponent.necromancer.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
-    this.isFlashlightOn = true;
+    GameComponent.isFlashlightOn = true;
     GameComponent.player.collectedShines = 0;
-    this.flashCount = 0;
-    this.flashIterations = 0;
+    GameComponent.flashCount = 0;
+    GameComponent.flashIterations = 0;
 
 
   }
@@ -274,18 +205,18 @@ export class GameComponent implements AfterViewInit {
 
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
-    this.necromancer.update(this.context!, delta);
+    GameComponent.necromancer.update(this.context!, delta);
 
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
-    this.necromancer.drawSprite(this.context!, delta);
+    GameComponent.necromancer.drawSprite(this.context!, delta);
 
-    for (let i = 0; i < this.gizmo.length; i++) {
-      this.gizmo[i].update(this.context!, delta);
-      this.gizmo[i].drawSprite(this.context!, delta);
+    for (let i = 0; i < GameComponent.gizmo.length; i++) {
+      GameComponent.gizmo[i].update(this.context!, delta);
+      GameComponent.gizmo[i].drawSprite(this.context!, delta);
     }
     this.titleUpdate(delta)
 
@@ -312,31 +243,31 @@ export class GameComponent implements AfterViewInit {
     this.healthbar.position.setX(GameComponent.player.getPosition().getX() + 30);
     this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
 
-    this.healthbar.draw(this.context!, 10);
+    this.healthbar.draw(this.context!, 10, GameComponent.player.health, GameComponent.player.maxHealth);
 
 
     if (GameComponent.player.collectedShines >= 3) {
       this.flashLight.isActive = true;
-      if (this.flashIterations < 50) {
+      if (GameComponent.flashIterations < 50) {
 
-        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5);
-        if (this.flashCount < this.flashBuffer) {
-          this.flashCount += delta;
+        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, 250 + (GameComponent.player.collectedShines + 1 + GameComponent.flashIterations) * 5);
+        if (GameComponent.flashCount < GameComponent.flashBuffer) {
+          GameComponent.flashCount += delta;
 
         } else {
-          this.flashCount = 0;
-          this.flashIterations++;
-          if (this.flashIterations >= 50) {
-            this.flashIterations = 0;
-            this.flashCount = 0;
-            this.isFlashlightOn = false;
+          GameComponent.flashCount = 0;
+          GameComponent.flashIterations++;
+          if (GameComponent.flashIterations >= 50) {
+            GameComponent.flashIterations = 0;
+            GameComponent.flashCount = 0;
+            GameComponent.isFlashlightOn = false;
             GameComponent.player.collectedShines = 0;
 
           }
         }
       }
       return;
-    } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
+    } else if (GameComponent.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
 
     if (GameComponent.isPaused) {
       this.changeCanvasSize(this.titleScreen.width, this.titleScreen.height);

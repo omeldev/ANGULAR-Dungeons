@@ -8,7 +8,7 @@ import {Player} from "../player/player";
 
 export abstract class Gizmo extends Sprite {
   public isFlying: boolean = false;
-  public isMoving: boolean = false;
+  public isMoving: boolean = true;
   public pause: number = 0;
   public pauseBuffer = 3;
   protected speechBubbles: SpeechBubble[];
@@ -240,7 +240,13 @@ export abstract class Gizmo extends Sprite {
 
     } else {
       this.isMoving = false;
-      this.switchSprite('idle');
+      
+      if(this.lastDirection === Direction.LEFT) {
+        this.switchSprite('idleLeft');
+      } else {
+        this.switchSprite('idleRight');
+      }
+
     }
   }
 

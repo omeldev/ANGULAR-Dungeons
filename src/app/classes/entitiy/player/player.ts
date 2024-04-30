@@ -11,17 +11,20 @@ import {Key} from "../../collectibles/key/key";
 import {Shine} from "../../collectibles/shines/shine";
 import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
+import {Direction} from "../gizmo/gizmo";
+import {Bat} from "../gizmo/bat";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
   public preventInput = false;
   public isAttacking = false;
+  public attackCooldown = 0;
   public collectedKeys: number = 0;
   collectedShines: number = 0;
   public isOnLadder = false;
   public health: number = 100;
   protected MAX_SPEED = 350;
-  protected ACCELERATION = 400;
+  protected ACCELERATION = 500;
   protected JUMP_STRENGTH = 600;
   protected GRAVITY: number = 1200;
   private readonly velocity: Velocity;
@@ -30,17 +33,103 @@ export class Player extends Sprite {
   private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
   public maxHealth: number = 100;
 
+  public attackBox: Hitbox;
+  private collisionDone = new Set<Hitbox>;
+  private attackDone() {
+    this.isAttacking = false;
+    this.collisionDone.clear();
+  }
+
   /**
    * Create a new player
    * @param spriteSrc
    * @param animations
    */
-  constructor(spriteSrc: string, animations: any) {
-    super(spriteSrc, new Position(356, 250), () => {
-    }, 11, animations);
+  constructor() {
+    super('../../../assets/sprites/player/animation/idle.png', new Position(356, 250), () => {
+    }, 11, {
+      idleRight: {
+        frameRate: 11,
+        frameBuffer: 4,
+        loop: true,
+        imageSrc: '../../../assets/sprites/player/animation/idle.png'
+      },
+      idleLeft: {
+        frameRate: 11,
+        frameBuffer: 4,
+        loop: true,
+        imageSrc: '../../../assets/sprites/player/animation/idleLeft.png'
+
+      },
+      runRight: {
+        frameRate: 8,
+        frameBuffer: 4,
+        loop: true,
+        imageSrc: '../../../assets/sprites/player/animation/runRight.png'
+
+      },
+      runLeft: {
+        frameRate: 8,
+        frameBuffer: 4,
+        loop: true,
+        imageSrc: '../../../assets/sprites/player/animation/runLeft.png'
+
+      },
+      enterDoor: {
+        frameRate: 8,
+        frameBuffer: 12,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
+        onComplete: () => {
+          GameComponent.levelChange();
+          GameComponent.player.preventInput = false;
+
+          //FIXME
+          for (let i = 0; i < GameComponent.gizmo.length; i++) {
+            if (GameComponent.gizmo[i] instanceof Bat) {
+              GameComponent.gizmo[i].setPosition(new Position(GameComponent.getCurrentLevel().getSpawnPoint().getX(), GameComponent.getCurrentLevel().getSpawnPoint().getY() + 48));
+              continue;
+            }
+            GameComponent.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+
+          }
+        }
+      },
+      leaveDoor: {
+        frameRate: 8,
+        frameBuffer: 12,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/leaveDoor.png',
+        onComplete: () => {
+          GameComponent.player.preventInput = false;
+        }
+      },
+      attackRight: {
+        frameRate: 3,
+        frameBuffer: 12,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/attackRight.png',
+        onComplete: () => {
+          GameComponent.player.isAttacking = false;
+          this.attackDone();
+          console.log("Attack done")
+        }
+      },
+      attackLeft: {
+        frameRate: 3,
+        frameBuffer: 12,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/attackLeft.png',
+        onComplete: () => {
+          GameComponent.player.isAttacking = false;
+          this.attackDone();
+          console.log("Attack done")
+        }
+      } });
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
     this.hitbox = new Hitbox(this.getPosition(), 30, 54);
+    this.attackBox = new Hitbox(this.getPosition(), 50, 70);
     /**
      * Initialize the sides
      * @type {{top: PlayerSide; right: PlayerSide; bottom: PlayerSide; left: PlayerSide}}
@@ -119,6 +208,8 @@ export class Player extends Sprite {
   public move(delta: number): void {
 
 
+
+
     /**
      * X-axis = left and right
      * Y-axis = up and down
@@ -127,14 +218,14 @@ export class Player extends Sprite {
     /**
      * Set the velocity to 0 on the X axis if neither a | d is pressed
      */
-    if (this.isAttacking && this.animations['attack'].frameRate - 1 === this.animations['attack'].currentFrame) {
-      this.isAttacking = false;
 
-    }
-    if (isKeyPressed('space') && !this.isAttacking) {
+    if (this.attackCooldown > 0 && this.attackCooldown != 0) this.attackCooldown -= delta;
 
-      //this.isAttacking = true;
-      //this.switchSprite('attack');
+    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0) {
+      this.attackCooldown = 1
+      this.isAttacking = true;
+      if(this.lastDirection === 'right') this.switchSprite('attackRight'); else
+      this.switchSprite('attackLeft');
       console.log('Attack')
     }
 
@@ -391,41 +482,14 @@ export class Player extends Sprite {
   }
 
   /**
-   * Draw the player
-   * @param context {CanvasRenderingContext2D} of the canvas
-   */
-  public draw(context: CanvasRenderingContext2D): void {
-
-    if (!GameComponent.productionMode) {
-    }
-
-    this.drawSprite(context);
-
-    console.log(this.getWidth())
-    context.fillStyle = 'rgba(240, 52, 52, 0.3)';
-    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
-  }
-
-  /**
-   * Draw a box around the player to visualize the collision box
-   * @param context
-   */
-  public drawSpriteBox(context: CanvasRenderingContext2D): void {
-    context.fillStyle = "rgba(240, 52, 52, 0.3)";
-    context.fillRect(this.getPosition().getX(), this.getPosition().getY(), this.getWidth(), this.getHeight());
-  }
-
-  public drawHitbox(context: CanvasRenderingContext2D): void {
-    this.hitbox.draw(context);
-  }
-
-  /**
    * Update the player
    * @param context {CanvasRenderingContext2D} of the canvas
    * @param delta {number} time since the last frame
    */
   public update(context: CanvasRenderingContext2D, delta: number): void {
     this.move(delta);
+
+   if(this.isAttacking) this.attackBox.draw(context);
   }
 
   protected updateHitbox(offsetX: number, offsetY: number): void {
@@ -434,8 +498,34 @@ export class Player extends Sprite {
     this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
 
 
+    if (this.lastDirection === 'right') {
+      this.attackBox.getPosition().setX(this.getPosition().getX() + 100);
+    } else {
+      this.attackBox.getPosition().setX(this.getPosition().getX());
+    }
+    this.attackBox.getPosition().setY(this.getPosition().getY() + offsetY - 10);
+
+
+    this.checkForAttackCollisions();
+
+
+
+
+  }
+
+  public checkForAttackCollisions() {
+    const necromancerHitbox = GameComponent.necromancer.getHitbox();
+    if(this.attackBox.collidesWith(necromancerHitbox) && this.isAttacking){
+      if (this.collisionDone.has(necromancerHitbox)) return;
+      this.collisionDone.add(necromancerHitbox);
+      GameComponent.necromancer.health -= 20;
+      console.log(GameComponent.necromancer.health);
+
+      console.log('Hit Wizard');
+    }
   }
 
 
 }
+
 
