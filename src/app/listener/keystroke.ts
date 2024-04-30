@@ -30,7 +30,8 @@ export const KEYS: GameKey[] = [
   new GameKey('a', false),
   new GameKey('d', false),
   new GameKey('space', false),
-  new GameKey('f', false)
+  new GameKey('f', false),
+  new GameKey('Escape', false)
 
 
 ];
@@ -44,7 +45,6 @@ export function isKeyPressed(key: string): boolean {
   const gameKey = KEYS.find(gameKey => gameKey.getKey() === key);
   return gameKey!.isPressed();
 }
-
 export function registerKeystrokes(): void {
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
     if (!GameComponent.hasInteracted) {
@@ -56,6 +56,8 @@ export function registerKeystrokes(): void {
 
 
     }
+
+
     const key = event.key;
 
     if (event.code === 'Space') {
@@ -64,6 +66,9 @@ export function registerKeystrokes(): void {
     }
 
     switch (key) {
+      case 'Escape':
+        setKeyPressed('Escape', pressed);
+        break;
       case 'w':
       case 'ArrowUp':
         setKeyPressed('w', pressed);

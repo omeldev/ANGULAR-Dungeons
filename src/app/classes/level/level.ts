@@ -84,9 +84,8 @@ export class Level extends Sprite {
 
     rows.forEach(((row, y) => {
       row.forEach((symbol, x) => {
-        if (symbol === 293) {
+        if (symbol) {
           const coin = new Coin(new Position(x * 64, y * 64));
-
           this.coins.push(coin);
         }
       });
