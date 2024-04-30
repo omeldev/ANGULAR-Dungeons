@@ -488,8 +488,6 @@ export class Player extends Sprite {
    */
   public update(context: CanvasRenderingContext2D, delta: number): void {
     this.move(delta);
-
-   if(this.isAttacking) this.attackBox.draw(context);
   }
 
   protected updateHitbox(offsetX: number, offsetY: number): void {

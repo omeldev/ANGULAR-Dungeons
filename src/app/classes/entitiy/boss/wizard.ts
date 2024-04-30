@@ -64,6 +64,7 @@ export class Wizard extends Enemie {
       },
       death: {
         ...animationDefaults,
+        frameBuffer: 18,
         loop: false,
         frameRate: 7,
         imageSrc: '../../../assets/sprites/wizard/death.png',

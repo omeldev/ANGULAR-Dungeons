@@ -48,7 +48,7 @@ export class TitleScreen {
 
     context.fillText("A, W, D for Moving", this.width / 2.5, 130);
     context.fillText("F turn Flashlight on", this.width / 2.5, 160);
-
+    context.fillText("Space to attack", this.width / 2.5, 190);
 
     for (let button of this.buttons) {
       button.draw(context);
