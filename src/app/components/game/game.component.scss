@@ -1,3 +1,4 @@
+/*
 .canvas-container {
   display: flex;
   justify-content: center;
@@ -27,3 +28,20 @@
   align-items: center;
   height: 100vh;
 }
+
+ */
+
+.canvas-container {
+  width: 100%; /* Ensure the container takes up the full width of its parent */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical scrollbar (optional, adjust as needed) */
+  white-space: nowrap; /* Prevent line breaks inside the container */
+
+}
+
+
+
+*::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+

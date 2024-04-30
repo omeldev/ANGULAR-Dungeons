@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
-import {isKeyPressed, registerKeystrokes} from "../../listener/keystroke";
-import {level1, level2, level3} from "../../levels/levels";
+import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
+import {level1, level2, level3, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
 import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
@@ -11,6 +11,9 @@ import {Position} from "../../classes/entitiy/position";
 import {Flashlight} from "../../classes/entitiy/shaders/flashlight";
 import {Cat} from "../../classes/entitiy/gizmo/cat";
 import {Bat} from "../../classes/entitiy/gizmo/bat";
+import {TitleScreen} from "../../classes/gui/window/title";
+import {Button} from "../../classes/gui/button/button";
+import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 
 @Component({
   selector: 'app-game',
@@ -35,12 +38,21 @@ export class GameComponent implements AfterViewInit {
   public static coins$ = GameComponent.coinSubject$.asObservable();
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
+  @ViewChild('canvasContainer', {static: true})
+  public canvasContainer: ElementRef<HTMLDivElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
   public static player: Player;
   private oldFrameTime: number = 1;
   public static volume: number = 1.0;
+
+  public static isPaused: boolean = true;
+  public static isMuted: boolean = false;
+  public titleScreen: TitleScreen = new TitleScreen([
+    new Button('../../../assets/gui/buttons/play.png', new Position(550, 300), () => { GameComponent.isPaused = false;   GameComponent.player.preventInput = false;
+    }),
+  ]);
 
   public static hasInteracted: boolean = false;
   public gizmo: Gizmo[];
@@ -141,6 +153,7 @@ export class GameComponent implements AfterViewInit {
 
     this.gizmo = [];
 
+
     const bat = new Bat(new Position(64 * 4 + 20, 64 * 3 + 36));
     this.gizmo.push(bat);
 
@@ -151,7 +164,9 @@ export class GameComponent implements AfterViewInit {
         this.gizmo.push(new KingPig(new Position(260, 200)))
       }
     }
+    registerGuiListener();
   }
+
 
   public static getCurrentLevel(): Level {
     return this.currentLevel;
@@ -179,7 +194,7 @@ export class GameComponent implements AfterViewInit {
 
 
   public levelChange(): void {
-    const levels = [level1, level2, level3];
+    const levels = [level1, level4, level2, level3];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 
@@ -220,6 +235,13 @@ export class GameComponent implements AfterViewInit {
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
+    if(GameComponent.isPaused){
+      GameComponent.player.preventInput = true;
+
+    }
+
+    this.moveCamera();
+
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
 
@@ -229,6 +251,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.backgroundMusic.volume = GameComponent.volume;
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
+
 
     GameComponent.getCurrentLevel().drawSprite(this.context!);
 
@@ -242,11 +265,11 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
 
-    for (let i = 0; i < this.gizmo.length; i++) {
-      this.gizmo[i].update(this.context!, delta);
-    }
+
+
 
     for (let i = 0; i < this.gizmo.length; i++) {
+      this.gizmo[i].update(this.context!, delta);
       this.gizmo[i].drawSprite(this.context!, delta);
     }
 
@@ -255,6 +278,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
+    this.titleUpdate(delta)
 
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
@@ -298,6 +322,11 @@ export class GameComponent implements AfterViewInit {
       return;
     } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 50);
 
+    if(GameComponent.isPaused) {
+      this.changeCanvasSize(this.titleScreen.width, this.titleScreen.height);
+      this.titleScreen.draw(this.context!);
+    }
+
     if (isKeyPressed('f') && !(this.flashLight.cooldown > 0)) {
       this.flashLight.toggle();
     }
@@ -310,4 +339,29 @@ export class GameComponent implements AfterViewInit {
   private flashIterations = 0;
 
 
+  private moveCamera() {
+    const cameraX = GameComponent.player.getHitbox().getPosition().getX() - window.innerWidth / 2;
+    const cameraY = GameComponent.player.getHitbox().getPosition().getY() - window.innerHeight / 2;
+
+
+    this.canvasContainer?.nativeElement?.scrollTo(cameraX, cameraY);
+    window.scrollTo(cameraX, cameraY);
+
+  }
+
+
+  public escapeCooldown = 0;
+  public titleUpdate(delta: number): void {
+    if(this.escapeCooldown < 1.5) {
+      this.escapeCooldown += delta;
+    }else {
+      this.escapeCooldown = 0;
+    }
+
+    if(isKeyPressed('Escape') && this.escapeCooldown <= 0) {
+      GameComponent.isPaused = !GameComponent.isPaused;
+      this.escapeCooldown = 1.5;
+      setKeyPressed('Escape', false)
+    }
+  }
 }
