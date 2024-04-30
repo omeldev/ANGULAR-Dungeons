@@ -14,6 +14,7 @@ import {Bat} from "../../classes/entitiy/gizmo/bat";
 import {TitleScreen} from "../../classes/gui/window/title";
 import {Button} from "../../classes/gui/button/button";
 import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
+import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 
 @Component({
   selector: 'app-game',
@@ -151,6 +152,8 @@ export class GameComponent implements AfterViewInit {
 
       });
 
+    initializeSounds();
+
     this.gizmo = [];
 
 
@@ -227,7 +230,6 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  public static backgroundMusic = new Audio('../../../assets/sound/background/Dungeon%20Explorer.mp3');
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
   private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
@@ -247,8 +249,6 @@ export class GameComponent implements AfterViewInit {
 
     localStorage.setItem('volume', this.volume.toString());
 
-
-    GameComponent.backgroundMusic.volume = GameComponent.volume;
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
@@ -280,10 +280,7 @@ export class GameComponent implements AfterViewInit {
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
       GameComponent.getCurrentLevel().getFinalDoor().play();
-      const audio = new Audio('../../../assets/sound/game/door/open.mp3');
-      audio.volume = GameComponent.volume;
-      audio.playbackRate = 0.5;
-      audio.play().then();
+      GameAudio.getAudio('door:open').play();
       GameComponent.player.collectedKeys -= 1;
       GameComponent.player.getVelocity().setY(0);
       GameComponent.player.getVelocity().setX(0);

@@ -10,6 +10,7 @@ import {Hitbox} from "../../collision/hitbox";
 import {Key} from "../../collectibles/key/key";
 import {Shine} from "../../collectibles/shines/shine";
 import {Ladder} from "../../collision/ladderblock";
+import {GameAudio} from "../../audio/audio";
 
 export class Player extends Sprite {
   private readonly velocity: Velocity;
@@ -260,9 +261,7 @@ export class Player extends Sprite {
     for(let i = 0; i < keys.length; i++){
       if(this.checkForKeyCollision(keys[i])){
         GameComponent.getCurrentLevel().getKey().splice(i, 1);
-          const audio = new Audio('../../../assets/sound/game/key/pickupKey.mp3');
-          audio.volume = GameComponent.volume;
-          audio.play().then();
+          GameAudio.getAudio('key:collect').play();
         this.collectedKeys++;
         break;
       }
@@ -276,12 +275,7 @@ export class Player extends Sprite {
         console.log(this.collectedCoins, 'Collected Coins');
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
 
-        setTimeout(() => {
-
-          const audio = new Audio('../../../assets/sound/game/coin/coin-pickup.mp3');
-          audio.volume = GameComponent.volume;
-          audio.play().then();
-        }, 20);
+        GameAudio.getAudio('coin:collect').play();
         break;
       }
     }
@@ -294,11 +288,7 @@ export class Player extends Sprite {
         this.collectedShines++;
 
 
-          const audio = new Audio('../../../assets/sound/game/shine/collect.mp3');
-          audio.volume = GameComponent.volume;
-          audio.playbackRate = 4;
-
-          audio.play().then();
+        GameAudio.getAudio('shine:collect').play();
 
         break;
       }

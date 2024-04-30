@@ -2,6 +2,7 @@ import {Gizmo, SpeechBubble, SpeechBubbleType} from "./gizmo";
 import {GameComponent} from "../../../components/game/game.component";
 import {delay} from "rxjs";
 import {Position} from "../position";
+import {GameAudio} from "../../audio/audio";
 
 export class Pig extends Gizmo {
 
@@ -53,9 +54,7 @@ export class Pig extends Gizmo {
     this.shouldSpeak = Math.random() < 0.10;
 
     if(Math.random() < 0.1) {
-      const audio = new Audio('../../../assets/sound/game/pig/grunt.mp3');
-      audio.volume = GameComponent.volume;
-      audio.play().then();
+      GameAudio.getAudio('pig:grunt').play();
     }
   }
 
@@ -104,9 +103,7 @@ export class KingPig extends Gizmo {
 
   onSwitch(context: CanvasRenderingContext2D, delta: number): void {
     if(Math.random() < 0.10) {
-      const audio = new Audio('../../../assets/sound/game/pig/grunt.mp3');
-      audio.volume = GameComponent.volume;
-      audio.play().then();
+      GameAudio.getAudio('pig:grunt').play();
     }
   }
 
