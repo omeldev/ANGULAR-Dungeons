@@ -48,7 +48,7 @@ export function isKeyPressed(key: string): boolean {
 }
 export function registerKeystrokes(): void {
 
-  const audioPlayer = new AudioPlayer(['background', 'background2']);
+  const audioPlayer = new AudioPlayer(['background', 'background2', 'background3', 'background4']);
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
     if (!GameComponent.hasInteracted) {
       GameComponent.hasInteracted = true;

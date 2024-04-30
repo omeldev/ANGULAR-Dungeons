@@ -56,6 +56,10 @@ export class AudioPlayer {
 export function initializeSounds() {
   new GameAudio('background', '../../../assets/sound/background/Dungeon%20Explorer.mp3', false);
   new GameAudio('background2', '../../../assets/sound/background/The%20Quest%20for%20Freedom.mp3', false);
+  new GameAudio('background3', '../../../assets/sound/background/Quest%20for%20Society.mp3', false);
+
+  new GameAudio('background4', '../../../assets/sound/background/Quest%20for%20the%20Treasure.mp3', false);
+
   new GameAudio('pig:grunt', '../../../assets/sound/game/pig/grunt.mp3', false);
 
   new GameAudio('coin:collect', '../../../assets/sound/game/coin/collect.mp3', false);
