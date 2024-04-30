@@ -1,14 +1,15 @@
 import {Gizmo, SpeechBubble, SpeechBubbleType} from "./gizmo";
 import {GameComponent} from "../../../components/game/game.component";
 import {delay} from "rxjs";
+import {Position} from "../position";
 
 export class Pig extends Gizmo {
 
   private currentBubble: number = 0;
   protected shouldSpeak: boolean = false;
 
-  constructor(spriteSrc?: string, animations?: any, frameRate?: number) {
-    super(spriteSrc || '../../../assets/sprites/pig/animation/idle.png', animations || {
+  constructor(position: Position) {
+    super('../../../assets/sprites/pig/animation/idle.png', position,  {
       idle: {
         frameRate: 11,
         frameBuffer: 4,
@@ -27,7 +28,7 @@ export class Pig extends Gizmo {
         loop: true,
         imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
       }
-    }, frameRate || 11);
+    }, 11);
 
     this.getScale().setScale(1)
 
@@ -69,8 +70,8 @@ export class Pig extends Gizmo {
 export class KingPig extends Gizmo {
 
 
-  constructor() {
-    super('../../../assets/sprites/pig/animation/king/idle.png', {
+  constructor(position: Position) {
+    super('../../../assets/sprites/pig/animation/king/idle.png', position, {
       idle: {
         frameRate: 12,
         frameBuffer: 6,

@@ -7,10 +7,10 @@ import {BehaviorSubject} from "rxjs";
 import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
 import {Animation, AnimationSet} from "../../classes/animation";
 import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
-import {Sprite} from "../../classes/entitiy/sprite";
 import {Position} from "../../classes/entitiy/position";
 import {Flashlight} from "../../classes/entitiy/shaders/flashlight";
 import {Cat} from "../../classes/entitiy/gizmo/cat";
+import {Bat} from "../../classes/entitiy/gizmo/bat";
 
 @Component({
   selector: 'app-game',
@@ -105,7 +105,13 @@ export class GameComponent implements AfterViewInit {
           onComplete: () => {
             this.levelChange();
             GameComponent.player.preventInput = false;
+
+            //FIXME
             for (let i = 0; i < this.gizmo.length; i++) {
+              if (this.gizmo[i] instanceof Bat) {
+                this.gizmo[i].setPosition(new Position(GameComponent.getCurrentLevel().getSpawnPoint().getX(), GameComponent.getCurrentLevel().getSpawnPoint().getY() + 48));
+                continue;
+              }
               this.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
             }
@@ -135,10 +141,14 @@ export class GameComponent implements AfterViewInit {
 
     this.gizmo = [];
 
+    const bat = new Bat(new Position(64 * 4 + 20, 64 * 3 + 36));
+    this.gizmo.push(bat);
+
     for (let i = 0; i < 5; i++) {
-      this.gizmo.push(new Pig())
-      if(i == 2){
-        this.gizmo.push(new KingPig())
+      this.gizmo.push(new Pig(new Position(260, 200)))
+
+      if (i == 2) {
+        this.gizmo.push(new KingPig(new Position(260, 200)))
       }
     }
   }
@@ -184,7 +194,6 @@ export class GameComponent implements AfterViewInit {
     this.flashIterations = 0;
 
 
-
   }
 
   private initializeCanvas() {
@@ -207,6 +216,7 @@ export class GameComponent implements AfterViewInit {
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
   private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
+
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
@@ -232,12 +242,6 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
 
-    this.oldFrameTime = performance.now();
-    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
-    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
-    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
-    GameComponent.player.drawSprite(this.context!, delta);
-
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].update(this.context!, delta);
     }
@@ -245,6 +249,14 @@ export class GameComponent implements AfterViewInit {
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].drawSprite(this.context!, delta);
     }
+
+    this.oldFrameTime = performance.now();
+    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
+    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
+    GameComponent.player.drawSprite(this.context!, delta);
+
+
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
       GameComponent.getCurrentLevel().getFinalDoor().play();
       const audio = new Audio('../../../assets/sound/game/door/open.mp3');
@@ -259,25 +271,22 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    if(GameComponent.getCurrentLevel() === level1)
-    this.cat.drawSprite(this.context!, delta);
+    if (GameComponent.getCurrentLevel() === level1)
+      this.cat.drawSprite(this.context!, delta);
 
 
+    if (GameComponent.player.collectedShines >= 3) {
+      if (this.flashIterations < 200) {
 
 
-
-    if(GameComponent.player.collectedShines >= 3){
-      if(this.flashIterations < 200) {
-
-
-        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta,250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5 );
+        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5);
         if (this.flashCount < this.flashBuffer) {
           this.flashCount += delta;
 
         } else {
           this.flashCount = 0;
           this.flashIterations++;
-          if(this.flashIterations == 200){
+          if (this.flashIterations == 200) {
             this.flashIterations = 0;
             this.flashCount = 0;
             this.isFlashlightOn = false;
@@ -287,9 +296,9 @@ export class GameComponent implements AfterViewInit {
         }
       }
       return;
-    }else if(this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 50);
+    } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 50);
 
-    if(isKeyPressed('f') && !(this.flashLight.cooldown > 0)){
+    if (isKeyPressed('f') && !(this.flashLight.cooldown > 0)) {
       this.flashLight.toggle();
     }
 

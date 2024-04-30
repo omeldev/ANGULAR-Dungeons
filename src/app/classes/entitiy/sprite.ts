@@ -22,6 +22,8 @@ export class Sprite {
   private readonly scale: Scale;
   public animations: any;
 
+  public isLoaded: boolean = false;
+
   /**
    * Create a new Sprite
    * @param imageSrc path to the image
@@ -48,6 +50,8 @@ export class Sprite {
 
       this.height = this.image.height;
       funcOnLoad?.();
+
+      this.isLoaded = true;
 
     }
 
@@ -139,6 +143,7 @@ export class Sprite {
    * @param delta {number} time since the last frame
    */
   public drawSprite(context: CanvasRenderingContext2D, delta?: number): void {
+    if(!this.isLoaded) return;
 
     const cropbox = {
       position: {

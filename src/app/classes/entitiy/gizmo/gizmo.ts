@@ -7,6 +7,7 @@ import {GameComponent} from "../../../components/game/game.component";
 import {Player} from "../player/player";
 
 export abstract class Gizmo extends Sprite {
+  public isFlying: boolean = false;
   protected speechBubbles: SpeechBubble[];
 
   private readonly SPEED = 100;
@@ -26,8 +27,8 @@ export abstract class Gizmo extends Sprite {
     bottom: false
   }
 
-  constructor(spriteSrc: string, animations: any, frameRate: number = 6) {
-    super(spriteSrc, new Position(260, 200), () => {
+  constructor(spriteSrc: string, position: Position, animations: any, frameRate: number = 6) {
+    super(spriteSrc, position, () => {
       this.setWidth(this.getImage().width / frameRate);
       this.setHeight(this.getImage().height);
 
@@ -103,6 +104,13 @@ export abstract class Gizmo extends Sprite {
       bubble.getPosition().setX(this.getPosition().getX());
     }
 
+    this.moveAi(context, delta);
+
+
+
+  }
+
+  private moveAi(context: CanvasRenderingContext2D, delta: number) {
     if (!this.pausedMovement) {
 
       if (!this.collide.left && !this.collide.right) {
@@ -125,7 +133,6 @@ export abstract class Gizmo extends Sprite {
     } else {
       this.switchSprite('idle');
     }
-
   }
 
 
@@ -139,8 +146,10 @@ export abstract class Gizmo extends Sprite {
   }
 
   public applyGravity(delta: number): void {
-    this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
-    this.position.setY(this.position.getY() + this.velocity.getY() * delta);
+    if(!this.isFlying) {
+      this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
+      this.position.setY(this.position.getY() + this.velocity.getY() * delta);
+    }
 
     if(this.position.getY() > GameComponent.canvasHeight){
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint())
