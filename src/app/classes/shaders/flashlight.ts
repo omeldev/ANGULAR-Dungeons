@@ -1,6 +1,6 @@
-import {Player} from "../player/player";
-import {GameComponent} from "../../../components/game/game.component";
-import {Position} from "../position";
+import {Player} from "../entitiy/player/player";
+import {GameComponent} from "../../components/game/game.component";
+import {Position} from "../entitiy/position";
 
 export class Flashlight {
 
@@ -43,7 +43,16 @@ export class Flashlight {
     for(let shine of GameComponent.getCurrentLevel().getShines()) {
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
-      shaderContext.arc(shine.getPosition().getX() + 20, shine.getPosition().getY(), 100, 0, 2 * Math.PI);
+      shaderContext.arc(shine.getPosition().getX() + 20, shine.getPosition().getY(), 50, 0, 2 * Math.PI);
+      shaderContext.fill();
+      shaderContext.closePath();
+      shaderContext.globalCompositeOperation = 'source-over';
+    }
+
+    for(let key of GameComponent.getCurrentLevel().getKey()) {
+      shaderContext.globalCompositeOperation = 'destination-out';
+      shaderContext.beginPath();
+      shaderContext.arc(key.getPosition().getX() + 15, key.getPosition().getY() + 15, 20, 0, 2 * Math.PI);
       shaderContext.fill();
       shaderContext.closePath();
       shaderContext.globalCompositeOperation = 'source-over';

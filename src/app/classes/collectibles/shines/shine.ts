@@ -1,6 +1,6 @@
 import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
-import {Flashlight} from "../../entitiy/shaders/flashlight";
+import {Flashlight} from "../../shaders/flashlight";
 
 export class Shine extends Sprite {
 

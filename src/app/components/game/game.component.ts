@@ -8,7 +8,7 @@ import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
 import {Animation, AnimationSet} from "../../classes/animation";
 import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
 import {Position} from "../../classes/entitiy/position";
-import {Flashlight} from "../../classes/entitiy/shaders/flashlight";
+import {Flashlight} from "../../classes/shaders/flashlight";
 import {Cat} from "../../classes/entitiy/gizmo/cat";
 import {Bat} from "../../classes/entitiy/gizmo/bat";
 import {TitleScreen} from "../../classes/gui/window/title";
@@ -262,22 +262,19 @@ export class GameComponent implements AfterViewInit {
     }
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
+
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
-
-
-
-
-    for (let i = 0; i < this.gizmo.length; i++) {
-      this.gizmo[i].update(this.context!, delta);
-      this.gizmo[i].drawSprite(this.context!, delta);
-    }
 
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
+    for (let i = 0; i < this.gizmo.length; i++) {
+      this.gizmo[i].update(this.context!, delta);
+      this.gizmo[i].drawSprite(this.context!, delta);
+    }
     this.titleUpdate(delta)
 
 
@@ -300,8 +297,8 @@ export class GameComponent implements AfterViewInit {
 
 
     if (GameComponent.player.collectedShines >= 3) {
-      if (this.flashIterations < 200) {
-
+      this.flashLight.isActive = true;
+      if (this.flashIterations < 50) {
 
         this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5);
         if (this.flashCount < this.flashBuffer) {
@@ -310,17 +307,17 @@ export class GameComponent implements AfterViewInit {
         } else {
           this.flashCount = 0;
           this.flashIterations++;
-          if (this.flashIterations == 200) {
+          if (this.flashIterations >= 50) {
             this.flashIterations = 0;
             this.flashCount = 0;
             this.isFlashlightOn = false;
             GameComponent.player.collectedShines = 0;
-            console.log("Flashlight off")
+
           }
         }
       }
       return;
-    } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 50);
+    } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
 
     if(GameComponent.isPaused) {
       this.changeCanvasSize(this.titleScreen.width, this.titleScreen.height);
