@@ -15,6 +15,7 @@ import {TitleScreen} from "../../classes/gui/window/title";
 import {Button} from "../../classes/gui/button/button";
 import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
+import {Princess} from "../../classes/entitiy/gizmo/princess";
 
 @Component({
   selector: 'app-game',
@@ -195,6 +196,7 @@ export class GameComponent implements AfterViewInit {
 
   }
 
+  public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
 
   public levelChange(): void {
     const levels = [level1, level2, level3, level4];
@@ -271,6 +273,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
+
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].update(this.context!, delta);
       this.gizmo[i].drawSprite(this.context!, delta);
@@ -289,8 +292,10 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    if (GameComponent.getCurrentLevel() === level1)
+    if (GameComponent.getCurrentLevel() === level1) {
       this.cat.drawSprite(this.context!, delta);
+      this.princess.drawSprite(this.context!, delta);
+    }
 
 
     if (GameComponent.player.collectedShines >= 3) {
