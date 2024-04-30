@@ -16,6 +16,8 @@ import {Button} from "../../classes/gui/button/button";
 import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 import {Princess} from "../../classes/entitiy/gizmo/princess";
+import {Necromancer} from "../../classes/entitiy/boss/necromancer";
+import {Wizard} from "../../classes/entitiy/boss/wizard";
 
 @Component({
   selector: 'app-game',
@@ -207,6 +209,7 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
 
     GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+    this.necromancer.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
     this.isFlashlightOn = true;
     GameComponent.player.collectedShines = 0;
@@ -235,6 +238,7 @@ export class GameComponent implements AfterViewInit {
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
 
   private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
+  private necromancer: Wizard = new Wizard(new Position(347, 280));
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
@@ -267,12 +271,14 @@ export class GameComponent implements AfterViewInit {
 
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
+    this.necromancer.update(this.context!, delta);
 
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
+    this.necromancer.drawSprite(this.context!, delta);
 
     for (let i = 0; i < this.gizmo.length; i++) {
       this.gizmo[i].update(this.context!, delta);

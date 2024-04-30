@@ -14,7 +14,7 @@ export abstract class Gizmo extends Sprite {
   private readonly JUMP_STRENGTH = 10;
 
   private readonly GRAVITY = 250;
-  private readonly hitbox;
+  protected readonly hitbox;
   private readonly velocity = new Velocity(0, 0);
   private pausedMovement = true;
   private lastDirection: Direction = Direction.RIGHT;
@@ -27,15 +27,13 @@ export abstract class Gizmo extends Sprite {
     bottom: false
   }
 
-  constructor(spriteSrc: string, position: Position, animations: any, frameRate: number = 6) {
+  constructor(spriteSrc: string, position: Position, animations: any, frameRate: number = 6, hitbox: Hitbox = new Hitbox(position, 20, 20)) {
     super(spriteSrc, position, () => {
       this.setWidth(this.getImage().width / frameRate);
       this.setHeight(this.getImage().height);
 
-      this.getHitbox().setWidth(this.getWidth() - 13);
-      this.getHitbox().setHeight(this.getHeight() - 5);
     }, frameRate, animations);
-    this.hitbox = new Hitbox(this.getPosition(), this.getWidth(), this.getHeight());
+    this.hitbox = hitbox;
 
     this.speechBubbles = [
       new SpeechBubble(SpeechBubbleType.SHOUT, this.getPosition(), 3, 8),
