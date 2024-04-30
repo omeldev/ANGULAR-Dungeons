@@ -2,13 +2,14 @@ import {Position} from "../../entitiy/position";
 
 export class Button {
 
+  public onClick: () => void;
   private image: HTMLImageElement;
   private width: number = 0;
   private height: number = 0;
   private loaded: boolean = false;
   private position: Position;
-  public onClick: () => void;
-  constructor(imageSrc: string, position: Position, onClick: () => void){
+
+  constructor(imageSrc: string, position: Position, onClick: () => void) {
     this.onClick = onClick;
     this.image = new Image();
     this.image.src = imageSrc;
@@ -22,7 +23,7 @@ export class Button {
   }
 
   public draw(context: CanvasRenderingContext2D) {
-    if(!this.loaded) return;
+    if (!this.loaded) return;
     context.drawImage(this.image, this.position.getX(), this.position.getY(), this.width, this.height);
 
   }

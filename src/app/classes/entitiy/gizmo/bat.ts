@@ -1,8 +1,7 @@
-import {Direction, Gizmo} from "./gizmo";
-import {GameComponent} from "../../../components/game/game.component";
+import {Gizmo} from "./gizmo";
 import {Position} from "../position";
 
-export class Bat extends Gizmo{
+export class Bat extends Gizmo {
 
   constructor(position: Position) {
     super('../../../assets/sprites/bat/idle.png', position, {
@@ -45,10 +44,10 @@ export class Bat extends Gizmo{
 
      */
   }
+
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
   }
-
 
 
 }

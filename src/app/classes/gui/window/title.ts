@@ -1,14 +1,13 @@
-import {Position} from "../../entitiy/position";
 import {Button} from "../button/button";
-import {GameComponent} from "../../../components/game/game.component";
 
 export class TitleScreen {
- // private readonly image: HTMLImageElement;
+  private static buttons: Button[];
+  // private readonly image: HTMLImageElement;
   public width: number = 0;
   public height: number = 0;
-  private loaded: boolean = false;
   public buttons: Button[] = [];
-  private static buttons: Button[];
+  private loaded: boolean = false;
+
   constructor(buttons: Button[]) {
     /*
     this.image = new Image();
@@ -29,6 +28,14 @@ export class TitleScreen {
 
   }
 
+  static checkButtons(clientX: number, clientY: number) {
+    for (let button of this.buttons) {
+      if (button.isClicked(clientX, clientY)) {
+        button.onClick();
+      }
+    }
+  }
+
   public draw(context: CanvasRenderingContext2D) {
 
     //context.drawImage(this.image, 0, 0, this.width, this.height);
@@ -43,19 +50,10 @@ export class TitleScreen {
     context.fillText("F turn Flashlight on", this.width / 2.5, 160);
 
 
-
-    for(let button of this.buttons) {
+    for (let button of this.buttons) {
       button.draw(context);
     }
 
     TitleScreen.checkButtons(0, 0);
-  }
-
-  static checkButtons(clientX: number, clientY: number) {
-    for(let button of this.buttons) {
-      if(button.isClicked(clientX, clientY)) {
-        button.onClick();
-      }
-    }
   }
 }

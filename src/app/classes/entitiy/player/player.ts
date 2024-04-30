@@ -13,21 +13,20 @@ import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
 
 export class Player extends Sprite {
-  private readonly velocity: Velocity;
-  private readonly hitbox: Hitbox;
-  private collectedCoins: number = 0;
-
-  private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
-
-  protected MAX_SPEED = 350;
-  protected ACCELERATION = 400;
-  protected JUMP_STRENGTH = 600;
-  protected GRAVITY: number = 1200;
   public lastDirection: string = 'right';
   public preventInput = false;
   public isAttacking = false;
   public collectedKeys: number = 0;
   collectedShines: number = 0;
+  public isOnLadder = false;
+  protected MAX_SPEED = 350;
+  protected ACCELERATION = 400;
+  protected JUMP_STRENGTH = 600;
+  protected GRAVITY: number = 1200;
+  private readonly velocity: Velocity;
+  private readonly hitbox: Hitbox;
+  private collectedCoins: number = 0;
+  private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
 
   /**
    * Create a new player
@@ -89,7 +88,6 @@ export class Player extends Sprite {
   public getLeftSide(): PlayerSide {
     return this.sides.left;
   }
-
 
   /**
    * Get the Velocity of the player
@@ -210,16 +208,6 @@ export class Player extends Sprite {
     }
   }
 
-  protected updateHitbox(offsetX: number, offsetY: number): void {
-
-    this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
-    this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
-
-
-  }
-
-  public isOnLadder = false;
-
   /**
    * Apply gravity to the player
    * Formula Velocity Y: Vy = Vy + g * Δ
@@ -233,7 +221,8 @@ export class Player extends Sprite {
 
         this.isOnLadder = true;
         this.velocity.setY(-100);
-        this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);        this.getVelocity().setX(0);
+        this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
+        this.getVelocity().setX(0);
 
       } else {
         this.isOnLadder = false;
@@ -241,8 +230,7 @@ export class Player extends Sprite {
     }
 
 
-
-    if(!this.isOnLadder) {
+    if (!this.isOnLadder) {
 
       this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
       this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
@@ -258,10 +246,10 @@ export class Player extends Sprite {
     }
 
     const keys = GameComponent.getCurrentLevel().getKey();
-    for(let i = 0; i < keys.length; i++){
-      if(this.checkForKeyCollision(keys[i])){
+    for (let i = 0; i < keys.length; i++) {
+      if (this.checkForKeyCollision(keys[i])) {
         GameComponent.getCurrentLevel().getKey().splice(i, 1);
-          GameAudio.getAudio('key:collect').play();
+        GameAudio.getAudio('key:collect').play();
         this.collectedKeys++;
         break;
       }
@@ -295,7 +283,6 @@ export class Player extends Sprite {
     }
 
   }
-
 
   /**
    * Check for vertical collisions
@@ -369,7 +356,6 @@ export class Player extends Sprite {
 
   }
 
-
   /**
    * Check for horizontal collisions
    */
@@ -401,7 +387,6 @@ export class Player extends Sprite {
     }
 
   }
-
 
   /**
    * Draw the player
@@ -439,6 +424,14 @@ export class Player extends Sprite {
    */
   public update(context: CanvasRenderingContext2D, delta: number): void {
     this.move(delta);
+  }
+
+  protected updateHitbox(offsetX: number, offsetY: number): void {
+
+    this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
+    this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
+
+
   }
 
 

@@ -16,7 +16,6 @@ import {Button} from "../../classes/gui/button/button";
 import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 import {Princess} from "../../classes/entitiy/gizmo/princess";
-import {Necromancer} from "../../classes/entitiy/boss/necromancer";
 import {Wizard} from "../../classes/entitiy/boss/wizard";
 
 @Component({
@@ -26,17 +25,14 @@ import {Wizard} from "../../classes/entitiy/boss/wizard";
 })
 export class GameComponent implements AfterViewInit {
 
-  @HostListener('document:visibilitychange', ['$event'])
-  onVisibilityChange(event: Event): void {
-    if (document.visibilityState === 'hidden') {
-    } else {
-      window.location.reload();
-    }
-  }
-
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static productionMode: boolean = true;
+  public static player: Player;
+  public static volume: number = 1.0;
+  public static isPaused: boolean = true;
+  public static isMuted: boolean = false;
+  public static hasInteracted: boolean = false;
   private static currentLevel = level1;
   private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public static coins$ = GameComponent.coinSubject$.asObservable();
@@ -47,33 +43,15 @@ export class GameComponent implements AfterViewInit {
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
-  public static player: Player;
-  private oldFrameTime: number = 1;
-  public static volume: number = 1.0;
-
-  public static isPaused: boolean = true;
-  public static isMuted: boolean = false;
   public titleScreen: TitleScreen = new TitleScreen([
-    new Button('../../../assets/gui/buttons/play.png', new Position(550, 300), () => { GameComponent.isPaused = false;   GameComponent.player.preventInput = false;
+    new Button('../../../assets/gui/buttons/play.png', new Position(550, 300), () => {
+      GameComponent.isPaused = false;
+      GameComponent.player.preventInput = false;
     }),
   ]);
-
-  public static hasInteracted: boolean = false;
   public gizmo: Gizmo[];
-
   public flashLight = new Flashlight();
-
-
   public isFlashlightOn: boolean = true;
-
-  public switchFlashlight(): void {
-    this.isFlashlightOn = !this.isFlashlightOn;
-  }
-
-  public static getPlayer(): Player {
-    return GameComponent.player;
-  }
-
   public gizmoAnimations = new AnimationSet([
     new Animation('idle', '../../../assets/sprites/pig/animation/idle.png', 11, 4, true, true, () => {
     }),
@@ -82,6 +60,15 @@ export class GameComponent implements AfterViewInit {
     new Animation('runRight', '../../../assets/sprites/pig/animation/runRight.png', 6, 4, true, true, () => {
     })
   ]);
+  public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
+  public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
+  public escapeCooldown = 0;
+  private oldFrameTime: number = 1;
+  private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
+  private necromancer: Wizard = new Wizard(new Position(347, 280));
+  private flashCount = 0;
+  private flashBuffer = 0.005;
+  private flashIterations = 0;
 
   constructor() {
     GameComponent.player = new Player('../../../assets/sprites/player/animation/idle.png',
@@ -173,6 +160,9 @@ export class GameComponent implements AfterViewInit {
     registerGuiListener();
   }
 
+  public static getPlayer(): Player {
+    return GameComponent.player;
+  }
 
   public static getCurrentLevel(): Level {
     return this.currentLevel;
@@ -190,6 +180,17 @@ export class GameComponent implements AfterViewInit {
     this.productionMode = !this.productionMode;
   }
 
+  @HostListener('document:visibilitychange', ['$event'])
+  onVisibilityChange(event: Event): void {
+    if (document.visibilityState === 'hidden') {
+    } else {
+      window.location.reload();
+    }
+  }
+
+  public switchFlashlight(): void {
+    this.isFlashlightOn = !this.isFlashlightOn;
+  }
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
@@ -197,8 +198,6 @@ export class GameComponent implements AfterViewInit {
 
 
   }
-
-  public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
 
   public levelChange(): void {
     const levels = [level1, level2, level3, level4];
@@ -219,6 +218,20 @@ export class GameComponent implements AfterViewInit {
 
   }
 
+  public titleUpdate(delta: number): void {
+    if (this.escapeCooldown < 1.5) {
+      this.escapeCooldown += delta;
+    } else {
+      this.escapeCooldown = 0;
+    }
+
+    if (isKeyPressed('Escape') && this.escapeCooldown <= 0) {
+      GameComponent.isPaused = !GameComponent.isPaused;
+      this.escapeCooldown = 1.5;
+      setKeyPressed('Escape', false)
+    }
+  }
+
   private initializeCanvas() {
     this.canvas!.nativeElement.width = GameComponent.canvasWidth;
     this.canvas!.nativeElement.height = GameComponent.canvasHeight;
@@ -235,15 +248,10 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
-
-  private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
-  private necromancer: Wizard = new Wizard(new Position(347, 280));
-
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
-    if(GameComponent.isPaused){
+    if (GameComponent.isPaused) {
       GameComponent.player.preventInput = true;
 
     }
@@ -327,7 +335,7 @@ export class GameComponent implements AfterViewInit {
       return;
     } else if (this.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
 
-    if(GameComponent.isPaused) {
+    if (GameComponent.isPaused) {
       this.changeCanvasSize(this.titleScreen.width, this.titleScreen.height);
       this.titleScreen.draw(this.context!);
     }
@@ -339,11 +347,6 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  private flashCount = 0;
-  private flashBuffer = 0.005;
-  private flashIterations = 0;
-
-
   private moveCamera() {
     const cameraX = GameComponent.player.getHitbox().getPosition().getX() - window.innerWidth / 2;
     const cameraY = GameComponent.player.getHitbox().getPosition().getY() - window.innerHeight / 2;
@@ -352,21 +355,5 @@ export class GameComponent implements AfterViewInit {
     this.canvasContainer?.nativeElement?.scrollTo(cameraX, cameraY);
     window.scrollTo(cameraX, cameraY);
 
-  }
-
-
-  public escapeCooldown = 0;
-  public titleUpdate(delta: number): void {
-    if(this.escapeCooldown < 1.5) {
-      this.escapeCooldown += delta;
-    }else {
-      this.escapeCooldown = 0;
-    }
-
-    if(isKeyPressed('Escape') && this.escapeCooldown <= 0) {
-      GameComponent.isPaused = !GameComponent.isPaused;
-      this.escapeCooldown = 1.5;
-      setKeyPressed('Escape', false)
-    }
   }
 }

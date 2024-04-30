@@ -2,27 +2,22 @@ import {Position} from "./position";
 import {Scale} from "./scale";
 
 export class Sprite {
-  protected readonly position: Position;
-  protected image: HTMLImageElement;
-  private readonly imageSrc: string;
-  private isSpriteSheet: boolean = false;
-
   public frameRate;
   public currentFrame: number = 0;
   public elapsedFrames = 0;
   public frameBuffer = 4;
-
   public loop = true;
   public autoPlay = true;
   public currentAnimation: any;
-
+  public animations: any;
+  public isLoaded: boolean = false;
+  protected readonly position: Position;
+  protected image: HTMLImageElement;
+  private readonly imageSrc: string;
+  private isSpriteSheet: boolean = false;
   private width: number = 0;
   private height: number = 0;
-
   private readonly scale: Scale;
-  public animations: any;
-
-  public isLoaded: boolean = false;
 
   /**
    * Create a new Sprite
@@ -143,7 +138,7 @@ export class Sprite {
    * @param delta {number} time since the last frame
    */
   public drawSprite(context: CanvasRenderingContext2D, delta?: number): void {
-    if(!this.isLoaded) return;
+    if (!this.isLoaded) return;
 
     const cropbox = {
       position: {
@@ -163,8 +158,7 @@ export class Sprite {
       this.getWidth() * this.getScale().getScale(),
       this.getHeight() * this.getScale().getScale());
 
-    if(delta) this.nextFrame(delta);
-
+    if (delta) this.nextFrame(delta);
 
 
   }
@@ -176,7 +170,6 @@ export class Sprite {
   private nextFrame(delta: number): void {
 
     if (!this.autoPlay) return;
-
 
 
     this.elapsedFrames = this.elapsedFrames + delta * 60;
@@ -191,7 +184,7 @@ export class Sprite {
 
       if (this.currentAnimation?.onComplete) {
 
-        if(this.currentFrame >= this.frameRate - 1 && !this.currentAnimation.isActive) {
+        if (this.currentFrame >= this.frameRate - 1 && !this.currentAnimation.isActive) {
           this.currentAnimation.onComplete();
           this.currentAnimation.isActive = true;
         }

@@ -4,6 +4,10 @@ import {isKeyPressed} from "../../../listener/keystroke";
 
 export class Necromancer extends Gizmo {
 
+  public currentNecromancer = 1;
+  public maxNecromancer = 7;
+  public switchCooldown = 0;
+
   constructor(position: Position) {
     super('../../../assets/sprites/necromancer/necromancer1.png', position, {
       necromancer1: {
@@ -50,36 +54,31 @@ export class Necromancer extends Gizmo {
       },
     }, 8);
   }
+
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
   }
 
   onSwitch(context: CanvasRenderingContext2D, delta: number): void {
   }
 
-  public currentNecromancer = 1;
-  public maxNecromancer = 7;
-
-  public switchCooldown = 0;
-
   public override update(context: CanvasRenderingContext2D, delta: number) {
-    if(this.switchCooldown != 0){
+    if (this.switchCooldown != 0) {
       this.switchCooldown -= delta;
     }
-    if(this.switchCooldown < 0) {
+    if (this.switchCooldown < 0) {
       this.switchCooldown = 0;
     }
-    if(isKeyPressed('w') && this.switchCooldown <= 0) {
+    if (isKeyPressed('w') && this.switchCooldown <= 0) {
       this.switchCooldown = 2;
 
       this.switchSprite('necromancer' + this.currentNecromancer);
       console.log('necromancer' + this.currentNecromancer);
       this.currentNecromancer++;
-      if(this.currentNecromancer == this.maxNecromancer) {
+      if (this.currentNecromancer == this.maxNecromancer) {
         this.currentNecromancer = 1;
       }
     }
   }
-
 
 
 }

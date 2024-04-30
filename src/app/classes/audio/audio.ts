@@ -21,7 +21,7 @@ export class GameAudio {
   public play(onEnded?: () => void): void {
     const clone = this.audio.cloneNode(true) as HTMLAudioElement; // Create a clone of the audio element
     clone.play().then();
-    clone.addEventListener("ended", function() {
+    clone.addEventListener("ended", function () {
       onEnded?.();
       clone.remove();
     });
@@ -33,6 +33,7 @@ export class GameAudio {
 export class AudioPlayer {
   private gameAudioNames: string[];
   private currentIndex: number = 0;
+
   constructor(gameAudioNames: string[]) {
     this.gameAudioNames = gameAudioNames;
   }
@@ -40,9 +41,9 @@ export class AudioPlayer {
   public playNext(): void {
     GameAudio.getAudio(this.gameAudioNames[this.currentIndex]).play(() => {
       this.currentIndex++;
-      if(this.currentIndex < this.gameAudioNames.length) {
+      if (this.currentIndex < this.gameAudioNames.length) {
         this.playNext();
-      }else {
+      } else {
         this.currentIndex = 0;
         this.playNext()
       }

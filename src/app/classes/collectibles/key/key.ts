@@ -3,16 +3,14 @@ import {Position} from "../../entitiy/position";
 
 export class Key extends Sprite {
 
+  private swapBuffer = 0.5;
+  private swapCounter = 0;
+  private swap = false;
+
   constructor(position: Position) {
     super('../../assets/sprites/key/key.png', position);
     this.position.setY(this.position.getY() - 10);
   }
-
-
-  private swapBuffer = 0.5;
-  private swapCounter = 0;
-
-  private swap = false;
 
   override drawSprite(context: CanvasRenderingContext2D, delta?: number) {
     super.drawSprite(context, delta);

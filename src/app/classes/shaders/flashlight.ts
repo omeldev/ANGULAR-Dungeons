@@ -1,4 +1,3 @@
-import {Player} from "../entitiy/player/player";
 import {GameComponent} from "../../components/game/game.component";
 import {Position} from "../entitiy/position";
 
@@ -9,14 +8,14 @@ export class Flashlight {
   public isActive: boolean = false;
 
   public cooldown: number = 0;
+  public shaderCanvas = document.createElement('canvas');
 
   public updateCooldown(delta: number): void {
-    if(this.cooldown > 0) {
+    if (this.cooldown > 0) {
       this.cooldown -= delta;
     }
   }
 
-  public shaderCanvas = document.createElement('canvas');
   public draw(context: CanvasRenderingContext2D, position: Position, delta: number, radius: number = 100): void {
     this.updateCooldown(delta)
 
@@ -29,7 +28,7 @@ export class Flashlight {
     shaderContext.fillStyle = 'rgba(0,0,0,0.7)';
     shaderContext.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
 
-    if(this.isActive){
+    if (this.isActive) {
 
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
@@ -40,7 +39,7 @@ export class Flashlight {
 
     }
 
-    for(let shine of GameComponent.getCurrentLevel().getShines()) {
+    for (let shine of GameComponent.getCurrentLevel().getShines()) {
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
       shaderContext.arc(shine.getPosition().getX() + 20, shine.getPosition().getY(), 50, 0, 2 * Math.PI);
@@ -49,7 +48,7 @@ export class Flashlight {
       shaderContext.globalCompositeOperation = 'source-over';
     }
 
-    for(let key of GameComponent.getCurrentLevel().getKey()) {
+    for (let key of GameComponent.getCurrentLevel().getKey()) {
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
       shaderContext.arc(key.getPosition().getX() + 15, key.getPosition().getY() + 15, 20, 0, 2 * Math.PI);
@@ -59,9 +58,6 @@ export class Flashlight {
     }
 
     context.drawImage(this.shaderCanvas, 0, 0);
-
-
-
 
 
   }

@@ -8,18 +8,16 @@ import {Player} from "../player/player";
 
 export abstract class Gizmo extends Sprite {
   public isFlying: boolean = false;
+  public pause: number = 0;
+  public pauseBuffer = 3;
   protected speechBubbles: SpeechBubble[];
-
+  protected readonly hitbox;
   private readonly SPEED = 100;
   private readonly JUMP_STRENGTH = 10;
-
   private readonly GRAVITY = 250;
-  protected readonly hitbox;
   private readonly velocity = new Velocity(0, 0);
   private pausedMovement = true;
   private lastDirection: Direction = Direction.RIGHT;
-
-
   private collide = {
     left: false,
     right: false,
@@ -62,10 +60,8 @@ export abstract class Gizmo extends Sprite {
     this.currentAnimation.isActive = false;
   }
 
-  public pause: number = 0;
-  public pauseBuffer = 3;
-
   public abstract onSwitch(context: CanvasRenderingContext2D, delta: number): void;
+
   public abstract onCollide(context: CanvasRenderingContext2D, delta: number): void;
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
@@ -93,7 +89,7 @@ export abstract class Gizmo extends Sprite {
     this.updateHitbox(8, 4);
     this.checkVerticalCollisions();
 
-    if(this.collidesWithPlayer(GameComponent.getPlayer())) {
+    if (this.collidesWithPlayer(GameComponent.getPlayer())) {
       this.onCollide(context, delta);
     }
 
@@ -105,55 +101,18 @@ export abstract class Gizmo extends Sprite {
     this.moveAi(context, delta);
 
 
-
-  }
-
-  private moveAi(context: CanvasRenderingContext2D, delta: number) {
-    if (!this.pausedMovement) {
-
-      if (!this.collide.left && !this.collide.right) {
-        if (this.lastDirection === Direction.LEFT) {
-          this.move(Direction.LEFT, delta);
-          this.switchSprite('runLeft');
-        } else if (this.lastDirection === Direction.RIGHT) {
-          this.move(Direction.RIGHT, delta);
-          this.switchSprite('runRight');
-        }
-      }
-      if (this.collide.left) {
-        this.move(Direction.RIGHT, delta);
-        this.switchSprite('runRight');
-      } else if (this.collide.right) {
-        this.move(Direction.LEFT, delta);
-        this.switchSprite('runLeft');
-      }
-
-    } else {
-      this.switchSprite('idle');
-    }
-  }
-
-
-  protected updateHitbox(offsetX: number, offsetY: number): void {
-
-    this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
-    this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
-
-
-
   }
 
   public applyGravity(delta: number): void {
-    if(!this.isFlying) {
+    if (!this.isFlying) {
       this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
       this.position.setY(this.position.getY() + this.velocity.getY() * delta);
     }
 
-    if(this.position.getY() > GameComponent.canvasHeight){
+    if (this.position.getY() > GameComponent.canvasHeight) {
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint())
     }
   }
-
 
   public getHitbox() {
     return this.hitbox;
@@ -245,27 +204,61 @@ export abstract class Gizmo extends Sprite {
 
   }
 
+  protected updateHitbox(offsetX: number, offsetY: number): void {
+
+    this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
+    this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
+
+
+  }
+
+  private moveAi(context: CanvasRenderingContext2D, delta: number) {
+    if (!this.pausedMovement) {
+
+      if (!this.collide.left && !this.collide.right) {
+        if (this.lastDirection === Direction.LEFT) {
+          this.move(Direction.LEFT, delta);
+          this.switchSprite('runLeft');
+        } else if (this.lastDirection === Direction.RIGHT) {
+          this.move(Direction.RIGHT, delta);
+          this.switchSprite('runRight');
+        }
+      }
+      if (this.collide.left) {
+        this.move(Direction.RIGHT, delta);
+        this.switchSprite('runRight');
+      } else if (this.collide.right) {
+        this.move(Direction.LEFT, delta);
+        this.switchSprite('runLeft');
+      }
+
+    } else {
+      this.switchSprite('idle');
+    }
+  }
+
 }
 
 export class SpeechBubble extends Sprite {
 
-    constructor(bubbleType: SpeechBubbleType, position: Position, frameRate: number, frameBuffer: number) {
-      super(bubbleType.toString(), new Position(position.getX(), position.getY()), () => {}, frameRate);
-      this.frameBuffer = frameBuffer;
-      this.loop = true;
-      this.autoPlay = true;
+  constructor(bubbleType: SpeechBubbleType, position: Position, frameRate: number, frameBuffer: number) {
+    super(bubbleType.toString(), new Position(position.getX(), position.getY()), () => {
+    }, frameRate);
+    this.frameBuffer = frameBuffer;
+    this.loop = true;
+    this.autoPlay = true;
 
-      this.getScale().setScale(1.5)
+    this.getScale().setScale(1.5)
 
 
-    }
+  }
 
-    public show(context: CanvasRenderingContext2D, delta: number): void {
+  public show(context: CanvasRenderingContext2D, delta: number): void {
 
-      context.save();
-      this.drawSprite(context, delta);
-      context.restore();
-    }
+    context.save();
+    this.drawSprite(context, delta);
+    context.restore();
+  }
 
 
 }

@@ -48,11 +48,11 @@ export class Level extends Sprite {
         this.setKey(key);
       }
 
-      if(shine) {
+      if (shine) {
         this.setShine(shine);
       }
 
-      if(ladders) {
+      if (ladders) {
         this.setLadders(ladders);
       }
 
@@ -137,7 +137,6 @@ export class Level extends Sprite {
   }
 
 
-
   /**
    * Get the spawn point of the Level
    * @returns {Position} of the spawn point
@@ -203,6 +202,10 @@ export class Level extends Sprite {
     return this.finalDoor;
   }
 
+  public getLadders(): Ladder[] {
+    return this.ladders;
+  }
+
   private setShine(shine: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
@@ -224,10 +227,6 @@ export class Level extends Sprite {
     }));
 
 
-  }
-
-  public getLadders(): Ladder[] {
-    return this.ladders;
   }
 
   private setLadders(ladders: number[]) {

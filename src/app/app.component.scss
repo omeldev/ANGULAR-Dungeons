@@ -2,10 +2,12 @@ body {
   background: black;
 
 }
+
 body::-webkit-scrollbar {
   width: 0;
   background: transparent; /* Make scrollbar transparent */
 }
+
 .main-container {
   height: 100vh;
 

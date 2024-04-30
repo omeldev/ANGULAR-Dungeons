@@ -13,7 +13,8 @@ export class Door extends Sprite {
    * @param destination {Door} of the Door
    */
   constructor(position: Position, isFinalDoor?: boolean, destination?: Door) {
-    super('../../../assets/sprites/door/doorOpen.png', position, () => {}, 5);
+    super('../../../assets/sprites/door/doorOpen.png', position, () => {
+    }, 5);
     this.isFinalDoor = false;
     this.destination = this;
     this.frameBuffer = 7;
@@ -67,7 +68,8 @@ export class Door extends Sprite {
     return player.getHitbox().getPosition().getX() + player.getHitbox().getWidth() <= this.getPosition().getX() + this.getWidth() &&
       player.getHitbox().getPosition().getX() >= this.getPosition().getX() &&
       player.getHitbox().getPosition().getY() + player.getHitbox().getHeight() >= this.getPosition().getY() &&
-      player.getHitbox().getPosition().getY() <= this.getPosition().getY() + this.getHeight();;
+      player.getHitbox().getPosition().getY() <= this.getPosition().getY() + this.getHeight();
+    ;
 
   }
 

@@ -1,6 +1,5 @@
 import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
-import {Flashlight} from "../../shaders/flashlight";
 
 export class Shine extends Sprite {
 
@@ -12,7 +11,8 @@ export class Shine extends Sprite {
 
 
   constructor(position: Position) {
-    super('../../../assets/sprites/shine/idle.png', position, () => {}, 8);
+    super('../../../assets/sprites/shine/idle.png', position, () => {
+    }, 8);
 
     this.frameBuffer = 5;
     this.loop = true;
@@ -22,7 +22,6 @@ export class Shine extends Sprite {
 
     this.getPosition().setY(this.getPosition().getY() + 32);
     this.getPosition().setX(this.getPosition().getX() + 32);
-
 
 
   }
@@ -39,7 +38,7 @@ export class Shine extends Sprite {
       if (this.swap) {
         this.getPosition().setY(this.getPosition().getY() - 30 * delta!);
       } else {
-        this.getPosition().setY(this.getPosition().getY() + 30  * delta!);
+        this.getPosition().setY(this.getPosition().getY() + 30 * delta!);
       }
     }
 

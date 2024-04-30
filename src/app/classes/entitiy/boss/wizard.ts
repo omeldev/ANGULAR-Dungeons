@@ -1,12 +1,10 @@
 import {Gizmo} from "../gizmo/gizmo";
 import {Position} from "../position";
-import {isKeyPressed} from "../../../listener/keystroke";
-import {GameComponent} from "../../../components/game/game.component";
 
 export class Wizard extends Gizmo {
 
   constructor(position: Position) {
-    super('../../../assets/sprites/wizard/idleRight.png', position,{
+    super('../../../assets/sprites/wizard/idleRight.png', position, {
       idle: {
         frameRate: 8,
         frameBuffer: 8,
@@ -67,6 +65,7 @@ export class Wizard extends Gizmo {
     this.getHitbox().setWidth(30);
     this.getHitbox().setHeight(50);
   }
+
   onCollide(context: CanvasRenderingContext2D, delta: number): void {
   }
 
@@ -78,7 +77,6 @@ export class Wizard extends Gizmo {
     this.hitbox.getPosition().setX(this.getPosition().getX() + 105);
     this.hitbox.getPosition().setY(this.getPosition().getY() + 117);
   }
-
 
 
 }
