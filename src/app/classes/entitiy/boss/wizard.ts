@@ -15,10 +15,14 @@ export class Wizard extends Enemie {
   private collisionDone = new Set<Hitbox>;
 
   constructor(position: Position) {
-    super(new Hitbox(position, 50, 50),'../../../assets/sprites/wizard/idleRight.png', position, {
+    super(new Hitbox(position, 50, 50), '../../../assets/sprites/wizard/idleRight.png', position, {
       idle: {
         ...animationDefaults,
         imageSrc: '../../../assets/sprites/wizard/idleRight.png'
+      },
+      idleLeft: {
+        ...animationDefaults,
+        imageSrc: '../../../assets/sprites/wizard/idleLeft.png'
       },
       attack1Right: {
         ...animationDefaults,
@@ -94,9 +98,9 @@ export class Wizard extends Enemie {
   }
 
   public attack(): void {
-    if(this.lastDirection === Direction.RIGHT) {
+    if (this.lastDirection === Direction.RIGHT) {
       this.switchSprite('attack1Right');
-    }else {
+    } else {
       this.switchSprite('attack1Left');
     }
   }
@@ -110,19 +114,32 @@ export class Wizard extends Enemie {
   public override moveAi(context: CanvasRenderingContext2D, delta: number): void {
 
 
-    if(this.isAttacking) {
+    if (this.isAttacking) {
       this.attack();
       return;
     }
 
-    if(Math.random() < 0.001 && !this.isAttacking) {
+    if (Math.random() < 0.001 && !this.isAttacking) {
       this.isAttacking = true;
       return;
     }
 
 
+    if (!this.isMoving) {
+      if (this.lastDirection === Direction.RIGHT) {
+        this.switchSprite('idle');
+      } else {
+        this.switchSprite('idleLeft');
+        console.log('idleLeft')
+      }
+      return;
+    }
+
     super.moveAi(context, delta);
+
+
   }
+
 
   public override drawSprite(context: CanvasRenderingContext2D, delta: number): void {
     super.drawSprite(context, delta);

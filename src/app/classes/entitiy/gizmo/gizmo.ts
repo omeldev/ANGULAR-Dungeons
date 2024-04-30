@@ -8,6 +8,7 @@ import {Player} from "../player/player";
 
 export abstract class Gizmo extends Sprite {
   public isFlying: boolean = false;
+  public isMoving: boolean = false;
   public pause: number = 0;
   public pauseBuffer = 3;
   protected speechBubbles: SpeechBubble[];
@@ -16,9 +17,9 @@ export abstract class Gizmo extends Sprite {
   private readonly JUMP_STRENGTH = 10;
   private readonly GRAVITY = 250;
   private readonly velocity = new Velocity(0, 0);
-  private pausedMovement = true;
+  protected pausedMovement = true;
   protected lastDirection: Direction = Direction.RIGHT;
-  private collide = {
+  public collide = {
     left: false,
     right: false,
     top: false,
@@ -66,22 +67,7 @@ export abstract class Gizmo extends Sprite {
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
 
-    if (this.pause >= this.pauseBuffer) {
-      this.onSwitch(context, delta);
-      this.pause = 0;
-      this.pausedMovement = !this.pausedMovement;
-      this.collide.left = false;
-      this.collide.right = false;
-      this.pauseBuffer = Math.random() * 3 + 1;
-      const switchDirection = (Math.random() < 0.5);
-      if (switchDirection) {
-        this.lastDirection = this.lastDirection === Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
-        this.collide.left = false;
-        this.collide.right = false;
-      }
-    } else {
-      this.pause += delta;
-    }
+
 
     this.updateHitbox(8, 4);
     this.checkHorizontalCollisions();
@@ -99,12 +85,28 @@ export abstract class Gizmo extends Sprite {
     }
 
     this.moveAi(context, delta);
-
+    if (this.pause >= this.pauseBuffer) {
+      this.onSwitch(context, delta);
+      this.pause = 0;
+      this.pausedMovement = !this.pausedMovement;
+      this.collide.left = false;
+      this.collide.right = false;
+      this.pauseBuffer = Math.random() * 3 + 1;
+      const switchDirection = (Math.random() < 0.5);
+      if (switchDirection) {
+        this.lastDirection = this.lastDirection === Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
+        this.collide.left = false;
+        this.collide.right = false;
+      }
+    } else {
+      this.pause += delta;
+    }
 
   }
 
   public applyGravity(delta: number): void {
     if (!this.isFlying) {
+
       this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
       this.position.setY(this.position.getY() + this.velocity.getY() * delta);
     }
@@ -219,20 +221,25 @@ export abstract class Gizmo extends Sprite {
         if (this.lastDirection === Direction.LEFT) {
           this.move(Direction.LEFT, delta);
           this.switchSprite('runLeft');
+          this.isMoving = true;
         } else if (this.lastDirection === Direction.RIGHT) {
           this.move(Direction.RIGHT, delta);
           this.switchSprite('runRight');
+          this.isMoving = true;
         }
       }
       if (this.collide.left) {
         this.move(Direction.RIGHT, delta);
         this.switchSprite('runRight');
+        this.isMoving = true;
       } else if (this.collide.right) {
         this.move(Direction.LEFT, delta);
+        this.isMoving = true;
         this.switchSprite('runLeft');
       }
 
     } else {
+      this.isMoving = false;
       this.switchSprite('idle');
     }
   }
