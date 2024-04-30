@@ -18,11 +18,34 @@ export class GameAudio {
     return GameAudio.map.get(name)!;
   }
 
-  public play(): void {
+  public play(onEnded?: () => void): void {
     const clone = this.audio.cloneNode(true) as HTMLAudioElement; // Create a clone of the audio element
     clone.play().then();
     clone.addEventListener("ended", function() {
+      onEnded?.();
       clone.remove();
+    });
+  }
+
+
+}
+
+export class AudioPlayer {
+  private gameAudioNames: string[];
+  private currentIndex: number = 0;
+  constructor(gameAudioNames: string[]) {
+    this.gameAudioNames = gameAudioNames;
+  }
+
+  public playNext(): void {
+    GameAudio.getAudio(this.gameAudioNames[this.currentIndex]).play(() => {
+      this.currentIndex++;
+      if(this.currentIndex < this.gameAudioNames.length) {
+        this.playNext();
+      }else {
+        this.currentIndex = 0;
+        this.playNext()
+      }
     });
   }
 
@@ -31,7 +54,8 @@ export class GameAudio {
 
 
 export function initializeSounds() {
-  new GameAudio('background', '../../../assets/sound/background/Dungeon%20Explorer.mp3', true);
+  new GameAudio('background', '../../../assets/sound/background/Dungeon%20Explorer.mp3', false);
+  new GameAudio('background2', '../../../assets/sound/background/The%20Quest%20for%20Freedom.mp3', false);
   new GameAudio('pig:grunt', '../../../assets/sound/game/pig/grunt.mp3', false);
 
   new GameAudio('coin:collect', '../../../assets/sound/game/coin/collect.mp3', false);

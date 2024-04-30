@@ -1,5 +1,5 @@
 import {GameComponent} from "../components/game/game.component";
-import {GameAudio} from "../classes/audio/audio";
+import {AudioPlayer, GameAudio} from "../classes/audio/audio";
 
 export class GameKey {
   private readonly key: string;
@@ -47,10 +47,12 @@ export function isKeyPressed(key: string): boolean {
   return gameKey!.isPressed();
 }
 export function registerKeystrokes(): void {
+
+  const audioPlayer = new AudioPlayer(['background', 'background2']);
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
     if (!GameComponent.hasInteracted) {
       GameComponent.hasInteracted = true;
-      GameAudio.getAudio('background').play();
+      audioPlayer.playNext();
 
     }
 
