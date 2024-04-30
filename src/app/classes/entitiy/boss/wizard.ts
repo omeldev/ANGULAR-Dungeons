@@ -3,6 +3,7 @@ import {Position} from "../position";
 import {Enemie} from "./enemie";
 import {Hitbox} from "../../collision/hitbox";
 import {Player} from "../player/player";
+import {Healthbar} from "../../gui/bar/healthbar";
 
 const animationDefaults = {
   frameRate: 8,
@@ -13,10 +14,14 @@ const animationDefaults = {
 export class Wizard extends Enemie {
 
   private collisionDone = new Set<Hitbox>;
+  public maxHealth: number = 100;
+  public health: number = this.maxHealth;
+  public healthBar: Healthbar;
+  public isDead: boolean = false;
 
   constructor(position: Position) {
     super(new Hitbox(position, 50, 50), '../../../assets/sprites/wizard/idleRight.png', position, {
-      idle: {
+      idleRight: {
         ...animationDefaults,
         imageSrc: '../../../assets/sprites/wizard/idleRight.png'
       },
@@ -59,8 +64,12 @@ export class Wizard extends Enemie {
       },
       death: {
         ...animationDefaults,
+        loop: false,
         frameRate: 7,
-        imageSrc: '../../../assets/sprites/wizard/death.png'
+        imageSrc: '../../../assets/sprites/wizard/death.png',
+        onComplete: () => {
+          this.isDead = true;
+        }
 
       },
       runRight: {
@@ -90,11 +99,16 @@ export class Wizard extends Enemie {
     }, 8);
     this.getHitbox().setWidth(30);
     this.getHitbox().setHeight(50);
+    this.healthBar = new Healthbar(position);
   }
 
 
   public override updateHitbox(offsetX: number, offsetY: number): void {
     super.updateHitbox(offsetX + 100, offsetY + 115);
+
+    this.healthBar.position.setY(this.getPosition().getY() + 100);
+    this.healthBar.position.setX(this.getPosition().getX() + 70);
+
   }
 
   public attack(): void {
@@ -111,8 +125,14 @@ export class Wizard extends Enemie {
     this.collisionDone.clear();
   }
 
+
   public override moveAi(context: CanvasRenderingContext2D, delta: number): void {
 
+
+    if (this.health <= 0) {
+      this.switchSprite('death');
+      return;
+    }
 
     if (this.isAttacking) {
       this.attack();
@@ -125,24 +145,15 @@ export class Wizard extends Enemie {
     }
 
 
-    if (!this.isMoving) {
-      if (this.lastDirection === Direction.RIGHT) {
-        this.switchSprite('idle');
-      } else {
-        this.switchSprite('idleLeft');
-        console.log('idleLeft')
-      }
-      return;
-    }
-
     super.moveAi(context, delta);
-
 
   }
 
 
   public override drawSprite(context: CanvasRenderingContext2D, delta: number): void {
+    if (this.isDead) return;
     super.drawSprite(context, delta);
+    this.healthBar.draw(context, 10, this.health, this.maxHealth)
   }
 
   attackBoxCollide(player: Player): void {
