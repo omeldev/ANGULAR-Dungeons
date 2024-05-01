@@ -11,8 +11,6 @@ import {Key} from "../../collectibles/key/key";
 import {Shine} from "../../collectibles/shines/shine";
 import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
-import {Direction} from "../gizmo/gizmo";
-import {Bat} from "../gizmo/bat";
 import {HealthPotion} from "../../collectibles/potion/potion";
 
 export class Player extends Sprite {
@@ -21,7 +19,7 @@ export class Player extends Sprite {
   public isAttacking = false;
   public attackCooldown = 0;
   public collectedKeys: number = 0;
-  collectedShines: number = 0;
+  public collectedShines: number = 0;
   public isOnLadder = false;
   public health: number = 100;
   protected MAX_SPEED = 350;
@@ -31,7 +29,6 @@ export class Player extends Sprite {
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
   private collectedCoins: number = 0;
-  private sides: { top: PlayerSide, bottom: PlayerSide, left: PlayerSide, right: PlayerSide };
   public maxHealth: number = 100;
 
   public attackBox: Hitbox;
@@ -84,16 +81,6 @@ export class Player extends Sprite {
         onComplete: () => {
           GameComponent.levelChange();
           GameComponent.player.preventInput = false;
-
-          //FIXME
-          for (let i = 0; i < GameComponent.gizmo.length; i++) {
-            if (GameComponent.gizmo[i] instanceof Bat) {
-              GameComponent.gizmo[i].setPosition(new Position(GameComponent.getCurrentLevel().getSpawnPoint().getX(), GameComponent.getCurrentLevel().getSpawnPoint().getY() + 48));
-              continue;
-            }
-            GameComponent.gizmo[i].setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-
-          }
         }
       },
       leaveDoor: {
@@ -131,16 +118,6 @@ export class Player extends Sprite {
     this.velocity = new Velocity(0, 0);
     this.hitbox = new Hitbox(this.getPosition(), 30, 54);
     this.attackBox = new Hitbox(this.getPosition(), 50, 70);
-    /**
-     * Initialize the sides
-     * @type {{top: PlayerSide; right: PlayerSide; bottom: PlayerSide; left: PlayerSide}}
-     */
-    this.sides = {
-      top: new PlayerSide(Side.TOP, this.getPosition()),
-      right: new PlayerSide(Side.RIGHT, new Position(this.getPosition().getX() + this.getWidth(), this.getPosition().getY())),
-      bottom: new PlayerSide(Side.BOTTOM, new Position(this.getPosition().getX(), this.getPosition().getY() + this.getHeight())),
-      left: new PlayerSide(Side.LEFT, new Position(this.getPosition().getX(), this.getPosition().getY()))
-    };
 
 
   }
@@ -149,37 +126,6 @@ export class Player extends Sprite {
     return this.hitbox;
   }
 
-  /**
-   * Get the Bottom side of the player
-   * @returns {PlayerSide} bottom side of the player
-   */
-  public getBottomSide(): PlayerSide {
-    return this.sides.bottom;
-  }
-
-  /**
-   * Get the Top side of the player
-   * @returns {PlayerSide} top side of the player
-   */
-  public getTopSide(): PlayerSide {
-    return this.sides.top;
-  }
-
-  /**
-   * Get the Right side of the player
-   * @returns {PlayerSide} right side of the player
-   */
-  public getRightSide(): PlayerSide {
-    return this.sides.right;
-  }
-
-  /**
-   * Get the Left side of the player
-   * @returns {PlayerSide} left side of the player
-   */
-  public getLeftSide(): PlayerSide {
-    return this.sides.left;
-  }
 
   /**
    * Get the Velocity of the player
@@ -271,15 +217,6 @@ export class Player extends Sprite {
 
 
     /**
-     * Update the sides
-     */
-    this.getBottomSide().getPosition().setY(this.getPosition().getY() + this.getHeight());
-    this.getRightSide().getPosition().setX(this.getPosition().getX() + this.getWidth());
-    this.getLeftSide().getPosition().setX(this.getPosition().getX());
-    this.getTopSide().getPosition().setY(this.getPosition().getY());
-
-
-    /**
      * Check for collisions
      * 1. Check for horizontal collisions
      * 2. Apply gravity
@@ -334,7 +271,7 @@ export class Player extends Sprite {
      * Check if the player is below the canvas
      * If so, set the velocity to 0 and set the player to the spawn point
      */
-    if (this.getBottomSide().getPosition().getY() >= GameComponent.canvasHeight) {
+    if (this.getPosition().getY() + this.getHeight() >= GameComponent.canvasHeight) {
       this.velocity.setY(0);
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
     }
@@ -461,13 +398,6 @@ export class Player extends Sprite {
       this.hitbox.getPosition().getY() + this.hitbox.getHeight() > shine.getPosition().getY();
   }
 
-  public checkForLadderCollision(ladder: Ladder): boolean {
-    return this.hitbox.getPosition().getX() < ladder.getPosition().getX() + ladder.getWidth() &&
-      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > ladder.getPosition().getX() &&
-      this.hitbox.getPosition().getY() < ladder.getPosition().getY() + ladder.getHeight() &&
-      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > ladder.getPosition().getY();
-
-  }
 
   /**
    * Check for horizontal collisions

@@ -55,7 +55,6 @@ export class GameComponent implements AfterViewInit {
 
   public isFullscreen: boolean = true;
 
-  public static gizmo: Gizmo[];
   public flashLight = new Flashlight();
   public static isFlashlightOn: boolean = true;
   public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
@@ -69,23 +68,7 @@ export class GameComponent implements AfterViewInit {
 
   constructor() {
     GameComponent.player = new Player();
-
     initializeSounds();
-
-    GameComponent.gizmo = [];
-
-
-
-    const bat = new Bat(new Position(64 * 4 + 20, 64 * 3 + 36));
-    GameComponent.gizmo.push(bat);
-
-    for (let i = 0; i < 5; i++) {
-      GameComponent.gizmo.push(new Pig(new Position(260, 200)))
-
-      if (i == 2) {
-        GameComponent.gizmo.push(new KingPig(new Position(260, 200)))
-      }
-    }
     registerGuiListener();
   }
 
@@ -117,12 +100,10 @@ export class GameComponent implements AfterViewInit {
     }
   }
 
-  public switchFlashlight(): void {
-    GameComponent.isFlashlightOn = !GameComponent.isFlashlightOn;
-  }
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
+
     // @ts-ignore
     this.cameraContext = this.cameraCanvas?.nativeElement.getContext('2d');
     this.initializeCanvas();
@@ -223,13 +204,22 @@ export class GameComponent implements AfterViewInit {
       wizzard.update(this.context!, delta)
       wizzard.drawSprite(this.context!, delta)
     });
+
+    GameComponent.getCurrentLevel().getPigs().forEach(pig => {
+      pig.update(this.context!, delta)
+      pig.drawSprite(this.context!, delta)
+    });
+
+    GameComponent.getCurrentLevel().getBats().forEach(bat => {
+      bat.update(this.context!, delta)
+      bat.drawSprite(this.context!, delta)
+    });
+
+
     GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
 
-    for (let i = 0; i < GameComponent.gizmo.length; i++) {
-      GameComponent.gizmo[i].update(this.context!, delta);
-      GameComponent.gizmo[i].drawSprite(this.context!, delta);
-    }
+
     this.titleUpdate(delta)
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 ) {

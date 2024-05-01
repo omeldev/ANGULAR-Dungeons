@@ -8,6 +8,8 @@ import {Shine} from "../collectibles/shines/shine";
 import {Ladder} from "../collision/ladderblock";
 import {Wizard} from "../entitiy/boss/wizard";
 import {HealthPotion} from "../collectibles/potion/potion";
+import {Pig} from "../entitiy/gizmo/pig";
+import {Bat} from "../entitiy/gizmo/bat";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -18,6 +20,8 @@ export class Level extends Sprite {
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
   private readonly wizzards: Wizard[] = [];
+  private pigs: Pig[] = [];
+  private bats: Bat[] = [];
   private readonly healthPotions: HealthPotion[] = [];
   private shine: Shine[] = [];
   private ladders: Ladder [] = [];
@@ -32,7 +36,18 @@ export class Level extends Sprite {
    * @param otherDoors {Door[]} of the Level
    * @param coins
    */
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[], ladders?: number[], wizzards?: number[], healthPotions?: number[]) {
+  constructor(background: Sprite,
+              spawnPoint: Position,
+              collisions: number[],
+              finalDoor?: Door,
+              coins?: number[],
+              key?: number[],
+              shine?: number[],
+              ladders?: number[],
+              wizzards?: number[],
+              healthPotions?: number[],
+              pigs?: number[],
+              bats?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
@@ -66,6 +81,14 @@ export class Level extends Sprite {
 
       if(healthPotions){
         this.setHealthPotions(healthPotions);
+      }
+
+      if(pigs){
+        this.setPigs(pigs);
+      }
+
+      if(bats){
+        this.setBats(bats);
       }
 
     });
@@ -316,5 +339,60 @@ export class Level extends Sprite {
 
   public getHealthPotions(): HealthPotion[] {
     return this.healthPotions;
+  }
+
+  private setPigs(pigs: number[]) {
+    const rows: number[][] = [];
+    const rowSize = this.getWidth() / 64;
+
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < pigs.length; i += rowSize) {
+      rows.push(pigs.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const pig = new Pig(new Position(x * 64, y * 64));
+          this.pigs.push(pig);
+        }
+      });
+    }));
+
+
+  }
+
+  public getPigs(): Pig[] {
+    return this.pigs;
+  }
+
+  public getBats(): Bat[] {
+    return this.bats;
+  }
+
+
+  private setBats(bats: number[]) {
+    const rows: number[][] = [];
+    const rowSize = this.getWidth() / 64;
+
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < bats.length; i += rowSize) {
+      rows.push(bats.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const bat = new Bat(new Position(x * 64, y * 64));
+          this.bats.push(bat);
+        }
+      });
+    }));
   }
 }
