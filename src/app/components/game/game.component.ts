@@ -53,6 +53,8 @@ export class GameComponent implements AfterViewInit {
     }),
   ]);
 
+  public isFullscreen: boolean = true;
+
   public static gizmo: Gizmo[];
   public flashLight = new Flashlight();
   public static isFlashlightOn: boolean = true;
