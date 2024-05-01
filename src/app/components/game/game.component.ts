@@ -19,6 +19,8 @@ import {Princess} from "../../classes/entitiy/gizmo/princess";
 import {Wizard} from "../../classes/entitiy/boss/wizard";
 import {Healthbar} from "../../classes/gui/bar/healthbar";
 import {isArray} from "@angular/compiler-cli/src/ngtsc/annotations/common";
+import {Mobile} from "../../classes/gui/window/mobile";
+import {Scale} from "../../classes/entitiy/scale";
 
 @Component({
   selector: 'app-game',
@@ -27,7 +29,7 @@ import {isArray} from "@angular/compiler-cli/src/ngtsc/annotations/common";
 })
 export class GameComponent implements AfterViewInit {
 
-  public static isMobile: boolean = false;
+  public static isMobile = window.innerWidth < 800 || window.innerHeight < 600;
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static productionMode: boolean = true;
@@ -47,7 +49,7 @@ export class GameComponent implements AfterViewInit {
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
   public titleScreen: TitleScreen = new TitleScreen([
-    new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), () => {
+    new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), new Scale(0.25),() => {
       GameComponent.isPaused = false;
       GameComponent.player.preventInput = false;
     }),
@@ -269,10 +271,22 @@ export class GameComponent implements AfterViewInit {
 
     this.moveCamera();
 
+    this.cameraContext!.fillStyle = "white";
+    for(let touch in this.touches){
+      this.cameraContext!.fillRect(this.touches[touch].posX, this.touches[touch].posY, 10, 10);
+    }
+
     if (GameComponent.isPaused) {
       this.titleScreen.draw(this.cameraContext!);
       return;
     }
+
+    if(GameComponent.isMobile){
+      this.mobileControls.draw(this.cameraContext!);
+      return;
+    }
+
+
 
     if (isKeyPressed('f') && !(this.flashLight.cooldown > 0) && GameComponent.player.collectedShines < 3) {
       this.flashLight.toggle();
@@ -280,6 +294,26 @@ export class GameComponent implements AfterViewInit {
 
 
   }
+
+  public mobileControls: Mobile = new Mobile([
+    new Button('../../../assets/gui/mobile/left.png', new Position(0, 400), new Scale(0.25), () => {
+      setKeyPressed('a', true);
+      console.log('left Clicked')
+    }, () => {
+      setKeyPressed('a', false);
+      console.log('left Released')
+    }),
+    new Button('../../../assets/gui/mobile/right.png', new Position(100, 400),new Scale(0.25), () => {
+      setKeyPressed('d', true);
+      console.log('right Clicked')
+    }, () => {setKeyPressed('d', false); console.log('right Released');}),
+    new Button('../../../assets/gui/mobile/up.png', new Position(50, 350),new Scale(0.25), () => {
+      setKeyPressed('w', true);
+    }, () => {setKeyPressed('w', false)}),
+    new Button('../../../assets/gui/mobile/down.png', new Position(100, 0),new Scale(0.25), () => {
+      console.log('down')
+    }),
+  ]);
 
   private moveCamera() {
     const cameraWidth = 750;
@@ -308,5 +342,39 @@ export class GameComponent implements AfterViewInit {
       cameraStartX, cameraStartY, cameraWidth, cameraHeight,
       0, 0, cameraWidth, cameraHeight
     );
+  }
+
+  public touchEnd(event: TouchEvent): void {
+
+
+    const touches = event.changedTouches;
+    if (touches.length > 0) {
+      const touchEndX = touches[0].clientX;
+      const touchEndY = touches[0].clientY;
+      if(GameComponent.isMobile){
+        Mobile.releaseButtons(touchEndX, touchEndY);
+      }
+    }
+
+
+  }
+
+  public touches: {posX: number, posY: number}[] = [];
+  touchStart(event: TouchEvent) {
+
+
+
+    const touchX = event.touches[0].clientX;
+    const touchY = event.touches[0].clientY;
+    this.touches.push({posX: touchX, posY: touchY});
+    console.log(this.touches);
+    if(GameComponent.isPaused){
+      TitleScreen.checkButtons(touchX, touchY);
+    }
+
+    if(GameComponent.isMobile){
+      Mobile.checkButtons(touchX, touchY);
+    }
+
   }
 }

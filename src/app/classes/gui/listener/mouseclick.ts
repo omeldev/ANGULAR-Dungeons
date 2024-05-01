@@ -15,16 +15,6 @@ export function registerGuiListener() {
 
   });
 
-  window.addEventListener('touchstart', (event) => {
-    if(GameComponent.isPaused){
-      TitleScreen.checkButtons(event.touches[0].clientX, event.touches[0].clientY);
-    }
-
-    if(GameComponent.isMobile){
-      Mobile.checkButtons(event.touches[0].clientX, event.touches[0].clientY);
-    }
-
-  });
 
 
 }

@@ -17,6 +17,7 @@ export class TitleScreen {
     for (let button of this.buttons) {
       if (button.isClicked(clientX, clientY)) {
         button.onClick();
+        return;
       }
     }
   }

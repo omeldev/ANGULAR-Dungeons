@@ -3,7 +3,7 @@
 
 
   <canvas class="hide" #canvas></canvas>
-  <canvas class="fullscreen" #cameraCanvas></canvas>
+  <canvas (touchcancel)="touchEnd($event)" (touchstart)="touchStart($event)" (touchend)="touchEnd($event)" class="fullscreen" #cameraCanvas></canvas>
 
 </ng-container>
 
