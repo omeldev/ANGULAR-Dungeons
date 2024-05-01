@@ -24,7 +24,7 @@ export class Button {
 
   public draw(context: CanvasRenderingContext2D) {
     if (!this.loaded) return;
-    context.drawImage(this.image, this.position.getX(), this.position.getY(), this.width, this.height);
+    context.drawImage(this.image, this.position.getX(), this.position.getY(), this.width * 0.25, this.height* 0.25);
 
   }
 

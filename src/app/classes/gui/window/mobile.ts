@@ -1,13 +1,13 @@
 import {Button} from "../button/button";
 
-export class TitleScreen {
+export class Mobile {
   private static buttons: Button[];
   public buttons: Button[] = [];
 
   constructor(buttons: Button[]) {
 
     this.buttons = buttons;
-    TitleScreen.buttons = buttons;
+    Mobile.buttons = buttons;
 
 
 
@@ -23,7 +23,6 @@ export class TitleScreen {
 
   public draw(context: CanvasRenderingContext2D) {
 
-    //context.drawImage(this.image, 0, 0, this.width, this.height);
     context.fillStyle = "black";
     console.log(context.canvas.width, context.canvas.height)
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
@@ -39,5 +38,7 @@ export class TitleScreen {
     for (let button of this.buttons) {
       button.draw(context);
     }
+
+    Mobile.checkButtons(0, 0);
   }
 }

@@ -27,12 +27,13 @@ import {isArray} from "@angular/compiler-cli/src/ngtsc/annotations/common";
 })
 export class GameComponent implements AfterViewInit {
 
+  public static isMobile: boolean = false;
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static productionMode: boolean = true;
   public static player: Player;
   public static volume: number = 1.0;
-  public static isPaused: boolean = false;
+  public static isPaused: boolean = true;
   public static isMuted: boolean = false;
   public static hasInteracted: boolean = false;
   private static currentLevel = level1;
@@ -47,7 +48,7 @@ export class GameComponent implements AfterViewInit {
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
   public titleScreen: TitleScreen = new TitleScreen([
-    new Button('../../../assets/gui/buttons/play.png', new Position(550, 300), () => {
+    new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), () => {
       GameComponent.isPaused = false;
       GameComponent.player.preventInput = false;
     }),
@@ -107,6 +108,8 @@ export class GameComponent implements AfterViewInit {
     // @ts-ignore
     this.cameraContext = this.cameraCanvas?.nativeElement.getContext('2d');
     this.initializeCanvas();
+
+    GameComponent.isMobile = window.innerWidth < 800 || window.innerHeight < 600;
 
 
   }
@@ -274,7 +277,7 @@ export class GameComponent implements AfterViewInit {
     this.moveCamera();
 
     if (GameComponent.isPaused) {
-      this.titleScreen.draw();
+      this.titleScreen.draw(this.cameraContext!);
       return;
     }
 
