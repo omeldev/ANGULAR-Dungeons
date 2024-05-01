@@ -379,6 +379,7 @@ export class Player extends Sprite {
     const healthPotions = GameComponent.getCurrentLevel().getHealthPotions();
     for (let i = 0; i < healthPotions.length; i++) {
       if (this.checkForHealthPotionCollision(healthPotions[i])) {
+        if(this.health === this.maxHealth) return;
         GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
 
         if (this.health + 25 > this.maxHealth) {
