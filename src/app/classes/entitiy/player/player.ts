@@ -13,6 +13,7 @@ import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
 import {Direction} from "../gizmo/gizmo";
 import {Bat} from "../gizmo/bat";
+import {HealthPotion} from "../../collectibles/potion/potion";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -363,10 +364,28 @@ export class Player extends Sprite {
 
     const shines = GameComponent.getCurrentLevel().getShines();
     for (let i = 0; i < shines.length; i++) {
-      if (this.checkForCoinCollision(shines[i])) {
+      if (this.checkForShineCollision(shines[i])) {
         GameComponent.getCurrentLevel().getShines().splice(i, 1);
 
         this.collectedShines++;
+
+
+        GameAudio.getAudio('shine:collect').play();
+
+        break;
+      }
+    }
+
+    const healthPotions = GameComponent.getCurrentLevel().getHealthPotions();
+    for (let i = 0; i < healthPotions.length; i++) {
+      if (this.checkForHealthPotionCollision(healthPotions[i])) {
+        GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
+
+        if (this.health + 25 > this.maxHealth) {
+          this.health = this.maxHealth;
+        } else {
+          this.health += 25;
+        }
 
 
         GameAudio.getAudio('shine:collect').play();
@@ -523,6 +542,12 @@ export class Player extends Sprite {
   }
 
 
+  private checkForHealthPotionCollision(healthPotion: HealthPotion): boolean {
+    return this.hitbox.getPosition().getX() < healthPotion.getPosition().getX() + healthPotion.getWidth() &&
+      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > healthPotion.getPosition().getX() &&
+      this.hitbox.getPosition().getY() < healthPotion.getPosition().getY() + healthPotion.getHeight() &&
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > healthPotion.getPosition().getY();
+  }
 }
 
 

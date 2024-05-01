@@ -223,6 +223,7 @@ export class GameComponent implements AfterViewInit {
       wizzard.update(this.context!, delta)
       wizzard.drawSprite(this.context!, delta)
     });
+    GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(this.context!, delta));
     GameComponent.player.drawSprite(this.context!, delta);
 
     for (let i = 0; i < GameComponent.gizmo.length; i++) {
