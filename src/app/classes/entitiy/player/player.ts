@@ -516,10 +516,7 @@ export class Player extends Sprite {
     if(this.attackBox.collidesWith(necromancerHitbox) && this.isAttacking){
       if (this.collisionDone.has(necromancerHitbox)) return;
       this.collisionDone.add(necromancerHitbox);
-      GameComponent.necromancer.health -= 5;
-      console.log(GameComponent.necromancer.health);
-
-      console.log('Hit Wizard');
+      GameComponent.necromancer.health -= 25;
     }
   }
 

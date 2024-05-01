@@ -1,4 +1,4 @@
-<!--
+
 <ng-container class="game-container">
 
   <div class="stat-container">
@@ -6,12 +6,17 @@
     <ng-container class="volume-container">
       <div>Volume</div>
       <input type="range" min="0" max="1" step="0.01" [(ngModel)]="volume">
-      <button (click)="switchFlashlight()">Licht {{isFlashlightOn ? 'an' : 'aus'}}</button>
     </ng-container>
   </div>
   <div [ngClass]="{'canvas-container': prodMode}">
 
-    <canvas #canvas></canvas>
+      <canvas class="hide" #canvas></canvas>
+      <canvas #cameraCanvas></canvas>
+      <canvas #menuCanvas></canvas>
+
+
+
+
     <div>
       <h1>Controls</h1>
       <h2>Move</h2>
@@ -28,12 +33,7 @@
 
 
 </ng-container>
--->
 
 
-<div #canvasContainer class="canvas-container">
 
-  <canvas class="hide" #canvas></canvas>
-  <canvas #cameraCanvas></canvas>
-  <canvas #menuCanvas></canvas>
-</div>
+

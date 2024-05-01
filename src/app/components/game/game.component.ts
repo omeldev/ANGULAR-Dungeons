@@ -18,6 +18,7 @@ import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 import {Princess} from "../../classes/entitiy/gizmo/princess";
 import {Wizard} from "../../classes/entitiy/boss/wizard";
 import {Healthbar} from "../../classes/gui/bar/healthbar";
+import {isArray} from "@angular/compiler-cli/src/ngtsc/annotations/common";
 
 @Component({
   selector: 'app-game',
@@ -42,8 +43,6 @@ export class GameComponent implements AfterViewInit {
   @ViewChild('cameraCanvas', { static: true })
   public cameraCanvas: ElementRef<HTMLCanvasElement> | undefined;
   public cameraContext: CanvasRenderingContext2D | undefined;
-  @ViewChild('canvasContainer', {static: true})
-  public canvasContainer: ElementRef<HTMLDivElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
   public prodMode: boolean = GameComponent.productionMode;
   public coins$ = GameComponent.coins$;
@@ -190,10 +189,12 @@ export class GameComponent implements AfterViewInit {
 
 
 
+    localStorage.setItem('volume', this.volume.toString());
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
 
-    localStorage.setItem('volume', this.volume.toString());
+
+
 
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
@@ -206,6 +207,8 @@ export class GameComponent implements AfterViewInit {
       GameComponent.getCurrentLevel().drawCollisionBlocks(this.context!);
 
     }
+
+
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
 
@@ -226,8 +229,8 @@ export class GameComponent implements AfterViewInit {
     }
     this.titleUpdate(delta)
 
-
-    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 ) {
+      if(GameComponent.player.isAttacking) return;
       GameComponent.getCurrentLevel().getFinalDoor().play();
       GameAudio.getAudio('door:open').play();
       GameComponent.player.collectedKeys -= 1;
@@ -236,10 +239,11 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.preventInput = true;
       GameComponent.player.switchSprite('enterDoor');
 
+
+
     }
-    this.context!.fillStyle = 'white';
-    this.context!.font = '50px Arial';
-    this.context!.fillText(`Health: ${GameComponent.player.health}`, 10, 80);
+
+
 
     if (GameComponent.getCurrentLevel() === level1) {
       this.cat.drawSprite(this.context!, delta);
@@ -289,23 +293,31 @@ export class GameComponent implements AfterViewInit {
   }
 
   private moveCamera() {
-
-    const cameraWidth = 650;
-    const cameraHeight = 400;
+    const cameraWidth = 750;
+    const cameraHeight = 500;
     this.cameraCanvas!.nativeElement.width = cameraWidth;
     this.cameraCanvas!.nativeElement.height = cameraHeight;
+
     const offsetX = 150;
     const offsetY = 50;
-    const startX = Math.max(0, GameComponent.player.getPosition().getX() + offsetX - cameraWidth / 2);
-    const startY = Math.max(0, GameComponent.player.getPosition().getY() + offsetY - cameraHeight / 2);
-    const width = Math.min(GameComponent.canvasWidth - startX, cameraWidth);
-    const height = Math.min(GameComponent.canvasHeight - startY, cameraHeight);
 
+    // Calculate the position of the camera center relative to the player's position
+    let cameraCenterX = GameComponent.player.getPosition().getX() + offsetX;
+    let cameraCenterY = GameComponent.player.getPosition().getY() + offsetY;
+
+    // Ensure the camera stays within the bounds of the canvas
+    cameraCenterX = Math.max(cameraWidth / 2, Math.min(GameComponent.canvasWidth - cameraWidth / 2, cameraCenterX));
+    cameraCenterY = Math.max(cameraHeight / 2, Math.min(GameComponent.canvasHeight - cameraHeight / 2, cameraCenterY));
+
+    // Calculate the top-left corner of the camera
+    const cameraStartX = cameraCenterX - cameraWidth / 2;
+    const cameraStartY = cameraCenterY - cameraHeight / 2;
+
+    // Draw the portion of the game canvas onto the camera canvas
     this.cameraContext!.drawImage(
       this.canvas!.nativeElement,
-      startX, startY, width, height,
+      cameraStartX, cameraStartY, cameraWidth, cameraHeight,
       0, 0, cameraWidth, cameraHeight
     );
-
   }
 }
