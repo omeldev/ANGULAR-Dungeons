@@ -366,8 +366,15 @@ export class GameComponent implements AfterViewInit {
 
     const touchX = event.touches[0].clientX;
     const touchY = event.touches[0].clientY;
-    this.touches.push({posX: touchX, posY: touchY});
-    console.log(this.touches);
+
+    const rect = this.cameraCanvas!.nativeElement.getBoundingClientRect()
+    const x = touchX - rect.left
+    const y = touchY - rect.top
+    console.log("x: " + x + " y: " + y)
+
+    this.touches.push({posX: x, posY: y});
+
+
     if(GameComponent.isPaused){
       TitleScreen.checkButtons(touchX, touchY);
     }
