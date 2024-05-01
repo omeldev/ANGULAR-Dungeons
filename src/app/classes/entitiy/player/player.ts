@@ -512,11 +512,13 @@ export class Player extends Sprite {
   }
 
   public checkForAttackCollisions() {
-    const necromancerHitbox = GameComponent.necromancer.getHitbox();
-    if(this.attackBox.collidesWith(necromancerHitbox) && this.isAttacking){
-      if (this.collisionDone.has(necromancerHitbox)) return;
-      this.collisionDone.add(necromancerHitbox);
-      GameComponent.necromancer.health -= 25;
+
+    for(let wizzards of GameComponent.getCurrentLevel().getWizzards()){
+      if(this.attackBox.collidesWith(wizzards.getHitbox()) && this.isAttacking){
+        if (this.collisionDone.has(wizzards.getHitbox())) return;
+        this.collisionDone.add(wizzards.getHitbox());
+        wizzards.health -= 25;
+      }
     }
   }
 

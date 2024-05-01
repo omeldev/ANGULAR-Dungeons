@@ -6,6 +6,7 @@ import {Coin} from "../coin/coin";
 import {Key} from "../collectibles/key/key";
 import {Shine} from "../collectibles/shines/shine";
 import {Ladder} from "../collision/ladderblock";
+import {Wizard} from "../entitiy/boss/wizard";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -15,6 +16,7 @@ export class Level extends Sprite {
   private readonly key: Key[] = [];
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
+  private readonly wizzards: Wizard[] = [];
   private shine: Shine[] = [];
   private ladders: Ladder [] = [];
 
@@ -28,7 +30,7 @@ export class Level extends Sprite {
    * @param otherDoors {Door[]} of the Level
    * @param coins
    */
-  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[], ladders?: number[]) {
+  constructor(background: Sprite, spawnPoint: Position, collisions: number[], finalDoor?: Door, coins?: number[], key?: number[], shine?: number[], ladders?: number[], wizzards?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
@@ -54,6 +56,10 @@ export class Level extends Sprite {
 
       if (ladders) {
         this.setLadders(ladders);
+      }
+
+      if(wizzards){
+        this.setWizzards(wizzards);
       }
 
     });
@@ -115,6 +121,9 @@ export class Level extends Sprite {
 
   }
 
+  public getWizzards(): Wizard[] {
+    return this.wizzards;
+  }
   /**
    * Get the collisions of the Level
    * @returns {number[][]} of the Level
@@ -252,5 +261,28 @@ export class Level extends Sprite {
       });
     }));
 
+  }
+
+  private setWizzards(wizzards: number[]) {
+    const rows: number[][] = [];
+
+    const rowSize = this.getWidth() / 64;
+
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < wizzards.length; i += rowSize) {
+      rows.push(wizzards.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const wizzard = new Wizard(new Position(x * 64, y * 64));
+          this.wizzards.push(wizzard);
+        }
+      });
+    }));
   }
 }

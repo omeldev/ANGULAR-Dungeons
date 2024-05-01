@@ -63,7 +63,6 @@ export class GameComponent implements AfterViewInit {
   public escapeCooldown = 0;
   private oldFrameTime: number = 1;
   private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
-  static necromancer: Wizard = new Wizard(new Position(347, 280));
   public static flashCount = 0;
   public static flashBuffer = 0.005;
   public static flashIterations = 0;
@@ -140,7 +139,6 @@ export class GameComponent implements AfterViewInit {
     GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
 
     GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-    GameComponent.necromancer.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
 
     GameComponent.isFlashlightOn = true;
     GameComponent.player.collectedShines = 0;
@@ -216,14 +214,16 @@ export class GameComponent implements AfterViewInit {
 
     GameComponent.getCurrentLevel().getFinalDoor().drawSprite(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
-    GameComponent.necromancer.update(this.context!, delta);
 
     this.oldFrameTime = performance.now();
     GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(this.context!, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(this.context!, delta));
+    GameComponent.getCurrentLevel().getWizzards().forEach(wizzard => {
+      wizzard.update(this.context!, delta)
+      wizzard.drawSprite(this.context!, delta)
+    });
     GameComponent.player.drawSprite(this.context!, delta);
-    GameComponent.necromancer.drawSprite(this.context!, delta);
 
     for (let i = 0; i < GameComponent.gizmo.length; i++) {
       GameComponent.gizmo[i].update(this.context!, delta);
