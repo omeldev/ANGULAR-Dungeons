@@ -271,10 +271,6 @@ export class GameComponent implements AfterViewInit {
 
     this.moveCamera();
 
-    this.cameraContext!.fillStyle = "white";
-    for(let touch in this.touches){
-      this.cameraContext!.fillRect(this.touches[touch].posX, this.touches[touch].posY, 10, 10);
-    }
 
     if (GameComponent.isPaused) {
       this.titleScreen.draw(this.cameraContext!);
@@ -377,13 +373,10 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  public touches: {posX: number, posY: number}[] = [];
   touchStart(event: TouchEvent) {
 
     const {clientX, clientY} = event.touches[0];
     const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);
-
-    this.touches.push({posX: canvasTouch.x, posY: canvasTouch.y});
 
     if(GameComponent.isPaused){
       TitleScreen.checkButtons(canvasTouch.x, canvasTouch.y);
