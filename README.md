@@ -18,3 +18,6 @@ You also need to collect keys to open doors and find the exit to the next level.
 
 # Attack
 - Space: Attack
+
+# Flashlight
+- F: Turn on/off flashlight

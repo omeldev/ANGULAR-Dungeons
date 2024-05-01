@@ -221,7 +221,7 @@ export class Player extends Sprite {
 
     if (this.attackCooldown > 0 && this.attackCooldown != 0) this.attackCooldown -= delta;
 
-    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0) {
+    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput) {
       this.attackCooldown = 1
       this.isAttacking = true;
       if(this.lastDirection === 'right') this.switchSprite('attackRight'); else
