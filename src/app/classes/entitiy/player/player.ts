@@ -226,7 +226,7 @@ export class Player extends Sprite {
       this.isAttacking = true;
       if(this.lastDirection === 'right') this.switchSprite('attackRight'); else
       this.switchSprite('attackLeft');
-      console.log('Attack')
+      GameAudio.getAudio('player:attack').play();
     }
 
 
@@ -516,7 +516,7 @@ export class Player extends Sprite {
     if(this.attackBox.collidesWith(necromancerHitbox) && this.isAttacking){
       if (this.collisionDone.has(necromancerHitbox)) return;
       this.collisionDone.add(necromancerHitbox);
-      GameComponent.necromancer.health -= 20;
+      GameComponent.necromancer.health -= 5;
       console.log(GameComponent.necromancer.health);
 
       console.log('Hit Wizard');

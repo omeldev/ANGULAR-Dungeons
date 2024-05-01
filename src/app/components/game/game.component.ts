@@ -31,7 +31,7 @@ export class GameComponent implements AfterViewInit {
   public static productionMode: boolean = true;
   public static player: Player;
   public static volume: number = 1.0;
-  public static isPaused: boolean = true;
+  public static isPaused: boolean = false;
   public static isMuted: boolean = false;
   public static hasInteracted: boolean = false;
   private static currentLevel = level1;
@@ -39,6 +39,9 @@ export class GameComponent implements AfterViewInit {
   public static coins$ = GameComponent.coinSubject$.asObservable();
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
+  @ViewChild('cameraCanvas', { static: true })
+  public cameraCanvas: ElementRef<HTMLCanvasElement> | undefined;
+  public cameraContext: CanvasRenderingContext2D | undefined;
   @ViewChild('canvasContainer', {static: true})
   public canvasContainer: ElementRef<HTMLDivElement> | undefined;
   public context: CanvasRenderingContext2D | undefined;
@@ -70,6 +73,7 @@ export class GameComponent implements AfterViewInit {
     initializeSounds();
 
     GameComponent.gizmo = [];
+
 
 
     const bat = new Bat(new Position(64 * 4 + 20, 64 * 3 + 36));
@@ -119,6 +123,8 @@ export class GameComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
+    // @ts-ignore
+    this.cameraContext = this.cameraCanvas?.nativeElement.getContext('2d');
     this.initializeCanvas();
 
 
@@ -182,7 +188,7 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    this.moveCamera();
+
 
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
@@ -239,7 +245,6 @@ export class GameComponent implements AfterViewInit {
       this.cat.drawSprite(this.context!, delta);
       this.princess.drawSprite(this.context!, delta);
     }
-
     this.healthbar.position.setX(GameComponent.player.getPosition().getX() + 30);
     this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
 
@@ -266,15 +271,17 @@ export class GameComponent implements AfterViewInit {
           }
         }
       }
-      return;
     } else if (GameComponent.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
 
+
+    this.moveCamera();
+
     if (GameComponent.isPaused) {
-      this.changeCanvasSize(this.titleScreen.width, this.titleScreen.height);
-      this.titleScreen.draw(this.context!);
+      this.titleScreen.draw();
+      return;
     }
 
-    if (isKeyPressed('f') && !(this.flashLight.cooldown > 0)) {
+    if (isKeyPressed('f') && !(this.flashLight.cooldown > 0) && GameComponent.player.collectedShines < 3) {
       this.flashLight.toggle();
     }
 
@@ -282,12 +289,23 @@ export class GameComponent implements AfterViewInit {
   }
 
   private moveCamera() {
-    const cameraX = GameComponent.player.getHitbox().getPosition().getX() - window.innerWidth / 2;
-    const cameraY = GameComponent.player.getHitbox().getPosition().getY() - window.innerHeight / 2;
 
+    const cameraWidth = 650;
+    const cameraHeight = 400;
+    this.cameraCanvas!.nativeElement.width = cameraWidth;
+    this.cameraCanvas!.nativeElement.height = cameraHeight;
+    const offsetX = 150;
+    const offsetY = 50;
+    const startX = Math.max(0, GameComponent.player.getPosition().getX() + offsetX - cameraWidth / 2);
+    const startY = Math.max(0, GameComponent.player.getPosition().getY() + offsetY - cameraHeight / 2);
+    const width = Math.min(GameComponent.canvasWidth - startX, cameraWidth);
+    const height = Math.min(GameComponent.canvasHeight - startY, cameraHeight);
 
-    this.canvasContainer?.nativeElement?.scrollTo(cameraX, cameraY);
-    window.scrollTo(cameraX, cameraY);
+    this.cameraContext!.drawImage(
+      this.canvas!.nativeElement,
+      startX, startY, width, height,
+      0, 0, cameraWidth, cameraHeight
+    );
 
   }
 }

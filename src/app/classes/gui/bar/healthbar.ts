@@ -45,7 +45,7 @@ export class Healthbar {
     if (entityHealth < 0) return hearts;
     let counter = 0;
     for (counter; counter < full; counter++) hearts[counter] = 'full'
-    if (half) hearts[counter + 1] = 'half';
+    if (half) hearts[counter] = 'half';
 
     return hearts;
   }

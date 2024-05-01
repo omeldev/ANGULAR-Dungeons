@@ -17,9 +17,7 @@
   flex-direction: column;
 }
 
-.hide {
-  display: none;
-}
+
 
 .game-container {
   display: flex;
@@ -30,6 +28,10 @@
 }
 
  */
+
+.hide {
+  display: none;
+}
 
 .canvas-container {
   width: 100%; /* Ensure the container takes up the full width of its parent */

@@ -6,6 +6,8 @@ export class TitleScreen {
   public width: number = 0;
   public height: number = 0;
   public buttons: Button[] = [];
+  public canvas: HTMLCanvasElement;
+  public context: CanvasRenderingContext2D;
   private loaded: boolean = false;
 
   constructor(buttons: Button[]) {
@@ -25,6 +27,11 @@ export class TitleScreen {
 
     this.width = window.innerWidth;
     this.height = window.innerHeight;
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+
+    this.context = this.canvas.getContext("2d")!;
 
   }
 
@@ -36,22 +43,22 @@ export class TitleScreen {
     }
   }
 
-  public draw(context: CanvasRenderingContext2D) {
+  public draw() {
 
     //context.drawImage(this.image, 0, 0, this.width, this.height);
-    context.fillStyle = "black";
-    context.fillRect(0, 0, this.width, this.height);
+    this.context.fillStyle = "black";
+    this.context.fillRect(0, 0, this.width, this.height);
 
-    context.fillStyle = "white";
-    context.font = "30px Arial";
-    context.fillText("Welcome to Dungeons the Game!", this.width / 2.5, 100);
+    this.context.fillStyle = "white";
+    this.context.font = "30px Arial";
+    this.context.fillText("Welcome to Dungeons the Game!", this.width / 2.5, 100);
 
-    context.fillText("A, W, D for Moving", this.width / 2.5, 130);
-    context.fillText("F turn Flashlight on", this.width / 2.5, 160);
-    context.fillText("Space to attack", this.width / 2.5, 190);
+    this.context.fillText("A, W, D for Moving", this.width / 2.5, 130);
+    this.context.fillText("F turn Flashlight on", this.width / 2.5, 160);
+    this.context.fillText("Space to attack", this.width / 2.5, 190);
 
     for (let button of this.buttons) {
-      button.draw(context);
+      button.draw(this.context);
     }
 
     TitleScreen.checkButtons(0, 0);

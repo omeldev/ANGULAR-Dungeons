@@ -11,11 +11,17 @@ export class GameAudio {
     this.audio = new Audio(audioSrc);
     this.audio.loop = loop;
     this.audio.volume = volume;
+
     GameAudio.map.set(name, this);
   }
 
   public static getAudio(name: string): GameAudio {
     return GameAudio.map.get(name)!;
+  }
+
+
+  public getAudio(): HTMLAudioElement {
+    return this.audio;
   }
 
   public play(onEnded?: () => void): void {
@@ -60,6 +66,7 @@ export function initializeSounds() {
   new GameAudio('background3', '../../../assets/sound/background/Quest%20for%20Society.mp3', false);
   new GameAudio('background4', '../../../assets/sound/background/Quest%20for%20the%20Treasure.mp3', false);
 
+  new GameAudio('player:attack', '../../../assets/sound/game/player/attack.mp3', false);
   new GameAudio('pig:grunt', '../../../assets/sound/game/pig/grunt.mp3', false);
 
   new GameAudio('coin:collect', '../../../assets/sound/game/coin/collect.mp3', false);
