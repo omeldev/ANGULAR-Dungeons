@@ -12,7 +12,6 @@ export class Hitbox {
   }
 
   public getPosition(): Position {
-    //console.log(this.position.getX(), this.position.getY())
     return this.position;
   }
 

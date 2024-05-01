@@ -35,7 +35,6 @@ export class Wizard extends Enemie {
         imageSrc: '../../../assets/sprites/wizard/attack1Right.png',
         onComplete: () => {
           this.attackDone();
-          console.log('done')
         }
       },
       attack1Left: {
@@ -43,7 +42,6 @@ export class Wizard extends Enemie {
         imageSrc: '../../../assets/sprites/wizard/attack1Left.png',
         onComplete: () => {
           this.attackDone();
-          console.log('done')
         }
       },
 
@@ -52,7 +50,6 @@ export class Wizard extends Enemie {
         imageSrc: '../../../assets/sprites/wizard/attack2Right.png',
         onComplete: () => {
           this.attackDone();
-          console.log('done')
         }
       },
       attack2Left: {
@@ -60,7 +57,6 @@ export class Wizard extends Enemie {
         imageSrc: '../../../assets/sprites/wizard/attack2Left.png',
         onComplete: () => {
           this.attackDone();
-          console.log('done')
         }
       },
       death: {
@@ -167,7 +163,6 @@ export class Wizard extends Enemie {
     if (this.collisionDone.has(player.getHitbox())) return;
     this.collisionDone.add(player.getHitbox());
     player.health -= 20;
-    console.log(player.health);
   }
 
 

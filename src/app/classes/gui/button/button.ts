@@ -30,9 +30,6 @@ export class Button {
   public draw(context: CanvasRenderingContext2D) {
     if (!this.loaded) return;
     context.drawImage(this.image, this.position.getX(), this.position.getY(), this.width, this.height);
-    //Draw a box around the button
-    context.strokeStyle = "red";
-    context.strokeRect(this.position.getX(), this.position.getY(), this.width, this.height);
 
   }
 
@@ -40,7 +37,6 @@ export class Button {
 
     if (x >= this.position.getX() && x <= this.position.getX() + this.width) {
       if (y >= this.position.getY() && y <= this.position.getY() + this.height) {
-        console.log("Button Clicked")
         return true;
       }
     }

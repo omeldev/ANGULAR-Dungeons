@@ -26,7 +26,6 @@ export class TitleScreen {
 
     //context.drawImage(this.image, 0, 0, this.width, this.height);
     context.fillStyle = "black";
-    console.log(context.canvas.width, context.canvas.height)
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
     context.fillStyle = "white";

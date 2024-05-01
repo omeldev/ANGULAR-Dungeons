@@ -298,20 +298,17 @@ export class GameComponent implements AfterViewInit {
   public mobileControls: Mobile = new Mobile([
     new Button('../../../assets/gui/mobile/left.png', new Position(0, 400), new Scale(0.25), () => {
       setKeyPressed('a', true);
-      console.log('left Clicked')
     }, () => {
       setKeyPressed('a', false);
-      console.log('left Released')
     }),
     new Button('../../../assets/gui/mobile/right.png', new Position(100, 400),new Scale(0.25), () => {
       setKeyPressed('d', true);
-      console.log('right Clicked')
-    }, () => {setKeyPressed('d', false); console.log('right Released');}),
+    }, () => {setKeyPressed('d', false);}),
     new Button('../../../assets/gui/mobile/up.png', new Position(50, 350),new Scale(0.25), () => {
       setKeyPressed('w', true);
     }, () => {setKeyPressed('w', false)}),
     new Button('../../../assets/gui/mobile/down.png', new Position(100, 0),new Scale(0.25), () => {
-      console.log('down')
+
     }),
   ]);
 
@@ -344,7 +341,28 @@ export class GameComponent implements AfterViewInit {
     );
   }
 
+  private static translateTouchToCanvasPosition(x: number, y: number, canvas: HTMLCanvasElement): {x: number, y:number} {
+
+    const rect = canvas.getBoundingClientRect();
+    const tempX = x - rect.left;
+    const tempY = y - rect.top;
+
+    return {
+      x: tempX * (canvas.width / rect.width),
+      y: tempY * (canvas.height / rect.height)
+    };
+
+  }
+
   public touchEnd(event: TouchEvent): void {
+
+    if(GameComponent.isMobile){
+      setKeyPressed('a', false);
+      setKeyPressed('d', false);
+      setKeyPressed('w', false);
+      setKeyPressed('f', false);
+      setKeyPressed('space', false);
+    }
 
 
     const touches = event.changedTouches;
@@ -362,25 +380,17 @@ export class GameComponent implements AfterViewInit {
   public touches: {posX: number, posY: number}[] = [];
   touchStart(event: TouchEvent) {
 
+    const {clientX, clientY} = event.touches[0];
+    const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);
 
-
-    const touchX = event.touches[0].clientX;
-    const touchY = event.touches[0].clientY;
-
-    const rect = this.cameraCanvas!.nativeElement.getBoundingClientRect()
-    const x = touchX - rect.left
-    const y = touchY - rect.top
-    console.log("x: " + x + " y: " + y)
-
-    this.touches.push({posX: x, posY: y});
-
+    this.touches.push({posX: canvasTouch.x, posY: canvasTouch.y});
 
     if(GameComponent.isPaused){
-      TitleScreen.checkButtons(touchX, touchY);
+      TitleScreen.checkButtons(canvasTouch.x, canvasTouch.y);
     }
 
     if(GameComponent.isMobile){
-      Mobile.checkButtons(touchX, touchY);
+      Mobile.checkButtons(canvasTouch.x, canvasTouch.y);
     }
 
   }

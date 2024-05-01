@@ -102,7 +102,6 @@ export class Player extends Sprite {
         onComplete: () => {
           GameComponent.player.isAttacking = false;
           this.attackDone();
-          console.log("Attack done")
         }
       },
       attackLeft: {
@@ -113,7 +112,6 @@ export class Player extends Sprite {
         onComplete: () => {
           GameComponent.player.isAttacking = false;
           this.attackDone();
-          console.log("Attack done")
         }
       } });
     this.getScale().setScale(1.0);
@@ -295,7 +293,6 @@ export class Player extends Sprite {
       if (this.checkForCoinCollision(coins[i])) {
         this.collectedCoins++;
         GameComponent.nextCoin(this.collectedCoins);
-        console.log(this.collectedCoins, 'Collected Coins');
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
 
         GameAudio.getAudio('coin:collect').play();
