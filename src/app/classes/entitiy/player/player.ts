@@ -12,6 +12,7 @@ import {Shine} from "../../collectibles/shines/shine";
 import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
 import {HealthPotion} from "../../collectibles/potion/potion";
+import {Healthbar} from "../../gui/bar/healthbar";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -22,6 +23,7 @@ export class Player extends Sprite {
   public collectedShines: number = 0;
   public isOnLadder = false;
   public health: number = 100;
+  public healthbar: Healthbar = new Healthbar(new Position(0, 200));
   protected MAX_SPEED = 350;
   protected ACCELERATION = 500;
   protected JUMP_STRENGTH = 600;
@@ -153,6 +155,8 @@ export class Player extends Sprite {
    * @param delta {number} time since the last update
    */
   public move(delta: number): void {
+
+
 
 
 
@@ -438,6 +442,10 @@ export class Player extends Sprite {
    */
   public update(context: CanvasRenderingContext2D, delta: number): void {
     this.move(delta);
+    this.healthbar.position.setX(GameComponent.player.getPosition().getX() + 30);
+    this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
+
+    this.healthbar.draw(context, 10, GameComponent.player.health, GameComponent.player.maxHealth);
   }
 
   protected updateHitbox(offsetX: number, offsetY: number): void {

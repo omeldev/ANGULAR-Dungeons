@@ -34,7 +34,6 @@ export class GameComponent implements AfterViewInit {
   public static player: Player;
   public static volume: number = 1.0;
   public static isPaused: boolean = true;
-  public static isMuted: boolean = false;
   public static hasInteracted: boolean = false;
   private static currentLevel = level1;
   private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -53,8 +52,6 @@ export class GameComponent implements AfterViewInit {
       GameComponent.player.preventInput = false;
     }),
   ]);
-
-  public isFullscreen: boolean = true;
 
   public flashLight = new Flashlight();
   public static isFlashlightOn: boolean = true;
@@ -162,7 +159,6 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  private healthbar: Healthbar = new Healthbar(new Position(0, 200));
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
@@ -245,10 +241,7 @@ export class GameComponent implements AfterViewInit {
       this.cat.drawSprite(this.context!, delta);
       this.princess.drawSprite(this.context!, delta);
     }
-    this.healthbar.position.setX(GameComponent.player.getPosition().getX() + 30);
-    this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
 
-    this.healthbar.draw(this.context!, 10, GameComponent.player.health, GameComponent.player.maxHealth);
 
 
     if (GameComponent.player.collectedShines >= 3) {

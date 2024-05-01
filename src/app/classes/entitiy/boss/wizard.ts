@@ -4,6 +4,7 @@ import {Enemie} from "./enemie";
 import {Hitbox} from "../../collision/hitbox";
 import {Player} from "../player/player";
 import {Healthbar} from "../../gui/bar/healthbar";
+import {GameComponent} from "../../../components/game/game.component";
 
 const animationDefaults = {
   frameRate: 8,
@@ -155,6 +156,11 @@ export class Wizard extends Enemie {
     if (this.isDead) return;
     super.drawSprite(context, delta);
     this.healthBar.draw(context, 10, this.health, this.maxHealth)
+  }
+
+  override onCollide(context: CanvasRenderingContext2D, delta: number) {
+    super.onCollide(context, delta);
+    GameComponent.player.health -= 10 * delta;
   }
 
   attackBoxCollide(player: Player): void {
