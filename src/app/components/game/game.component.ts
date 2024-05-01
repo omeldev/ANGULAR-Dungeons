@@ -4,21 +4,13 @@ import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/ke
 import {level1, level2, level3, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {BehaviorSubject} from "rxjs";
-import {Gizmo} from "../../classes/entitiy/gizmo/gizmo";
-import {Animation, AnimationSet} from "../../classes/animation";
-import {KingPig, Pig} from "../../classes/entitiy/gizmo/pig";
 import {Position} from "../../classes/entitiy/position";
 import {Flashlight} from "../../classes/shaders/flashlight";
 import {Cat} from "../../classes/entitiy/gizmo/cat";
-import {Bat} from "../../classes/entitiy/gizmo/bat";
 import {TitleScreen} from "../../classes/gui/window/title";
 import {Button} from "../../classes/gui/button/button";
-import {registerGuiListener} from "../../../assets/gui/listener/mouseclick";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
 import {Princess} from "../../classes/entitiy/gizmo/princess";
-import {Wizard} from "../../classes/entitiy/boss/wizard";
-import {Healthbar} from "../../classes/gui/bar/healthbar";
-import {isArray} from "@angular/compiler-cli/src/ngtsc/annotations/common";
 import {Mobile} from "../../classes/gui/window/mobile";
 import {Scale} from "../../classes/entitiy/scale";
 
@@ -69,7 +61,25 @@ export class GameComponent implements AfterViewInit {
   constructor() {
     GameComponent.player = new Player();
     initializeSounds();
-    registerGuiListener();
+    this.registerGuiListener();
+  }
+
+   public registerGuiListener() {
+    window.addEventListener("click", (event) => {
+      const pos = GameComponent.translateTouchToCanvasPosition(event.clientX, event.clientY, this.cameraCanvas!.nativeElement);
+      if(GameComponent.isPaused){
+        TitleScreen.checkButtons(pos.x, pos.y);
+      }
+
+      if(GameComponent.isMobile){
+        Mobile.checkButtons(pos.x, pos.y);
+      }
+
+
+    });
+
+
+
   }
 
   public static getPlayer(): Player {
