@@ -22,7 +22,6 @@ export class Flashlight {
   public draw(context: CanvasRenderingContext2D, delta: number): void {
     this.updateCooldown(delta)
 
-
     this.shaderCanvas.width = GameComponent.canvasWidth;
     this.shaderCanvas.height = GameComponent.canvasHeight;
 

@@ -33,12 +33,7 @@ export class GameComponent implements AfterViewInit {
   public cameraCanvas: ElementRef<HTMLCanvasElement> | undefined;
   public cameraContext: CanvasRenderingContext2D | undefined;
   public context: CanvasRenderingContext2D | undefined;
-  public titleScreen: TitleScreen = new TitleScreen([
-    new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), new Scale(0.25),() => {
-      GameComponent.isTitleScreen = false;
-      GameComponent.player.preventInput = false;
-    }),
-  ]);
+
 
   public flashLightShader = new Flashlight();
   public static isFlashLightShaderOn: boolean = true;
@@ -238,7 +233,7 @@ export class GameComponent implements AfterViewInit {
 
 
     if (GameComponent.isTitleScreen) {
-      this.titleScreen.draw(this.cameraContext!);
+      TitleScreen.getScreen().draw(this.cameraContext!);
       return;
     }
 
