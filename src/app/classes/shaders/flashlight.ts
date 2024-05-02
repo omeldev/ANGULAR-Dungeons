@@ -3,12 +3,15 @@ import {Position} from "../entitiy/position";
 
 export class Flashlight {
 
-  public drawDarkness = true;
-
   public isActive: boolean = false;
 
   public cooldown: number = 0;
   public shaderCanvas = document.createElement('canvas');
+
+
+  public flashCount = 0;
+  public flashBuffer = 0.005;
+  public flashIterations = 0;
 
   public updateCooldown(delta: number): void {
     if (this.cooldown > 0) {
@@ -16,7 +19,7 @@ export class Flashlight {
     }
   }
 
-  public draw(context: CanvasRenderingContext2D, position: Position, delta: number, radius: number = 100): void {
+  public draw(context: CanvasRenderingContext2D, delta: number): void {
     this.updateCooldown(delta)
 
 
@@ -28,11 +31,40 @@ export class Flashlight {
     shaderContext.fillStyle = 'rgba(0,0,0,0.7)';
     shaderContext.fillRect(0, 0, GameComponent.canvasWidth, GameComponent.canvasHeight);
 
-    if (this.isActive) {
+    let radius = 50;
 
+      if (GameComponent.player.collectedShines >= 3) {
+        this.isActive = true;
+        if (this.flashIterations < 50) {
+          radius = 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5;
+
+          if (this.flashCount < this.flashBuffer) {
+            this.flashCount += delta;
+
+          } else {
+            this.flashCount = 0;
+            this.flashIterations++;
+            if (this.flashIterations >= 50) {
+              this.flashIterations = 0;
+              this.flashCount = 0;
+              GameComponent.isFlashLightShaderOn = false;
+              GameComponent.player.collectedShines = 0;
+
+            }
+
+        }
+      }
+
+
+
+
+
+    } else if (GameComponent.isFlashLightShaderOn) radius = 50 * (GameComponent.player.collectedShines + 1);
+
+    if(this.isActive) {
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
-      shaderContext.arc(position.getX() + 80, position.getY() + 50, 50 + radius, 0, 2 * Math.PI);
+      shaderContext.arc(GameComponent.getPlayer().getPosition().getX() + 80, GameComponent.getPlayer().getPosition().getY() + 50, radius, 0, 2 * Math.PI);
       shaderContext.closePath();
       shaderContext.fill();
       shaderContext.globalCompositeOperation = 'source-over';
@@ -57,7 +89,8 @@ export class Flashlight {
       shaderContext.globalCompositeOperation = 'source-over';
     }
 
-    context.drawImage(this.shaderCanvas, 0, 0);
+
+    if(GameComponent.isFlashLightShaderOn) context.drawImage(this.shaderCanvas, 0, 0);
 
 
   }

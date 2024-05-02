@@ -292,7 +292,6 @@ export class Player extends Sprite {
     for (let i = 0; i < coins.length; i++) {
       if (this.checkForCoinCollision(coins[i])) {
         this.collectedCoins++;
-        GameComponent.nextCoin(this.collectedCoins);
         GameComponent.getCurrentLevel().getCoins().splice(i, 1);
 
         GameAudio.getAudio('coin:collect').play();

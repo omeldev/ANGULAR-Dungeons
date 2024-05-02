@@ -4,7 +4,7 @@ import {Mobile} from "../../../app/classes/gui/window/mobile";
 
 export function registerGuiListener() {
   window.addEventListener("click", (event) => {
-    if(GameComponent.isPaused){
+    if(GameComponent.isTitleScreen){
       TitleScreen.checkButtons(event.clientX, event.clientY);
     }
 

@@ -3,14 +3,11 @@ import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
 import {level1, level2, level3, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
-import {BehaviorSubject} from "rxjs";
 import {Position} from "../../classes/entitiy/position";
 import {Flashlight} from "../../classes/shaders/flashlight";
-import {Cat} from "../../classes/entitiy/gizmo/cat";
 import {TitleScreen} from "../../classes/gui/window/title";
 import {Button} from "../../classes/gui/button/button";
 import {GameAudio, initializeSounds} from "../../classes/audio/audio";
-import {Princess} from "../../classes/entitiy/gizmo/princess";
 import {Mobile} from "../../classes/gui/window/mobile";
 import {Scale} from "../../classes/entitiy/scale";
 
@@ -27,36 +24,28 @@ export class GameComponent implements AfterViewInit {
   public static productionMode: boolean = true;
   public static player: Player;
   public static volume: number = 1.0;
-  public static isPaused: boolean = true;
+  public static isTitleScreen: boolean = true;
   public static hasInteracted: boolean = false;
   private static currentLevel = level1;
-  private static readonly coinSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  public static coins$ = GameComponent.coinSubject$.asObservable();
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   @ViewChild('cameraCanvas', { static: true })
   public cameraCanvas: ElementRef<HTMLCanvasElement> | undefined;
   public cameraContext: CanvasRenderingContext2D | undefined;
   public context: CanvasRenderingContext2D | undefined;
-  public prodMode: boolean = GameComponent.productionMode;
-  public coins$ = GameComponent.coins$;
   public titleScreen: TitleScreen = new TitleScreen([
     new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), new Scale(0.25),() => {
-      GameComponent.isPaused = false;
+      GameComponent.isTitleScreen = false;
       GameComponent.player.preventInput = false;
     }),
   ]);
 
-  public flashLight = new Flashlight();
-  public static isFlashlightOn: boolean = true;
-  public princess: Princess = new Princess(new Position(64 * 2 + 20, 64 * 4 + 36));
+  public flashLightShader = new Flashlight();
+  public static isFlashLightShaderOn: boolean = true;
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   public escapeCooldown = 0;
   private oldFrameTime: number = 1;
-  private cat: Cat = new Cat(new Position(64 * 2 + 20, 64 * 4 + 36));
-  public static flashCount = 0;
-  public static flashBuffer = 0.005;
-  public static flashIterations = 0;
+
 
   constructor() {
     GameComponent.player = new Player();
@@ -67,7 +56,7 @@ export class GameComponent implements AfterViewInit {
    public registerGuiListener() {
     window.addEventListener("click", (event) => {
       const pos = GameComponent.translateTouchToCanvasPosition(event.clientX, event.clientY, this.cameraCanvas!.nativeElement);
-      if(GameComponent.isPaused){
+      if(GameComponent.isTitleScreen){
         TitleScreen.checkButtons(pos.x, pos.y);
       }
 
@@ -77,8 +66,6 @@ export class GameComponent implements AfterViewInit {
 
 
     });
-
-
 
   }
 
@@ -90,17 +77,17 @@ export class GameComponent implements AfterViewInit {
     return this.currentLevel;
   }
 
-  public static nextCoin(coin: number): void {
-    GameComponent.coinSubject$.next(coin);
-  }
-
   public static setCurrentLevel(level: Level): void {
     GameComponent.currentLevel = level;
+
+    GameComponent.canvasHeight = GameComponent.getCurrentLevel().getBackground().getHeight();
+    GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
+
+    GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
+    GameComponent.isFlashLightShaderOn = true;
+    GameComponent.player.collectedShines = 0;
   }
 
-  public static toggleProductionMode(): void {
-    this.productionMode = !this.productionMode;
-  }
 
   @HostListener('document:visibilitychange', ['$event'])
   onVisibilityChange(event: Event): void {
@@ -128,29 +115,23 @@ export class GameComponent implements AfterViewInit {
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 
-    GameComponent.canvasHeight = GameComponent.getCurrentLevel().getBackground().getHeight();
-    GameComponent.canvasWidth = GameComponent.getCurrentLevel().getBackground().getWidth();
-
-    GameComponent.player.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-
-    GameComponent.isFlashlightOn = true;
-    GameComponent.player.collectedShines = 0;
-    GameComponent.flashCount = 0;
-    GameComponent.flashIterations = 0;
-
 
   }
 
   public titleUpdate(delta: number): void {
-    if (this.escapeCooldown < 1.5) {
-      this.escapeCooldown += delta;
+    if (this.escapeCooldown > 0) {
+      this.escapeCooldown -= delta;
     } else {
       this.escapeCooldown = 0;
     }
 
     if (isKeyPressed('Escape') && this.escapeCooldown <= 0) {
-      GameComponent.isPaused = !GameComponent.isPaused;
+      if(GameComponent.isTitleScreen){
+        GameComponent.player.preventInput = false;
+      }
+      GameComponent.isTitleScreen = !GameComponent.isTitleScreen;
       this.escapeCooldown = 1.5;
+
       setKeyPressed('Escape', false)
     }
   }
@@ -174,7 +155,7 @@ export class GameComponent implements AfterViewInit {
   private animate() {
     window.requestAnimationFrame(() => this.animate());
 
-    if (GameComponent.isPaused) {
+    if (GameComponent.isTitleScreen) {
       GameComponent.player.preventInput = true;
 
     }
@@ -248,41 +229,15 @@ export class GameComponent implements AfterViewInit {
     }
 
 
-
-    if (GameComponent.getCurrentLevel() === level1) {
-      this.cat.drawSprite(this.context!, delta);
-      this.princess.drawSprite(this.context!, delta);
+    if(GameComponent.isFlashLightShaderOn) this.flashLightShader.draw(this.context!, delta);
+    if (isKeyPressed('f') && !(this.flashLightShader.cooldown > 0) && GameComponent.player.collectedShines < 3) {
+      this.flashLightShader.toggle();
     }
-
-
-
-    if (GameComponent.player.collectedShines >= 3) {
-      this.flashLight.isActive = true;
-      if (GameComponent.flashIterations < 50) {
-
-        this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, 250 + (GameComponent.player.collectedShines + 1 + GameComponent.flashIterations) * 5);
-        if (GameComponent.flashCount < GameComponent.flashBuffer) {
-          GameComponent.flashCount += delta;
-
-        } else {
-          GameComponent.flashCount = 0;
-          GameComponent.flashIterations++;
-          if (GameComponent.flashIterations >= 50) {
-            GameComponent.flashIterations = 0;
-            GameComponent.flashCount = 0;
-            GameComponent.isFlashlightOn = false;
-            GameComponent.player.collectedShines = 0;
-
-          }
-        }
-      }
-    } else if (GameComponent.isFlashlightOn) this.flashLight.draw(this.context!, GameComponent.player.getPosition(), delta, (GameComponent.player.collectedShines + 1) * 40);
-
 
     this.moveCamera();
 
 
-    if (GameComponent.isPaused) {
+    if (GameComponent.isTitleScreen) {
       this.titleScreen.draw(this.cameraContext!);
       return;
     }
@@ -294,9 +249,9 @@ export class GameComponent implements AfterViewInit {
 
 
 
-    if (isKeyPressed('f') && !(this.flashLight.cooldown > 0) && GameComponent.player.collectedShines < 3) {
-      this.flashLight.toggle();
-    }
+
+
+
 
 
   }
@@ -388,7 +343,7 @@ export class GameComponent implements AfterViewInit {
     const {clientX, clientY} = event.touches[0];
     const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);
 
-    if(GameComponent.isPaused){
+    if(GameComponent.isTitleScreen){
       TitleScreen.checkButtons(canvasTouch.x, canvasTouch.y);
     }
 
