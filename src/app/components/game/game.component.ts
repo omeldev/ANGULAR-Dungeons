@@ -158,7 +158,11 @@ export class GameComponent implements AfterViewInit {
     GameComponent.player.drawSprite(this.context!, delta);
 
     //Draw Shader
-    if(GameComponent.isFlashLightShaderOn) this.flashLightShader.draw(this.context!, delta);
+    if(GameComponent.isFlashLightShaderOn){
+
+      if(GameComponent.getCurrentLevel().isLoaded)
+      this.flashLightShader.draw(this.context!, delta);
+    }
 
 
     if (isKeyPressed('f') && !(this.flashLightShader.cooldown > 0) && GameComponent.player.collectedShines < 3) {
@@ -189,6 +193,7 @@ export class GameComponent implements AfterViewInit {
 
 
   private moveCamera() {
+    if(!GameComponent.getCurrentLevel().isLoaded) return;
     const cameraWidth = 750;
     const cameraHeight = 500;
     this.cameraCanvas!.nativeElement.width = cameraWidth;

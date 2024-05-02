@@ -402,6 +402,8 @@ export class Level extends Sprite {
   public draw(context: CanvasRenderingContext2D, delta: number) {
 
     if(GameComponent.getCurrentLevel() !== this)return;
+
+    if(!this.isLoaded) return;
     //Background
     this.drawSprite(context);
 
