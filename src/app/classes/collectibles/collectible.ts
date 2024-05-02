@@ -1,7 +1,8 @@
 import {Sprite} from "../entitiy/sprite";
 import {Position} from "../entitiy/position";
-import {Hitbox} from "../collision/hitbox";
+import {Hitbox} from "../level/collision/hitbox";
 import {GameComponent} from "../../components/game/game.component";
+import {Gizmo} from "../entitiy/gizmo/gizmo";
 
 export abstract class Collectible extends Sprite {
 
@@ -32,6 +33,8 @@ export abstract class Collectible extends Sprite {
 
   public abstract onCollideWithPlayer(context: CanvasRenderingContext2D, delta: number): void;
 
+  public abstract onCollideWithEntity(entity: Gizmo, context: CanvasRenderingContext2D, delta: number): void;
+
   public override drawSprite(context: CanvasRenderingContext2D, delta: number): void {
     super.drawSprite(context, delta);
 
@@ -52,12 +55,18 @@ export abstract class Collectible extends Sprite {
     this.getHitbox().draw(context);
 
 
-    if(this.checkCollision(GameComponent.getPlayer().getHitbox())){
+    if (this.checkCollision(GameComponent.getPlayer().getHitbox())) {
       this.onCollideWithPlayer(context, delta);
+    }
+    for (let entity of GameComponent.getCurrentLevel().getEntities()) {
+      if (this.checkCollision(entity.getHitbox())) {
+        this.onCollideWithEntity(entity, context, delta);
+      }
     }
 
 
   }
+
   public checkCollision(hitbox: Hitbox): boolean {
     if (!this.hitbox) {
       throw new Error('Hitbox not initialized');
@@ -69,7 +78,7 @@ export abstract class Collectible extends Sprite {
   }
 
   public updateHitbox(offsetX: number, offsetY: number): void {
-    if(!this.hitbox) return;
+    if (!this.hitbox) return;
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
     this.hitbox.getPosition().setY(this.getPosition().getY() + offsetY);
 
