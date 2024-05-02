@@ -69,7 +69,7 @@ export class Door extends Sprite {
       player.getHitbox().getPosition().getX() >= this.getPosition().getX() &&
       player.getHitbox().getPosition().getY() + player.getHitbox().getHeight() >= this.getPosition().getY() &&
       player.getHitbox().getPosition().getY() <= this.getPosition().getY() + this.getHeight();
-    ;
+
 
   }
 

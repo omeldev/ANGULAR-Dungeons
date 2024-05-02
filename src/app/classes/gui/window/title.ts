@@ -5,22 +5,21 @@ import {GameComponent} from "../../../components/game/game.component";
 
 export class TitleScreen {
   private static buttons: Button[];
-  public buttons: Button[] = [];
   private static titleScreen: TitleScreen;
+  public buttons: Button[] = [];
 
   private constructor() {
 
     this.buttons =
       [
-      new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), new Scale(0.25),() => {
-        GameComponent.isTitleScreen = false;
-        GameComponent.player.preventInput = false;
-      }),
-  ];
+        new Button('../../../assets/gui/buttons/play.png', new Position(100, 100), new Scale(0.25), () => {
+          GameComponent.isTitleScreen = false;
+          GameComponent.player.preventInput = false;
+        }),
+      ];
     TitleScreen.buttons = this.buttons;
 
     TitleScreen.titleScreen = this;
-
 
 
   }
@@ -34,6 +33,11 @@ export class TitleScreen {
     }
   }
 
+  public static getScreen(): TitleScreen {
+    if (this.titleScreen == null) this.titleScreen = new TitleScreen();
+    return this.titleScreen;
+  }
+
   public draw(context: CanvasRenderingContext2D) {
 
     context.fillStyle = "black";
@@ -43,17 +47,12 @@ export class TitleScreen {
     context.font = "30px Arial";
     context.fillText("Welcome to Dungeons the Game!", context.canvas.width / 2.5, 100);
 
-    context.fillText("A, W, D for Moving", context.canvas.width  / 2.5, 130);
-    context.fillText("F turn Flashlight on", context.canvas.width  / 2.5, 160);
-    context.fillText("Space to attack", context.canvas.width  / 2.5, 190);
+    context.fillText("A, W, D for Moving", context.canvas.width / 2.5, 130);
+    context.fillText("F turn Flashlight on", context.canvas.width / 2.5, 160);
+    context.fillText("Space to attack", context.canvas.width / 2.5, 190);
 
     for (let button of this.buttons) {
       button.draw(context);
     }
-  }
-
-  public static getScreen(): TitleScreen {
-    if(this.titleScreen == null) this.titleScreen = new TitleScreen();
-    return this.titleScreen;
   }
 }

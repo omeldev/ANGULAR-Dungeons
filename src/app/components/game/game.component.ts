@@ -3,13 +3,10 @@ import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
 import {level1, level2, level3, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
-import {Position} from "../../classes/entitiy/position";
 import {FlashlightShader} from "../../classes/shaders/flashlight";
 import {TitleScreen} from "../../classes/gui/window/title";
-import {Button} from "../../classes/gui/button/button";
-import {GameAudio, initializeSounds} from "../../classes/audio/audio";
+import {initializeSounds} from "../../classes/audio/audio";
 import {Mobile} from "../../classes/gui/window/mobile";
-import {Scale} from "../../classes/entitiy/scale";
 
 @Component({
   selector: 'app-game',
@@ -25,18 +22,15 @@ export class GameComponent implements AfterViewInit {
   public static volume: number = 1.0;
   public static isTitleScreen: boolean = true;
   public static hasInteracted: boolean = false;
+  public static isFlashLightShaderOn: boolean = true;
   private static currentLevel = level1;
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
-  @ViewChild('cameraCanvas', { static: true })
+  @ViewChild('cameraCanvas', {static: true})
   public cameraCanvas: ElementRef<HTMLCanvasElement> | undefined;
   public cameraContext: CanvasRenderingContext2D | undefined;
   public context: CanvasRenderingContext2D | undefined;
-
-
   public flashLightShader = new FlashlightShader();
-  public static isFlashLightShaderOn: boolean = true;
-
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   private oldFrameTime: number = 1;
 
@@ -45,22 +39,6 @@ export class GameComponent implements AfterViewInit {
     GameComponent.player = new Player();
     initializeSounds();
     this.registerGuiListener();
-  }
-
-   public registerGuiListener() {
-    window.addEventListener("click", (event) => {
-      const pos = GameComponent.translateTouchToCanvasPosition(event.clientX, event.clientY, this.cameraCanvas!.nativeElement);
-      if(GameComponent.isTitleScreen){
-        TitleScreen.checkButtons(pos.x, pos.y);
-      }
-
-      if(GameComponent.isMobile){
-        Mobile.checkButtons(pos.x, pos.y);
-      }
-
-
-    });
-
   }
 
   public static getPlayer(): Player {
@@ -82,6 +60,45 @@ export class GameComponent implements AfterViewInit {
     GameComponent.player.collectedShines = 0;
   }
 
+  public static levelChange(): void {
+    const levels = [level1, level2, level3, level4];
+    const index = levels.indexOf(GameComponent.getCurrentLevel());
+    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+
+
+  }
+
+  private static translateTouchToCanvasPosition(x: number, y: number, canvas: HTMLCanvasElement): {
+    x: number,
+    y: number
+  } {
+
+    const rect = canvas.getBoundingClientRect();
+    const tempX = x - rect.left;
+    const tempY = y - rect.top;
+
+    return {
+      x: tempX * (canvas.width / rect.width),
+      y: tempY * (canvas.height / rect.height)
+    };
+
+  }
+
+  public registerGuiListener() {
+    window.addEventListener("click", (event) => {
+      const pos = GameComponent.translateTouchToCanvasPosition(event.clientX, event.clientY, this.cameraCanvas!.nativeElement);
+      if (GameComponent.isTitleScreen) {
+        TitleScreen.checkButtons(pos.x, pos.y);
+      }
+
+      if (GameComponent.isMobile) {
+        Mobile.checkButtons(pos.x, pos.y);
+      }
+
+
+    });
+
+  }
 
   @HostListener('document:visibilitychange', ['$event'])
   onVisibilityChange(event: Event): void {
@@ -90,7 +107,6 @@ export class GameComponent implements AfterViewInit {
       window.location.reload();
     }
   }
-
 
   ngAfterViewInit(): void {
     this.context = this.canvas?.nativeElement.getContext('2d')!;
@@ -104,15 +120,43 @@ export class GameComponent implements AfterViewInit {
 
   }
 
-  public static levelChange(): void {
-    const levels = [level1, level2, level3, level4];
-    const index = levels.indexOf(GameComponent.getCurrentLevel());
-    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+  public touchEnd(event: TouchEvent): void {
+
+    if (GameComponent.isMobile) {
+      setKeyPressed('a', false);
+      setKeyPressed('d', false);
+      setKeyPressed('w', false);
+      setKeyPressed('f', false);
+      setKeyPressed('space', false);
+    }
+
+
+    const touches = event.changedTouches;
+    if (touches.length > 0) {
+      const touchEndX = touches[0].clientX;
+      const touchEndY = touches[0].clientY;
+      if (GameComponent.isMobile) {
+        Mobile.releaseButtons(touchEndX, touchEndY);
+      }
+    }
 
 
   }
 
+  touchStart(event: TouchEvent) {
 
+    const {clientX, clientY} = event.touches[0];
+    const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);
+
+    if (GameComponent.isTitleScreen) {
+      TitleScreen.checkButtons(canvasTouch.x, canvasTouch.y);
+    }
+
+    if (GameComponent.isMobile) {
+      Mobile.checkButtons(canvasTouch.x, canvasTouch.y);
+    }
+
+  }
 
   private initializeCanvas() {
     this.canvas!.nativeElement.width = GameComponent.canvasWidth;
@@ -139,14 +183,11 @@ export class GameComponent implements AfterViewInit {
     }
 
 
-
     localStorage.setItem('volume', this.volume.toString());
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
 
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
-
-
 
 
     const delta = (performance.now() - this.oldFrameTime) / 1000;
@@ -158,10 +199,10 @@ export class GameComponent implements AfterViewInit {
     GameComponent.player.drawSprite(this.context!, delta);
 
     //Draw Shader
-    if(GameComponent.isFlashLightShaderOn){
+    if (GameComponent.isFlashLightShaderOn) {
 
-      if(GameComponent.getCurrentLevel().isLoaded)
-      this.flashLightShader.draw(this.context!, delta);
+      if (GameComponent.getCurrentLevel().isLoaded)
+        this.flashLightShader.draw(this.context!, delta);
     }
 
 
@@ -177,23 +218,16 @@ export class GameComponent implements AfterViewInit {
       return;
     }
 
-    if(GameComponent.isMobile){
+    if (GameComponent.isMobile) {
       Mobile.getScreen().draw(this.cameraContext!);
       return;
     }
 
 
-
-
-
-
-
-
   }
 
-
   private moveCamera() {
-    if(!GameComponent.getCurrentLevel().isLoaded) return;
+    if (!GameComponent.getCurrentLevel().isLoaded) return;
     const cameraWidth = 750;
     const cameraHeight = 500;
     this.cameraCanvas!.nativeElement.width = cameraWidth;
@@ -220,56 +254,5 @@ export class GameComponent implements AfterViewInit {
       cameraStartX, cameraStartY, cameraWidth, cameraHeight,
       0, 0, cameraWidth, cameraHeight
     );
-  }
-
-  private static translateTouchToCanvasPosition(x: number, y: number, canvas: HTMLCanvasElement): {x: number, y:number} {
-
-    const rect = canvas.getBoundingClientRect();
-    const tempX = x - rect.left;
-    const tempY = y - rect.top;
-
-    return {
-      x: tempX * (canvas.width / rect.width),
-      y: tempY * (canvas.height / rect.height)
-    };
-
-  }
-
-  public touchEnd(event: TouchEvent): void {
-
-    if(GameComponent.isMobile){
-      setKeyPressed('a', false);
-      setKeyPressed('d', false);
-      setKeyPressed('w', false);
-      setKeyPressed('f', false);
-      setKeyPressed('space', false);
-    }
-
-
-    const touches = event.changedTouches;
-    if (touches.length > 0) {
-      const touchEndX = touches[0].clientX;
-      const touchEndY = touches[0].clientY;
-      if(GameComponent.isMobile){
-        Mobile.releaseButtons(touchEndX, touchEndY);
-      }
-    }
-
-
-  }
-
-  touchStart(event: TouchEvent) {
-
-    const {clientX, clientY} = event.touches[0];
-    const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);
-
-    if(GameComponent.isTitleScreen){
-      TitleScreen.checkButtons(canvasTouch.x, canvasTouch.y);
-    }
-
-    if(GameComponent.isMobile){
-      Mobile.checkButtons(canvasTouch.x, canvasTouch.y);
-    }
-
   }
 }

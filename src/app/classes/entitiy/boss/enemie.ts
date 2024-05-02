@@ -14,9 +14,10 @@ export type Animation = {
 }
 
 export abstract class Enemie extends Gizmo {
-  private attackBox: Hitbox;
   public isAttacking: boolean = false;
   public attackCooldown: number = 0;
+  private attackBox: Hitbox;
+
   constructor(attackBox: Hitbox, spriteSrc: string, position: Position, animations: Animation, frameRate: number = 6, hitbox: Hitbox = new Hitbox(position, 20, 20)) {
     super(spriteSrc, position, animations, frameRate, hitbox);
     this.attackBox = attackBox;

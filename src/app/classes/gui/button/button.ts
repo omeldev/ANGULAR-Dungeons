@@ -5,14 +5,15 @@ export class Button {
 
   public onClick: () => void;
   public onRelease: () => void;
+  public scale: Scale;
   private image: HTMLImageElement;
   private width: number = 0;
   private height: number = 0;
   private loaded: boolean = false;
   private position: Position;
-  public scale: Scale;
 
-  constructor(imageSrc: string, position: Position, scale: Scale = new Scale(1), onClick: () => void, onRelease: () => void = () => {}) {
+  constructor(imageSrc: string, position: Position, scale: Scale = new Scale(1), onClick: () => void, onRelease: () => void = () => {
+  }) {
     this.onClick = onClick;
     this.onRelease = onRelease;
     this.image = new Image();

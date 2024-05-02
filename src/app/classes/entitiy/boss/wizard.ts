@@ -14,11 +14,11 @@ const animationDefaults = {
 
 export class Wizard extends Enemie {
 
-  private collisionDone = new Set<Hitbox>;
   public maxHealth: number = 100;
   public health: number = this.maxHealth;
   public healthBar: Healthbar;
   public isDead: boolean = false;
+  private collisionDone = new Set<Hitbox>;
 
   constructor(position: Position) {
     super(new Hitbox(position, 50, 50), '../../../assets/sprites/wizard/idleRight.png', position, {
@@ -117,13 +117,6 @@ export class Wizard extends Enemie {
     }
   }
 
-
-  private attackDone() {
-    this.isAttacking = false;
-    this.collisionDone.clear();
-  }
-
-
   public override moveAi(context: CanvasRenderingContext2D, delta: number): void {
 
 
@@ -147,7 +140,6 @@ export class Wizard extends Enemie {
 
   }
 
-
   public override drawSprite(context: CanvasRenderingContext2D, delta: number): void {
     if (this.isDead) return;
     super.drawSprite(context, delta);
@@ -163,6 +155,11 @@ export class Wizard extends Enemie {
     if (this.collisionDone.has(player.getHitbox())) return;
     this.collisionDone.add(player.getHitbox());
     player.health -= 20;
+  }
+
+  private attackDone() {
+    this.isAttacking = false;
+    this.collisionDone.clear();
   }
 
 

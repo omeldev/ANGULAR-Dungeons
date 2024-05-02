@@ -2,14 +2,12 @@ import {Position} from "../position";
 import {Velocity} from "../velocity";
 import {Sprite} from "../sprite";
 import {GameComponent} from "../../../components/game/game.component";
-import {PlayerSide, Side} from "../sides";
 import {CollisionBlock} from "../../collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
 import {Coin} from "../../coin/coin";
 import {Hitbox} from "../../collision/hitbox";
 import {Key} from "../../collectibles/key/key";
 import {Shine} from "../../collectibles/shines/shine";
-import {Ladder} from "../../collision/ladderblock";
 import {GameAudio} from "../../audio/audio";
 import {HealthPotion} from "../../collectibles/potion/potion";
 import {Healthbar} from "../../gui/bar/healthbar";
@@ -24,6 +22,8 @@ export class Player extends Sprite {
   public isOnLadder = false;
   public health: number = 100;
   public healthbar: Healthbar = new Healthbar(new Position(0, 200));
+  public maxHealth: number = 100;
+  public attackBox: Hitbox;
   protected MAX_SPEED = 350;
   protected ACCELERATION = 500;
   protected JUMP_STRENGTH = 600;
@@ -31,14 +31,7 @@ export class Player extends Sprite {
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
   private collectedCoins: number = 0;
-  public maxHealth: number = 100;
-
-  public attackBox: Hitbox;
   private collisionDone = new Set<Hitbox>;
-  private attackDone() {
-    this.isAttacking = false;
-    this.collisionDone.clear();
-  }
 
   /**
    * Create a new player
@@ -113,7 +106,8 @@ export class Player extends Sprite {
           GameComponent.player.isAttacking = false;
           this.attackDone();
         }
-      } });
+      }
+    });
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
     this.hitbox = new Hitbox(this.getPosition(), 30, 54);
@@ -125,7 +119,6 @@ export class Player extends Sprite {
   public getHitbox(): Hitbox {
     return this.hitbox;
   }
-
 
   /**
    * Get the Velocity of the player
@@ -155,10 +148,6 @@ export class Player extends Sprite {
   public move(delta: number): void {
 
 
-
-
-
-
     /**
      * X-axis = left and right
      * Y-axis = up and down
@@ -173,8 +162,8 @@ export class Player extends Sprite {
     if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput) {
       this.attackCooldown = 1
       this.isAttacking = true;
-      if(this.lastDirection === 'right') this.switchSprite('attackRight'); else
-      this.switchSprite('attackLeft');
+      if (this.lastDirection === 'right') this.switchSprite('attackRight'); else
+        this.switchSprite('attackLeft');
       GameAudio.getAudio('player:attack').play();
     }
 
@@ -316,7 +305,7 @@ export class Player extends Sprite {
     const healthPotions = GameComponent.getCurrentLevel().getHealthPotions();
     for (let i = 0; i < healthPotions.length; i++) {
       if (this.checkForHealthPotionCollision(healthPotions[i])) {
-        if(this.health === this.maxHealth) return;
+        if (this.health === this.maxHealth) return;
         GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
 
         if (this.health + 25 > this.maxHealth) {
@@ -398,7 +387,6 @@ export class Player extends Sprite {
       this.hitbox.getPosition().getY() + this.hitbox.getHeight() > shine.getPosition().getY();
   }
 
-
   /**
    * Check for horizontal collisions
    */
@@ -444,6 +432,17 @@ export class Player extends Sprite {
     this.healthbar.draw(context, 10, GameComponent.player.health, GameComponent.player.maxHealth);
   }
 
+  public checkForAttackCollisions() {
+
+    for (let wizzards of GameComponent.getCurrentLevel().getWizzards()) {
+      if (this.attackBox.collidesWith(wizzards.getHitbox()) && this.isAttacking) {
+        if (this.collisionDone.has(wizzards.getHitbox())) return;
+        this.collisionDone.add(wizzards.getHitbox());
+        wizzards.health -= 25;
+      }
+    }
+  }
+
   protected updateHitbox(offsetX: number, offsetY: number): void {
 
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
@@ -461,21 +460,12 @@ export class Player extends Sprite {
     this.checkForAttackCollisions();
 
 
-
-
   }
 
-  public checkForAttackCollisions() {
-
-    for(let wizzards of GameComponent.getCurrentLevel().getWizzards()){
-      if(this.attackBox.collidesWith(wizzards.getHitbox()) && this.isAttacking){
-        if (this.collisionDone.has(wizzards.getHitbox())) return;
-        this.collisionDone.add(wizzards.getHitbox());
-        wizzards.health -= 25;
-      }
-    }
+  private attackDone() {
+    this.isAttacking = false;
+    this.collisionDone.clear();
   }
-
 
   private checkForHealthPotionCollision(healthPotion: HealthPotion): boolean {
     return this.hitbox.getPosition().getX() < healthPotion.getPosition().getX() + healthPotion.getWidth() &&

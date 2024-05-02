@@ -1,14 +1,13 @@
 import {Position} from "../../entitiy/position";
-import {GameComponent} from "../../../components/game/game.component";
 import {Scale} from "../../entitiy/scale";
 
 type Heart = 'full' | 'half' | 'empty';
 
 export class Healthbar {
+  position: Position;
   private fullHeart: HTMLImageElement;
   private halfHeart: HTMLImageElement;
   private emptyHeart: HTMLImageElement;
-  position: Position;
   private Scale: Scale = new Scale(1);
 
   constructor(position: Position) {

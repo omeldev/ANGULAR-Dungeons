@@ -1,5 +1,4 @@
 import {GameComponent} from "../../components/game/game.component";
-import {Position} from "../entitiy/position";
 
 export class FlashlightShader {
 
@@ -32,35 +31,32 @@ export class FlashlightShader {
 
     let radius = 50;
 
-      if (GameComponent.player.collectedShines >= 3) {
-        this.isActive = true;
-        if (this.flashIterations < 50) {
-          radius = 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5;
+    if (GameComponent.player.collectedShines >= 3) {
+      this.isActive = true;
+      if (this.flashIterations < 50) {
+        radius = 250 + (GameComponent.player.collectedShines + 1 + this.flashIterations) * 5;
 
-          if (this.flashCount < this.flashBuffer) {
-            this.flashCount += delta;
+        if (this.flashCount < this.flashBuffer) {
+          this.flashCount += delta;
 
-          } else {
+        } else {
+          this.flashCount = 0;
+          this.flashIterations++;
+          if (this.flashIterations >= 50) {
+            this.flashIterations = 0;
             this.flashCount = 0;
-            this.flashIterations++;
-            if (this.flashIterations >= 50) {
-              this.flashIterations = 0;
-              this.flashCount = 0;
-              GameComponent.isFlashLightShaderOn = false;
-              GameComponent.player.collectedShines = 0;
+            GameComponent.isFlashLightShaderOn = false;
+            GameComponent.player.collectedShines = 0;
 
-            }
+          }
 
         }
       }
 
 
-
-
-
     } else if (GameComponent.isFlashLightShaderOn) radius = 50 * (GameComponent.player.collectedShines + 1);
 
-    if(this.isActive) {
+    if (this.isActive) {
       shaderContext.globalCompositeOperation = 'destination-out';
       shaderContext.beginPath();
       shaderContext.arc(GameComponent.getPlayer().getPosition().getX() + 80, GameComponent.getPlayer().getPosition().getY() + 50, radius, 0, 2 * Math.PI);
@@ -89,7 +85,7 @@ export class FlashlightShader {
     }
 
 
-    if(GameComponent.isFlashLightShaderOn) context.drawImage(this.shaderCanvas, 0, 0);
+    if (GameComponent.isFlashLightShaderOn) context.drawImage(this.shaderCanvas, 0, 0);
 
 
   }

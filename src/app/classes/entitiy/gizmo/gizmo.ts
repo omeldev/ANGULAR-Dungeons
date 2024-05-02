@@ -11,20 +11,20 @@ export abstract class Gizmo extends Sprite {
   public isMoving: boolean = true;
   public pause: number = 0;
   public pauseBuffer = 3;
-  protected speechBubbles: SpeechBubble[];
-  protected readonly hitbox;
-  private readonly SPEED = 100;
-  private readonly JUMP_STRENGTH = 10;
-  private readonly GRAVITY = 250;
-  private readonly velocity = new Velocity(0, 0);
-  protected pausedMovement = true;
-  protected lastDirection: Direction = Direction.RIGHT;
   public collide = {
     left: false,
     right: false,
     top: false,
     bottom: false
   }
+  protected speechBubbles: SpeechBubble[];
+  protected readonly hitbox;
+  protected pausedMovement = true;
+  protected lastDirection: Direction = Direction.RIGHT;
+  private readonly SPEED = 100;
+  private readonly JUMP_STRENGTH = 10;
+  private readonly GRAVITY = 250;
+  private readonly velocity = new Velocity(0, 0);
 
   constructor(spriteSrc: string, position: Position, animations: any, frameRate: number = 6, hitbox: Hitbox = new Hitbox(position, 20, 20)) {
     super(spriteSrc, position, () => {
@@ -66,7 +66,6 @@ export abstract class Gizmo extends Sprite {
   public abstract onCollide(context: CanvasRenderingContext2D, delta: number): void;
 
   public update(context: CanvasRenderingContext2D, delta: number): void {
-
 
 
     this.updateHitbox(8, 4);
@@ -240,8 +239,8 @@ export abstract class Gizmo extends Sprite {
 
     } else {
       this.isMoving = false;
-      
-      if(this.lastDirection === Direction.LEFT) {
+
+      if (this.lastDirection === Direction.LEFT) {
         this.switchSprite('idleLeft');
       } else {
         this.switchSprite('idleRight');

@@ -78,19 +78,19 @@ export class Level extends Sprite {
         this.setLadders(ladders);
       }
 
-      if(wizzards){
+      if (wizzards) {
         this.setWizzards(wizzards);
       }
 
-      if(healthPotions){
+      if (healthPotions) {
         this.setHealthPotions(healthPotions);
       }
 
-      if(pigs){
+      if (pigs) {
         this.setPigs(pigs);
       }
 
-      if(bats){
+      if (bats) {
         this.setBats(bats);
       }
 
@@ -156,6 +156,7 @@ export class Level extends Sprite {
   public getWizzards(): Wizard[] {
     return this.wizzards;
   }
+
   /**
    * Get the collisions of the Level
    * @returns {number[][]} of the Level
@@ -245,6 +246,70 @@ export class Level extends Sprite {
 
   public getLadders(): Ladder[] {
     return this.ladders;
+  }
+
+  public getHealthPotions(): HealthPotion[] {
+    return this.healthPotions;
+  }
+
+  public getPigs(): Pig[] {
+    return this.pigs;
+  }
+
+  public getBats(): Bat[] {
+    return this.bats;
+  }
+
+  public draw(context: CanvasRenderingContext2D, delta: number) {
+
+    if (GameComponent.getCurrentLevel() !== this) return;
+
+    if (!this.isLoaded) return;
+    //Background
+    this.drawSprite(context);
+
+
+    //Door
+    this.getFinalDoor().drawSprite(context, delta);
+
+    //Collectibles
+
+    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(context, delta));
+
+
+    //Entities
+    GameComponent.getCurrentLevel().getWizzards().forEach(wizzard => {
+      wizzard.update(context, delta)
+      wizzard.drawSprite(context, delta)
+    });
+
+    GameComponent.getCurrentLevel().getPigs().forEach(pig => {
+      pig.update(context, delta)
+      pig.drawSprite(context, delta)
+    });
+
+    GameComponent.getCurrentLevel().getBats().forEach(bat => {
+      bat.update(context, delta)
+      bat.drawSprite(context, delta)
+    });
+
+
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
+      if (GameComponent.player.isAttacking) return;
+      GameComponent.getCurrentLevel().getFinalDoor().play();
+      GameAudio.getAudio('door:open').play();
+      GameComponent.player.collectedKeys -= 1;
+      GameComponent.player.getVelocity().setY(0);
+      GameComponent.player.getVelocity().setX(0);
+      GameComponent.player.preventInput = true;
+      GameComponent.player.switchSprite('enterDoor');
+
+    }
+
+
   }
 
   private setShine(shine: number[]) {
@@ -340,10 +405,6 @@ export class Level extends Sprite {
     }));
   }
 
-  public getHealthPotions(): HealthPotion[] {
-    return this.healthPotions;
-  }
-
   private setPigs(pigs: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
@@ -368,15 +429,6 @@ export class Level extends Sprite {
 
   }
 
-  public getPigs(): Pig[] {
-    return this.pigs;
-  }
-
-  public getBats(): Bat[] {
-    return this.bats;
-  }
-
-
   private setBats(bats: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
@@ -397,59 +449,5 @@ export class Level extends Sprite {
         }
       });
     }));
-  }
-
-  public draw(context: CanvasRenderingContext2D, delta: number) {
-
-    if(GameComponent.getCurrentLevel() !== this)return;
-
-    if(!this.isLoaded) return;
-    //Background
-    this.drawSprite(context);
-
-
-    //Door
-    this.getFinalDoor().drawSprite(context, delta);
-
-    //Collectibles
-
-    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(context, delta));
-    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(context, delta));
-    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(context, delta));
-    GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(context, delta));
-
-
-
-    //Entities
-    GameComponent.getCurrentLevel().getWizzards().forEach(wizzard => {
-      wizzard.update(context, delta)
-      wizzard.drawSprite(context, delta)
-    });
-
-    GameComponent.getCurrentLevel().getPigs().forEach(pig => {
-      pig.update(context, delta)
-      pig.drawSprite(context, delta)
-    });
-
-    GameComponent.getCurrentLevel().getBats().forEach(bat => {
-      bat.update(context, delta)
-      bat.drawSprite(context, delta)
-    });
-
-
-    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 ) {
-      if(GameComponent.player.isAttacking) return;
-      GameComponent.getCurrentLevel().getFinalDoor().play();
-      GameAudio.getAudio('door:open').play();
-      GameComponent.player.collectedKeys -= 1;
-      GameComponent.player.getVelocity().setY(0);
-      GameComponent.player.getVelocity().setX(0);
-      GameComponent.player.preventInput = true;
-      GameComponent.player.switchSprite('enterDoor');
-
-    }
-
-
-
   }
 }
