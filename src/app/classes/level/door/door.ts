@@ -1,6 +1,6 @@
-import {Position} from "../entitiy/position";
-import {Sprite} from "../entitiy/sprite";
-import {Player} from "../entitiy/player/player";
+import {Position} from "../../entitiy/position";
+import {Sprite} from "../../entitiy/sprite";
+import {Player} from "../../entitiy/player/player";
 
 export class Door extends Sprite {
   private isFinalDoor: boolean;

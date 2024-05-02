@@ -1,11 +1,11 @@
-import {CollisionBlock} from "../collision/CollisionBlock";
+import {CollisionBlock} from "./collision/CollisionBlock";
 import {Position} from "../entitiy/position";
 import {Sprite} from "../entitiy/sprite";
-import {Door} from "../door/door";
-import {Coin} from "../coin/coin";
+import {Door} from "./door/door";
+import {Coin} from "../collectibles/coin/coin";
 import {Key} from "../collectibles/key/key";
 import {Shine} from "../collectibles/shines/shine";
-import {Ladder} from "../collision/ladderblock";
+import {Ladder} from "./collision/ladderblock";
 import {Wizard} from "../entitiy/boss/wizard";
 import {HealthPotion} from "../collectibles/potion/potion";
 import {Pig} from "../entitiy/gizmo/pig";
@@ -13,6 +13,7 @@ import {Bat} from "../entitiy/gizmo/bat";
 import {GameComponent} from "../../components/game/game.component";
 import {isKeyPressed} from "../../listener/keystroke";
 import {GameAudio} from "../audio/audio";
+import {Gizmo} from "../entitiy/gizmo/gizmo";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -449,5 +450,11 @@ export class Level extends Sprite {
         }
       });
     }));
+  }
+
+  getEntities(): Gizmo[] {
+
+    return [...this.pigs, ...this.bats, ...this.wizzards];
+
   }
 }

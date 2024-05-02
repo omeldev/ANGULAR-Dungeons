@@ -1,5 +1,5 @@
-import {Sprite} from "../entitiy/sprite";
-import {Position} from "../entitiy/position";
+import {Sprite} from "../../entitiy/sprite";
+import {Position} from "../../entitiy/position";
 
 export class Coin extends Sprite {
   /**

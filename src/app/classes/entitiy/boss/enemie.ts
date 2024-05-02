@@ -1,4 +1,4 @@
-import {Hitbox} from "../../collision/hitbox";
+import {Hitbox} from "../../level/collision/hitbox";
 import {Direction, Gizmo} from "../gizmo/gizmo";
 import {Position} from "../position";
 import {Player} from "../player/player";

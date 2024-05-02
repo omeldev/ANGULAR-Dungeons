@@ -1,4 +1,4 @@
-import {Position} from "../entitiy/position";
+import {Position} from "../../entitiy/position";
 
 export class CollisionBlock {
   private readonly position: Position;

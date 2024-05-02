@@ -1,5 +1,5 @@
-import {Position} from "../entitiy/position";
-import {Player} from "../entitiy/player/player";
+import {Position} from "../../entitiy/position";
+import {Player} from "../../entitiy/player/player";
 
 export class Ladder {
 

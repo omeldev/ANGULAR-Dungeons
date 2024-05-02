@@ -1,8 +1,8 @@
 import {Sprite} from "../sprite";
-import {Hitbox} from "../../collision/hitbox";
+import {Hitbox} from "../../level/collision/hitbox";
 import {Position} from "../position";
 import {Velocity} from "../velocity";
-import {CollisionBlock} from "../../collision/CollisionBlock";
+import {CollisionBlock} from "../../level/collision/CollisionBlock";
 import {GameComponent} from "../../../components/game/game.component";
 import {Player} from "../player/player";
 

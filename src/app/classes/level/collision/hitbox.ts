@@ -1,4 +1,4 @@
-import {Position} from "../entitiy/position";
+import {Position} from "../../entitiy/position";
 
 export class Hitbox {
   private position: Position;
