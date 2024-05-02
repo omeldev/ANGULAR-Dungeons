@@ -2,8 +2,8 @@ import {Position} from "../../entitiy/position";
 
 export class CollisionBlock {
   private readonly position: Position;
-  private readonly width: number = 63;
-  private readonly height: number = 63;
+  private readonly width: number = 64;
+  private readonly height: number = 64;
 
   /**
    * Create a new CollisionBlock

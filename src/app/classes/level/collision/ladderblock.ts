@@ -4,8 +4,8 @@ import {Player} from "../../entitiy/player/player";
 export class Ladder {
 
   private readonly position: Position;
-  private readonly width: number = 63;
-  private readonly height: number = 63;
+  private readonly width: number = 64;
+  private readonly height: number = 64;
 
   /**
    * Create a new CollisionBlock

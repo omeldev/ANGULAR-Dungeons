@@ -51,7 +51,6 @@ export abstract class Collectible extends Sprite {
 
 
     this.updateHitbox(0, 0);
-    this.getHitbox().draw(context);
 
 
     if (this.checkCollision(GameComponent.getPlayer().getHitbox())) {

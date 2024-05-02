@@ -24,6 +24,7 @@ export abstract class Gizmo extends Sprite {
   private readonly SPEED = 100;
   private readonly JUMP_STRENGTH = 10;
   private readonly GRAVITY = 250;
+  private readonly MAX_GRAVITY = 500;
   private readonly velocity = new Velocity(0, 0);
 
   constructor(spriteSrc: string, position: Position, animations: any, frameRate: number = 6, hitbox: Hitbox = new Hitbox(position, 20, 20)) {
@@ -106,7 +107,9 @@ export abstract class Gizmo extends Sprite {
   public applyGravity(delta: number): void {
     if (!this.isFlying) {
 
-      this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
+      if(this.velocity.getY() < this.MAX_GRAVITY) {
+        this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
+      }
       this.position.setY(this.position.getY() + this.velocity.getY() * delta);
     }
 

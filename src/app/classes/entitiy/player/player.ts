@@ -11,6 +11,7 @@ import {Shine} from "../../collectibles/shines/shine";
 import {GameAudio} from "../../audio/audio";
 import {HealthPotion} from "../../collectibles/potion/potion";
 import {Healthbar} from "../../gui/bar/healthbar";
+import {Ladder} from "../../level/collision/ladderblock";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -26,8 +27,9 @@ export class Player extends Sprite {
   public attackBox: Hitbox;
   protected MAX_SPEED = 350;
   protected ACCELERATION = 500;
-  protected JUMP_STRENGTH = 600;
-  protected GRAVITY: number = 1200;
+  protected JUMP_STRENGTH = 450;
+  protected GRAVITY: number = 350;
+  protected MAX_GRAVITY: number = 500;
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
   private collectedCoins: number = 0;
@@ -238,7 +240,12 @@ export class Player extends Sprite {
    */
   public applyGravity(delta: number): void {
 
+
+
     for (let ladder of GameComponent.getCurrentLevel().getLadders()) {
+      //TODO: Implement when Player is standing on a ladder set the velocity to 0
+
+
       if (ladder.checkCollision(GameComponent.player) && isKeyPressed('w')) {
 
         this.isOnLadder = true;
@@ -254,6 +261,9 @@ export class Player extends Sprite {
 
     if (!this.isOnLadder) {
 
+      if(this.getVelocity().getY() < this.MAX_GRAVITY) {
+        this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
+      }
       this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
       this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
 
