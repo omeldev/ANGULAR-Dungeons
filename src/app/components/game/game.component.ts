@@ -21,7 +21,6 @@ export class GameComponent implements AfterViewInit {
   public static isMobile = window.innerWidth < 800 || window.innerHeight < 600;
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
-  public static productionMode: boolean = true;
   public static player: Player;
   public static volume: number = 1.0;
   public static isTitleScreen: boolean = true;
@@ -37,8 +36,8 @@ export class GameComponent implements AfterViewInit {
 
   public flashLightShader = new FlashlightShader();
   public static isFlashLightShaderOn: boolean = true;
+
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
-  public escapeCooldown = 0;
   private oldFrameTime: number = 1;
 
 
