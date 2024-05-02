@@ -3,25 +3,24 @@ import {Position} from "../entitiy/position";
 import {Hitbox} from "../level/collision/hitbox";
 import {GameComponent} from "../../components/game/game.component";
 import {Gizmo} from "../entitiy/gizmo/gizmo";
+import {Player} from "../entitiy/player/player";
 
 export abstract class Collectible extends Sprite {
 
   private hitbox: Hitbox | undefined;
 
-  private swapBuffer = 0.5;
+  private swapBuffer = 2 + Math.random();
   private swapCounter = 0;
   private swap = false;
 
 
-  constructor(imageSrc: string, position: Position, hitbox: Hitbox, frameRate: number, frameBuffer: number) {
+  constructor(imageSrc: string, position: Position, frameRate: number, frameBuffer: number) {
     super(imageSrc, position, () => {
-      this.hitbox = hitbox;
-
-      this.hitbox.setWidth(this.getWidth())
-      this.hitbox.setHeight(this.getHeight());
-
+      this.hitbox = new Hitbox(position, this.getWidth(), this.getHeight());
     }, frameRate);
     this.frameBuffer = frameBuffer;
+    this.loop = true;
+    this.autoPlay = true;
   }
 
   public getHitbox(): Hitbox {
@@ -31,7 +30,7 @@ export abstract class Collectible extends Sprite {
     return this.hitbox;
   }
 
-  public abstract onCollideWithPlayer(context: CanvasRenderingContext2D, delta: number): void;
+  public abstract onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void;
 
   public abstract onCollideWithEntity(entity: Gizmo, context: CanvasRenderingContext2D, delta: number): void;
 
@@ -56,7 +55,7 @@ export abstract class Collectible extends Sprite {
 
 
     if (this.checkCollision(GameComponent.getPlayer().getHitbox())) {
-      this.onCollideWithPlayer(context, delta);
+      this.onCollideWithPlayer(GameComponent.getPlayer(), context, delta);
     }
     for (let entity of GameComponent.getCurrentLevel().getEntities()) {
       if (this.checkCollision(entity.getHitbox())) {

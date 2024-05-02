@@ -1,24 +1,17 @@
 import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
+import {Collectible} from "../collectible";
+import {Gizmo} from "../../entitiy/gizmo/gizmo";
+import {Player} from "../../entitiy/player/player";
+import {Hitbox} from "../../level/collision/hitbox";
 
-export class Shine extends Sprite {
+export class Shine extends Collectible {
 
 
-  private swapBuffer;
-  private swapCounter = 0;
-
-  private swap = false;
 
 
   constructor(position: Position) {
-    super('../../../assets/sprites/shine/idle.png', position, () => {
-    }, 8);
-
-    this.frameBuffer = 5;
-    this.loop = true;
-    this.autoPlay = true;
-
-    this.swapBuffer = Math.random();
+    super('../../../assets/sprites/shine/idle.png', position, 8, 5);
 
     this.getPosition().setY(this.getPosition().getY() + 32);
     this.getPosition().setX(this.getPosition().getX() + 32);
@@ -26,22 +19,12 @@ export class Shine extends Sprite {
 
   }
 
-  public override drawSprite(context: CanvasRenderingContext2D, delta?: number) {
-    super.drawSprite(context, delta);
+  onCollideWithEntity(entity: Gizmo, context: CanvasRenderingContext2D, delta: number): void {
+  }
 
-
-    if (this.swapCounter > this.swapBuffer) {
-      this.swapCounter = 0;
-      this.swap = !this.swap;
-    } else {
-      this.swapCounter += delta!;
-      if (this.swap) {
-        this.getPosition().setY(this.getPosition().getY() - 30 * delta!);
-      } else {
-        this.getPosition().setY(this.getPosition().getY() + 30 * delta!);
-      }
-    }
+  onCollideWithPlayer(player:Player, context:CanvasRenderingContext2D, delta:number): void {
 
   }
+
 
 }
