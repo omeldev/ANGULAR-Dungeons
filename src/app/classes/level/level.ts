@@ -10,6 +10,9 @@ import {Wizard} from "../entitiy/boss/wizard";
 import {HealthPotion} from "../collectibles/potion/potion";
 import {Pig} from "../entitiy/gizmo/pig";
 import {Bat} from "../entitiy/gizmo/bat";
+import {GameComponent} from "../../components/game/game.component";
+import {isKeyPressed} from "../../listener/keystroke";
+import {GameAudio} from "../audio/audio";
 
 export class Level extends Sprite {
   private collisions: number[];
@@ -394,5 +397,57 @@ export class Level extends Sprite {
         }
       });
     }));
+  }
+
+  public draw(context: CanvasRenderingContext2D, delta: number) {
+
+    if(GameComponent.getCurrentLevel() !== this)return;
+    //Background
+    this.drawSprite(context);
+
+
+    //Door
+    this.getFinalDoor().drawSprite(context, delta);
+
+    //Collectibles
+
+    GameComponent.getCurrentLevel().getCoins().forEach(coin => coin.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(context, delta));
+    GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(context, delta));
+
+
+
+    //Entities
+    GameComponent.getCurrentLevel().getWizzards().forEach(wizzard => {
+      wizzard.update(context, delta)
+      wizzard.drawSprite(context, delta)
+    });
+
+    GameComponent.getCurrentLevel().getPigs().forEach(pig => {
+      pig.update(context, delta)
+      pig.drawSprite(context, delta)
+    });
+
+    GameComponent.getCurrentLevel().getBats().forEach(bat => {
+      bat.update(context, delta)
+      bat.drawSprite(context, delta)
+    });
+
+
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 ) {
+      if(GameComponent.player.isAttacking) return;
+      GameComponent.getCurrentLevel().getFinalDoor().play();
+      GameAudio.getAudio('door:open').play();
+      GameComponent.player.collectedKeys -= 1;
+      GameComponent.player.getVelocity().setY(0);
+      GameComponent.player.getVelocity().setX(0);
+      GameComponent.player.preventInput = true;
+      GameComponent.player.switchSprite('enterDoor');
+
+    }
+
+
+
   }
 }

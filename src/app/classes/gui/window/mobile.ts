@@ -1,13 +1,34 @@
 import {Button} from "../button/button";
+import {Position} from "../../entitiy/position";
+import {Scale} from "../../entitiy/scale";
+import {setKeyPressed} from "../../../listener/keystroke";
 
 export class Mobile {
   private static buttons: Button[];
   public buttons: Button[] = [];
+  private static mobileScreen: Mobile;
 
-  constructor(buttons: Button[]) {
+  private constructor() {
 
-    this.buttons = buttons;
-    Mobile.buttons = buttons;
+    this.buttons = [
+      new Button('../../../assets/gui/mobile/left.png', new Position(0, 400), new Scale(0.25), () => {
+        setKeyPressed('a', true);
+      }, () => {
+        setKeyPressed('a', false);
+      }),
+      new Button('../../../assets/gui/mobile/right.png', new Position(100, 400),new Scale(0.25), () => {
+        setKeyPressed('d', true);
+      }, () => {setKeyPressed('d', false);}),
+      new Button('../../../assets/gui/mobile/up.png', new Position(50, 350),new Scale(0.25), () => {
+        setKeyPressed('w', true);
+      }, () => {setKeyPressed('w', false)}),
+      new Button('../../../assets/gui/mobile/down.png', new Position(100, 0),new Scale(0.25), () => {
+
+      }),
+    ];
+    Mobile.buttons = this.buttons;
+
+    Mobile.mobileScreen = this;
 
 
 
@@ -37,6 +58,12 @@ export class Mobile {
     for (let button of this.buttons) {
       button.draw(context);
     }
+
+  }
+
+  public static getScreen() {
+    if(this.mobileScreen == null) return new Mobile();
+    return this.mobileScreen;
 
   }
 }

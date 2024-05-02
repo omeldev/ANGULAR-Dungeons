@@ -1,7 +1,7 @@
 import {GameComponent} from "../../components/game/game.component";
 import {Position} from "../entitiy/position";
 
-export class Flashlight {
+export class FlashlightShader {
 
   public isActive: boolean = false;
 
