@@ -21,6 +21,8 @@ export class Key extends Collectible {
     const keys = GameComponent.getCurrentLevel().getKey();
     for (let i = 0; i < keys.length; i++) {
       if (keys[i] === this) {
+
+
         GameComponent.getCurrentLevel().getKey().splice(i, 1);
         GameAudio.getAudio('key:collect').play();
         player.collectedKeys++;

@@ -26,8 +26,11 @@ export class Potion extends Collectible {
 
 export class HealthPotion extends Potion {
 
-  constructor(position: Position) {
+  private healAmount : number;
+
+  constructor(position: Position, healAmount: number = 25 ) {
     super('../../assets/sprites/potion/healthPotion.png', position, 1, 1);
+    this.healAmount = healAmount;
   }
 
   public override onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void {
@@ -38,10 +41,29 @@ export class HealthPotion extends Potion {
         if (player.health === player.maxHealth) return;
         GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
 
-        if (player.health + 25 > player.maxHealth) {
-          player.health = player.maxHealth;
+        if (player.health + this.healAmount > player.maxHealth) {
+          (async () => {
+            const diff = player.maxHealth - player.health;
+            let counter = 0;
+            const interval = setInterval(() => {
+              counter++;
+              player.health += 1;
+              if (counter >= diff || player.health === player.maxHealth) clearInterval(interval);
+
+            }, 75);
+
+          })();
+
         } else {
-          player.health += 25;
+          (async () => {
+            let counter = 0;
+            const interval = setInterval(() => {
+              counter++;
+              player.health += 1;
+              if(counter >= this.healAmount || player.health === player.maxHealth) clearInterval(interval);
+
+            }, 75);
+          })();
         }
 
 

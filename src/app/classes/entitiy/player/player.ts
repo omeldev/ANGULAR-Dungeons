@@ -96,7 +96,7 @@ export class Player extends Sprite {
         imageSrc: '../../../assets/sprites/player/animation/attackRight.png',
         onComplete: () => {
           GameComponent.player.isAttacking = false;
-          this.attackDone();
+          this.onAttackDone();
         }
       },
       attackLeft: {
@@ -106,7 +106,7 @@ export class Player extends Sprite {
         imageSrc: '../../../assets/sprites/player/animation/attackLeft.png',
         onComplete: () => {
           GameComponent.player.isAttacking = false;
-          this.attackDone();
+          this.onAttackDone();
         }
       }
     });
@@ -392,7 +392,7 @@ export class Player extends Sprite {
 
   }
 
-  private attackDone() {
+  private onAttackDone() {
     this.isAttacking = false;
     this.collisionDone.clear();
   }
