@@ -42,28 +42,13 @@ export class HealthPotion extends Potion {
         GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
 
         if (player.health + this.healAmount > player.maxHealth) {
-          (async () => {
-            const diff = player.maxHealth - player.health;
-            let counter = 0;
-            const interval = setInterval(() => {
-              counter++;
-              player.health += 1;
-              if (counter >= diff || player.health === player.maxHealth) clearInterval(interval);
 
-            }, 75);
+          player.health = player.maxHealth;
 
-          })();
 
         } else {
-          (async () => {
-            let counter = 0;
-            const interval = setInterval(() => {
-              counter++;
-              player.health += 1;
-              if(counter >= this.healAmount || player.health === player.maxHealth) clearInterval(interval);
+          player.health += this.healAmount;
 
-            }, 75);
-          })();
         }
 
 

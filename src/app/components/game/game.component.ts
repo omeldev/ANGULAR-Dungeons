@@ -15,7 +15,7 @@ import {Mobile} from "../../classes/gui/window/mobile";
 })
 export class GameComponent implements AfterViewInit {
 
-  public static isMobile = window.innerWidth < 800 || window.innerHeight < 600;
+  public static isMobile = window.innerWidth < 1000 || window.innerHeight < 800;
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static player: Player;
@@ -121,6 +121,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   public touchEnd(event: TouchEvent): void {
+    event.preventDefault();
 
     if (GameComponent.isMobile) {
       setKeyPressed('a', false);
@@ -144,6 +145,8 @@ export class GameComponent implements AfterViewInit {
   }
 
   touchStart(event: TouchEvent) {
+    event.preventDefault();
+
 
     const {clientX, clientY} = event.touches[0];
     const canvasTouch = GameComponent.translateTouchToCanvasPosition(clientX, clientY, this.cameraCanvas!.nativeElement);

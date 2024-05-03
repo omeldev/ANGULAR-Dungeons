@@ -26,8 +26,16 @@ export class Mobile {
       }, () => {
         setKeyPressed('w', false)
       }),
-      new Button('../../../assets/gui/mobile/down.png', new Position(100, 0), new Scale(0.25), () => {
 
+      new Button('../../../assets/gui/mobile/a.png', new Position(650, 250), new Scale(0.4), () => {
+        setKeyPressed('space', true);
+      }, () => {
+        setKeyPressed('space', false);
+      }),
+      new Button('../../../assets/gui/mobile/f.png', new Position(700, 0), new Scale(0.2), () => {
+        setKeyPressed('f', true);
+      }, () => {
+        setKeyPressed('f', false);
       }),
     ];
     Mobile.buttons = this.buttons;
