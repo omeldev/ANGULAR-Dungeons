@@ -225,9 +225,6 @@ export class Level extends Sprite {
     return this.shine;
   }
 
-  public drawCoins(context: CanvasRenderingContext2D): void {
-    this.coins.forEach(coin => coin.drawSprite(context));
-  }
 
   /**
    * Get the background of the Level

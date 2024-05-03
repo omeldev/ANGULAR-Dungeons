@@ -32,7 +32,7 @@ export class Player extends Sprite {
   protected MAX_GRAVITY: number = 500;
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
-  private collectedCoins: number = 0;
+  collectedCoins: number = 0;
   private collisionDone = new Set<Hitbox>;
 
   /**
@@ -239,15 +239,10 @@ export class Player extends Sprite {
    * @param delta {number} time since the last frame
    */
   public applyGravity(delta: number): void {
-
-
-
     for (let ladder of GameComponent.getCurrentLevel().getLadders()) {
       //TODO: Implement when Player is standing on a ladder set the velocity to 0
 
-
       if (ladder.checkCollision(GameComponent.player) && isKeyPressed('w')) {
-
         this.isOnLadder = true;
         this.velocity.setY(-100);
         this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
@@ -275,60 +270,6 @@ export class Player extends Sprite {
     if (this.getPosition().getY() + this.getHeight() >= GameComponent.canvasHeight) {
       this.velocity.setY(0);
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
-    }
-
-    const keys = GameComponent.getCurrentLevel().getKey();
-    for (let i = 0; i < keys.length; i++) {
-      if (this.checkForKeyCollision(keys[i])) {
-        GameComponent.getCurrentLevel().getKey().splice(i, 1);
-        GameAudio.getAudio('key:collect').play();
-        this.collectedKeys++;
-        break;
-      }
-    }
-
-    const coins = GameComponent.getCurrentLevel().getCoins();
-    for (let i = 0; i < coins.length; i++) {
-      if (this.checkForCoinCollision(coins[i])) {
-        this.collectedCoins++;
-        GameComponent.getCurrentLevel().getCoins().splice(i, 1);
-
-        GameAudio.getAudio('coin:collect').play();
-        break;
-      }
-    }
-
-    const shines = GameComponent.getCurrentLevel().getShines();
-    for (let i = 0; i < shines.length; i++) {
-      if (this.checkForShineCollision(shines[i])) {
-        GameComponent.getCurrentLevel().getShines().splice(i, 1);
-
-        this.collectedShines++;
-
-
-        GameAudio.getAudio('shine:collect').play();
-
-        break;
-      }
-    }
-
-    const healthPotions = GameComponent.getCurrentLevel().getHealthPotions();
-    for (let i = 0; i < healthPotions.length; i++) {
-      if (this.checkForHealthPotionCollision(healthPotions[i])) {
-        if (this.health === this.maxHealth) return;
-        GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
-
-        if (this.health + 25 > this.maxHealth) {
-          this.health = this.maxHealth;
-        } else {
-          this.health += 25;
-        }
-
-
-        GameAudio.getAudio('shine:collect').play();
-
-        break;
-      }
     }
 
   }
@@ -374,27 +315,6 @@ export class Player extends Sprite {
       this.hitbox.getPosition().getX() + this.hitbox.getWidth() >= block.getPosition().getX() &&
       this.hitbox.getPosition().getY() + this.hitbox.getHeight() >= block.getPosition().getY() &&
       this.hitbox.getPosition().getY() <= block.getPosition().getY() + block.getHeight();
-  }
-
-  public checkForCoinCollision(coin: Coin): boolean {
-    return this.hitbox.getPosition().getX() < coin.getPosition().getX() + coin.getWidth() &&
-      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > coin.getPosition().getX() &&
-      this.hitbox.getPosition().getY() < coin.getPosition().getY() + coin.getHeight() &&
-      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > coin.getPosition().getY();
-  }
-
-  public checkForKeyCollision(key: Key): boolean {
-    return this.hitbox.getPosition().getX() < key.getPosition().getX() + key.getWidth() &&
-      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > key.getPosition().getX() &&
-      this.hitbox.getPosition().getY() < key.getPosition().getY() + key.getHeight() &&
-      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > key.getPosition().getY();
-  }
-
-  public checkForShineCollision(shine: Shine): boolean {
-    return this.hitbox.getPosition().getX() < shine.getPosition().getX() + shine.getWidth() &&
-      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > shine.getPosition().getX() &&
-      this.hitbox.getPosition().getY() < shine.getPosition().getY() + shine.getHeight() &&
-      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > shine.getPosition().getY();
   }
 
   /**
@@ -475,13 +395,6 @@ export class Player extends Sprite {
   private attackDone() {
     this.isAttacking = false;
     this.collisionDone.clear();
-  }
-
-  private checkForHealthPotionCollision(healthPotion: HealthPotion): boolean {
-    return this.hitbox.getPosition().getX() < healthPotion.getPosition().getX() + healthPotion.getWidth() &&
-      this.hitbox.getPosition().getX() + this.hitbox.getWidth() > healthPotion.getPosition().getX() &&
-      this.hitbox.getPosition().getY() < healthPotion.getPosition().getY() + healthPotion.getHeight() &&
-      this.hitbox.getPosition().getY() + this.hitbox.getHeight() > healthPotion.getPosition().getY();
   }
 }
 

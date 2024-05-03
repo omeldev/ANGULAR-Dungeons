@@ -9,7 +9,7 @@ export abstract class Collectible extends Sprite {
 
   private hitbox: Hitbox | undefined;
 
-  private swapBuffer = 2 + Math.random();
+  public swapBuffer = 2 + Math.random();
   private swapCounter = 0;
   private swap = false;
 
@@ -58,6 +58,7 @@ export abstract class Collectible extends Sprite {
     }
     for (let entity of GameComponent.getCurrentLevel().getEntities()) {
       if (this.checkCollision(entity.getHitbox())) {
+
         this.onCollideWithEntity(entity, context, delta);
       }
     }

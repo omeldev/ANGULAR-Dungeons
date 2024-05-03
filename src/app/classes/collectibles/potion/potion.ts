@@ -1,35 +1,25 @@
 import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
+import {Collectible} from "../collectible";
+import {Gizmo} from "../../entitiy/gizmo/gizmo";
+import {Player} from "../../entitiy/player/player";
+import {GameComponent} from "../../../components/game/game.component";
+import {GameAudio} from "../../audio/audio";
 
-export class Potion extends Sprite {
+export class Potion extends Collectible {
 
 
-  private swapBuffer = 2 + Math.random();
-  private swapCounter = 0;
-  private swap = false;
-
-  constructor(position: Position, imageSource: string) {
-    super(imageSource, position);
+  constructor(imageSource: string, position: Position, frameRate: number, frameBuffer: number) {
+    super(imageSource, position, frameRate, frameBuffer);
     this.position.setY(this.position.getY() + 10);
   }
 
-  override drawSprite(context: CanvasRenderingContext2D, delta?: number) {
-    super.drawSprite(context, delta);
-
-
-    if (this.swapCounter > this.swapBuffer) {
-      this.swapCounter = 0;
-      this.swap = !this.swap;
-    } else {
-      this.swapCounter += delta!;
-      if (this.swap) {
-        this.getPosition().setY(this.getPosition().getY() - 10 * delta!);
-      } else {
-        this.getPosition().setY(this.getPosition().getY() + 10 * delta!);
-      }
-    }
-
+  onCollideWithEntity(entity: Gizmo, context: CanvasRenderingContext2D, delta: number): void {
   }
+
+  onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void {
+  }
+
 
 
 }
@@ -37,7 +27,29 @@ export class Potion extends Sprite {
 export class HealthPotion extends Potion {
 
   constructor(position: Position) {
-    super(position, '../../assets/sprites/potion/healthPotion.png');
+    super('../../assets/sprites/potion/healthPotion.png', position, 1, 1);
+  }
+
+  public override onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void {
+
+    const healthPotions = GameComponent.getCurrentLevel().getHealthPotions();
+    for (let i = 0; i < healthPotions.length; i++) {
+      if (healthPotions[i] === this) {
+        if (player.health === player.maxHealth) return;
+        GameComponent.getCurrentLevel().getHealthPotions().splice(i, 1);
+
+        if (player.health + 25 > player.maxHealth) {
+          player.health = player.maxHealth;
+        } else {
+          player.health += 25;
+        }
+
+
+        GameAudio.getAudio('shine:collect').play();
+
+        break;
+      }
+    }
   }
 
 }

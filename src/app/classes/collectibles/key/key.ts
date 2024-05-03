@@ -1,32 +1,33 @@
 import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
+import {Collectible} from "../collectible";
+import {Gizmo} from "../../entitiy/gizmo/gizmo";
+import {Player} from "../../entitiy/player/player";
+import {GameComponent} from "../../../components/game/game.component";
+import {GameAudio} from "../../audio/audio";
 
-export class Key extends Sprite {
-
-  private swapBuffer = 0.5;
-  private swapCounter = 0;
-  private swap = false;
+export class Key extends Collectible {
 
   constructor(position: Position) {
-    super('../../assets/sprites/key/key.png', position);
+    super('../../assets/sprites/key/key.png', position, 1, 1);
     this.position.setY(this.position.getY() - 10);
   }
 
-  override drawSprite(context: CanvasRenderingContext2D, delta?: number) {
-    super.drawSprite(context, delta);
+  onCollideWithEntity(entity: Gizmo, context: CanvasRenderingContext2D, delta: number): void {
+  }
 
+  onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void {
 
-    if (this.swapCounter > this.swapBuffer) {
-      this.swapCounter = 0;
-      this.swap = !this.swap;
-    } else {
-      this.swapCounter += delta!;
-      if (this.swap) {
-        this.getPosition().setY(this.getPosition().getY() - 10 * delta!);
-      } else {
-        this.getPosition().setY(this.getPosition().getY() + 10 * delta!);
+    const keys = GameComponent.getCurrentLevel().getKey();
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] === this) {
+        GameComponent.getCurrentLevel().getKey().splice(i, 1);
+        GameAudio.getAudio('key:collect').play();
+        player.collectedKeys++;
+        break;
       }
     }
+
 
   }
 
