@@ -39,6 +39,11 @@ export const KEYS: GameKey[] = [
 
 export function setKeyPressed(key: string, pressed: boolean): void {
   const gameKey = KEYS.find(gameKey => gameKey.getKey() === key);
+  if (!GameComponent.hasInteracted) {
+    GameComponent.hasInteracted = true;
+    audioPlayer.playNext();
+
+  }
   gameKey!.setPressed(pressed);
 }
 
@@ -46,16 +51,12 @@ export function isKeyPressed(key: string): boolean {
   const gameKey = KEYS.find(gameKey => gameKey.getKey() === key);
   return gameKey!.isPressed();
 }
+const audioPlayer = new AudioPlayer(['background', 'background2', 'background3', 'background4']);
 
 export function registerKeystrokes(): void {
 
-  const audioPlayer = new AudioPlayer(['background', 'background2', 'background3', 'background4']);
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
-    if (!GameComponent.hasInteracted) {
-      GameComponent.hasInteracted = true;
-      audioPlayer.playNext();
 
-    }
 
 
     const key = event.key;
