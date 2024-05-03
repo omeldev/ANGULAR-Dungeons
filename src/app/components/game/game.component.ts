@@ -190,10 +190,10 @@ export class GameComponent implements AfterViewInit {
     }
 
 
-    localStorage.setItem('volume', this.volume.toString());
+
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
-
+    localStorage.setItem('volume', this.volume.toString());
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
 
@@ -219,7 +219,7 @@ export class GameComponent implements AfterViewInit {
 
     this.moveCamera();
     if(GameComponent.hasInteracted) {
-      this.cameraCanvas?.nativeElement.requestFullscreen()
+     if(GameComponent.isMobile) this.cameraCanvas?.nativeElement.requestFullscreen().then()
 
     }
 

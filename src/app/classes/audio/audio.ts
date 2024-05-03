@@ -27,6 +27,7 @@ export class GameAudio {
   public play(onEnded?: () => void): void {
     const clone = this.audio.cloneNode(true) as HTMLAudioElement; // Create a clone of the audio element
     clone.volume = GameComponent.volume;
+    console.log(clone.volume);
     clone.play().then();
     clone.addEventListener("ended", function () {
       onEnded?.();
