@@ -164,7 +164,9 @@ export class GameComponent implements AfterViewInit {
 
     registerKeystrokes();
     this.animate();
+
   }
+
 
   private changeCanvasSize(width: number, height: number) {
     this.canvas!.nativeElement.width = width;
@@ -176,6 +178,8 @@ export class GameComponent implements AfterViewInit {
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
+
+
 
     if (GameComponent.isTitleScreen) {
       GameComponent.player.preventInput = true;
@@ -211,7 +215,10 @@ export class GameComponent implements AfterViewInit {
     }
 
     this.moveCamera();
+    if(GameComponent.hasInteracted) {
+      this.cameraCanvas?.nativeElement.requestFullscreen()
 
+    }
 
     if (GameComponent.isTitleScreen) {
       TitleScreen.getScreen().draw(this.cameraContext!);
@@ -228,8 +235,8 @@ export class GameComponent implements AfterViewInit {
 
   private moveCamera() {
     if (!GameComponent.getCurrentLevel().isLoaded) return;
-    const cameraWidth = 750;
-    const cameraHeight = 500;
+    const cameraWidth = GameComponent.isMobile ? window.innerWidth : 800;
+    const cameraHeight = GameComponent.isMobile ? window.innerHeight : 500;
     this.cameraCanvas!.nativeElement.width = cameraWidth;
     this.cameraCanvas!.nativeElement.height = cameraHeight;
 

@@ -11,17 +11,17 @@ export class Mobile {
   private constructor() {
 
     this.buttons = [
-      new Button('../../../assets/gui/mobile/left.png', new Position(0, 400), new Scale(0.25), () => {
+      new Button('../../../assets/gui/mobile/left.png', new Position(0, 300), new Scale(0.25), () => {
         setKeyPressed('a', true);
       }, () => {
         setKeyPressed('a', false);
       }),
-      new Button('../../../assets/gui/mobile/right.png', new Position(100, 400), new Scale(0.25), () => {
+      new Button('../../../assets/gui/mobile/right.png', new Position(100, 300), new Scale(0.25), () => {
         setKeyPressed('d', true);
       }, () => {
         setKeyPressed('d', false);
       }),
-      new Button('../../../assets/gui/mobile/up.png', new Position(50, 350), new Scale(0.25), () => {
+      new Button('../../../assets/gui/mobile/up.png', new Position(50, 250), new Scale(0.25), () => {
         setKeyPressed('w', true);
       }, () => {
         setKeyPressed('w', false)
