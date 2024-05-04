@@ -18,6 +18,7 @@ export class Wizard extends Enemie {
   public health: number = this.maxHealth;
   public healthBar: Healthbar;
   public isDead: boolean = false;
+  public isReceivingDamage: boolean = false;
   private collisionDone = new Set<Hitbox>;
 
   constructor(position: Position) {
@@ -86,7 +87,20 @@ export class Wizard extends Enemie {
       hitRight: {
         ...animationDefaults,
         frameRate: 3,
-        imageSrc: '../../../assets/sprites/wizard/hitRight.png'
+        frameBuffer: 24,
+        imageSrc: '../../../assets/sprites/wizard/hitRight.png',
+        onComplete: () => {
+          this.isReceivingDamage = false;
+        }
+      },
+      hitLeft: {
+        ...animationDefaults,
+        frameRate: 3,
+        frameBuffer: 24,
+        imageSrc: '../../../assets/sprites/wizard/hitLeft.png',
+        onComplete: () => {
+          this.isReceivingDamage = false;
+        }
       },
       fallRight: {
         ...animationDefaults,
@@ -110,11 +124,7 @@ export class Wizard extends Enemie {
   }
 
   public attack(): void {
-    if (this.lastDirection === Direction.RIGHT) {
-      this.switchSprite('attack1Right');
-    } else {
-      this.switchSprite('attack1Left');
-    }
+    this.switchSprite(this.lastDirection === Direction.RIGHT ? 'attack1Right' : 'attack1Left');
   }
 
   public override moveAi(context: CanvasRenderingContext2D, delta: number): void {
@@ -122,6 +132,11 @@ export class Wizard extends Enemie {
 
     if (this.health <= 0) {
       this.switchSprite('death');
+      return;
+    }
+
+    if (this.isReceivingDamage) {
+      this.switchSprite(this.lastDirection === Direction.RIGHT ? 'hitRight' : 'hitLeft');
       return;
     }
 
@@ -154,7 +169,9 @@ export class Wizard extends Enemie {
   attackBoxCollide(player: Player): void {
     if (this.collisionDone.has(player.getHitbox())) return;
     this.collisionDone.add(player.getHitbox());
+    player.isReceivingDamage = true;
     player.health -= 20;
+
   }
 
   private attackDone() {

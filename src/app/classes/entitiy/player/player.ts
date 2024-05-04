@@ -34,6 +34,8 @@ export class Player extends Sprite {
   private readonly hitbox: Hitbox;
   collectedCoins: number = 0;
   private collisionDone = new Set<Hitbox>;
+  isReceivingDamage: boolean = false;
+  isOnGround: boolean = false;
 
   /**
    * Create a new player
@@ -108,7 +110,40 @@ export class Player extends Sprite {
           GameComponent.player.isAttacking = false;
           this.onAttackDone();
         }
-      }
+      },
+      hitRight: {
+        frameRate: 2,
+        frameBuffer: 14,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/hitRight.png',
+        onComplete: () => {
+          GameComponent.player.isReceivingDamage = false;
+
+        }
+      },
+      hitLeft: {
+        frameRate: 2,
+        frameBuffer: 14,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/hitLeft.png',
+        onComplete: () => {
+          GameComponent.player.isReceivingDamage = false;
+
+        }
+      },
+      fallRight: {
+        frameRate: 1,
+        frameBuffer: 1,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/fallRight.png'
+      },
+      fallLeft: {
+        frameRate: 1,
+        frameBuffer: 1,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/fallLeft.png'
+      },
+
     });
     this.getScale().setScale(1.0);
     this.velocity = new Velocity(0, 0);
@@ -159,9 +194,18 @@ export class Player extends Sprite {
      * Set the velocity to 0 on the X axis if neither a | d is pressed
      */
 
+
+
+    if(this.isReceivingDamage) {
+      this.switchSprite(this.lastDirection === 'right' ? 'hitRight' : 'hitLeft');
+      this.attackCooldown = 0
+      this.isAttacking = false;
+      return;
+    }
+
     if (this.attackCooldown > 0 && this.attackCooldown != 0) this.attackCooldown -= delta;
 
-    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput) {
+    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput && !this.isReceivingDamage) {
       this.attackCooldown = 1
       this.isAttacking = true;
       if (this.lastDirection === 'right') this.switchSprite('attackRight'); else
@@ -222,6 +266,7 @@ export class Player extends Sprite {
     this.checkVerticalCollisions();
 
 
+
     /**
      * Check if the player is on the ground and if the jump key is pressed
      * If so, apply the jump strength
@@ -253,11 +298,11 @@ export class Player extends Sprite {
       }
     }
 
-
     if (!this.isOnLadder) {
 
       if(this.getVelocity().getY() < this.MAX_GRAVITY) {
         this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
+
       }
       this.velocity.setY(this.getVelocity().getY() + this.GRAVITY * delta);
       this.getPosition().setY(this.getPosition().getY() + this.getVelocity().getY() * delta);
@@ -280,7 +325,11 @@ export class Player extends Sprite {
   public checkVerticalCollisions() {
     for (let i = 0; i < GameComponent.getCurrentLevel().getCollisionBlocks().length; i++) {
       const block = GameComponent.getCurrentLevel().getCollisionBlocks()[i];
-      if (!this.checkForCollision(block)) continue;
+      if (!this.checkForCollision(block)) {
+        this.isOnGround = false;
+        continue;
+
+      }
 
       /**
        * Offset to prevent the player from getting stuck in the block
@@ -291,12 +340,14 @@ export class Player extends Sprite {
       if (this.getVelocity().getY() < 0) {
         const offset = this.hitbox.getPosition().getY() - this.getPosition().getY();
         this.getVelocity().setY(0.01)
+
         this.getPosition().setY(block.getPosition().getY() + block.getHeight() - offset + collisionOffset);
         break;
       }
 
       if (this.getVelocity().getY() > 0) {
         this.getVelocity().setY(0);
+        this.isOnGround = true;
         const offset = this.hitbox.getPosition().getY() - this.getPosition().getY() + this.hitbox.getHeight();
         this.getPosition().setY(block.getPosition().getY() - offset - collisionOffset);
         break;
@@ -368,6 +419,7 @@ export class Player extends Sprite {
       if (this.attackBox.collidesWith(wizzards.getHitbox()) && this.isAttacking) {
         if (this.collisionDone.has(wizzards.getHitbox())) return;
         this.collisionDone.add(wizzards.getHitbox());
+        wizzards.isReceivingDamage = true;
         wizzards.health -= 25;
       }
     }
