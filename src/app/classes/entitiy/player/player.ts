@@ -195,17 +195,17 @@ export class Player extends Sprite {
      */
 
 
-
-    if(this.isReceivingDamage) {
-      this.switchSprite(this.lastDirection === 'right' ? 'hitRight' : 'hitLeft');
-      this.attackCooldown = 0
-      this.isAttacking = false;
-      return;
+    if(!this.isOnGround && !this.isAttacking && !this.isReceivingDamage) {
+      this.switchSprite(this.lastDirection === 'right' ? 'fallRight' : 'fallLeft')
+      console.log("Should fall")
     }
 
-    if (this.attackCooldown > 0 && this.attackCooldown != 0) this.attackCooldown -= delta;
 
-    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput && !this.isReceivingDamage) {
+
+
+    if (this.attackCooldown > 0 && this.attackCooldown != 0 && !this.isReceivingDamage) this.attackCooldown -= delta;
+
+    if (isKeyPressed('space') && !this.isAttacking && this.attackCooldown <= 0 && !this.preventInput && !this.isReceivingDamage && this.isOnGround) {
       this.attackCooldown = 1
       this.isAttacking = true;
       if (this.lastDirection === 'right') this.switchSprite('attackRight'); else
@@ -214,7 +214,7 @@ export class Player extends Sprite {
     }
 
 
-    if (!isKeyPressed('a') && !isKeyPressed('d')) {
+    if (!isKeyPressed('a') && !isKeyPressed('d') && !this.isReceivingDamage && this.isOnGround) {
       if (this.lastDirection === 'left') {
         if (!this.preventInput && !this.isAttacking) this.switchSprite('idleLeft')
       } else {
@@ -228,17 +228,17 @@ export class Player extends Sprite {
     /**
      * Check if a | d is pressed, then apply acceleration
      */
-    if (isKeyPressed('a') && !this.preventInput) {
+    if (isKeyPressed('a') && !this.preventInput && !this.isReceivingDamage) {
       this.lastDirection = 'left';
-      if (!this.preventInput && !this.isAttacking) this.switchSprite('runLeft')
+      if (!this.preventInput && !this.isAttacking && this.isOnGround) this.switchSprite('runLeft')
       if (this.velocity.getX() > -this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() - this.ACCELERATION * delta);
       } else this.velocity.setX(-this.MAX_SPEED);
     }
 
-    if (isKeyPressed('d') && !this.preventInput) {
+    if (isKeyPressed('d') && !this.preventInput && !this.isReceivingDamage) {
       this.lastDirection = 'right';
-      if (!this.preventInput && !this.isAttacking) this.switchSprite('runRight')
+      if (!this.preventInput && !this.isAttacking && this.isOnGround) this.switchSprite('runRight')
       if (this.velocity.getX() < this.MAX_SPEED) {
         this.velocity.setX(this.velocity.getX() + this.ACCELERATION * delta);
       } else this.velocity.setX(this.MAX_SPEED);
@@ -271,9 +271,16 @@ export class Player extends Sprite {
      * Check if the player is on the ground and if the jump key is pressed
      * If so, apply the jump strength
      */
-    if (isKeyPressed('w') && this.getVelocity().getY() === 0) {
+    if (isKeyPressed('w') && this.getVelocity().getY() === 0 && !this.isReceivingDamage && this.isOnGround) {
       if (!this.preventInput)
         this.getVelocity().setY(-this.JUMP_STRENGTH);
+    }
+
+    if(this.isReceivingDamage) {
+      this.switchSprite(this.lastDirection === 'right' ? 'hitRight' : 'hitLeft');
+      this.attackCooldown = 0
+      this.isAttacking = false;
+      return;
     }
   }
 
@@ -284,6 +291,8 @@ export class Player extends Sprite {
    * @param delta {number} time since the last frame
    */
   public applyGravity(delta: number): void {
+
+
     for (let ladder of GameComponent.getCurrentLevel().getLadders()) {
       //TODO: Implement when Player is standing on a ladder set the velocity to 0
 
@@ -317,6 +326,13 @@ export class Player extends Sprite {
       this.setPosition(GameComponent.getCurrentLevel().getSpawnPoint());
     }
 
+    this.isOnGround = GameComponent.getCurrentLevel().getCollisionBlocks().some(colBlock =>
+      this.hitbox.getPosition().getY() + this.hitbox.getHeight() <= colBlock.getPosition().getY()
+      && this.hitbox.getPosition().getY() + this.hitbox.getHeight() >= colBlock.getPosition().getY() - 1
+      && this.hitbox.getPosition().getX() <= colBlock.getPosition().getX() + colBlock.getWidth()
+      && this.hitbox.getPosition().getX() + this.hitbox.getWidth() >= colBlock.getPosition().getX()
+    );
+
   }
 
   /**
@@ -326,20 +342,16 @@ export class Player extends Sprite {
     for (let i = 0; i < GameComponent.getCurrentLevel().getCollisionBlocks().length; i++) {
       const block = GameComponent.getCurrentLevel().getCollisionBlocks()[i];
       if (!this.checkForCollision(block)) {
-        this.isOnGround = false;
         continue;
-
       }
 
       /**
        * Offset to prevent the player from getting stuck in the block
        */
       const collisionOffset = 0.01;
-
-
       if (this.getVelocity().getY() < 0) {
         const offset = this.hitbox.getPosition().getY() - this.getPosition().getY();
-        this.getVelocity().setY(0.01)
+        this.getVelocity().setY(0.1)
 
         this.getPosition().setY(block.getPosition().getY() + block.getHeight() - offset + collisionOffset);
         break;

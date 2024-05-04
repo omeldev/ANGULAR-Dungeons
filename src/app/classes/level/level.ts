@@ -295,7 +295,7 @@ export class Level extends Sprite {
     });
 
 
-    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1) {
+    if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
       if (GameComponent.player.isAttacking) return;
       GameComponent.getCurrentLevel().getFinalDoor().play();
       GameAudio.getAudio('door:open').play();
