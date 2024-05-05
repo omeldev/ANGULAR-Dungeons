@@ -80,6 +80,7 @@ export class Player extends Sprite {
         onComplete: () => {
           GameComponent.levelChange();
           GameComponent.player.preventInput = false;
+
         }
       },
       leaveDoor: {
@@ -89,6 +90,7 @@ export class Player extends Sprite {
         imageSrc: '../../../assets/sprites/player/animation/leaveDoor.png',
         onComplete: () => {
           GameComponent.player.preventInput = false;
+
         }
       },
       attackRight: {
