@@ -1,5 +1,11 @@
 # Dungeons the Game
 
+```diff
+- At the moment there is no IOS support.
+ 
+Supports only Windows, Linux, and Android.
+```
+
 ## Description
 Dungeons the Game is written with TypeScript and Angular.
 You can explore the dungeons, fight monsters, and collect coins and treasures.
