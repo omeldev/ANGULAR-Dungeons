@@ -1,4 +1,3 @@
-import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
 import {Collectible} from "../collectible";
 import {Gizmo} from "../../entitiy/gizmo/gizmo";
@@ -21,14 +20,13 @@ export class Potion extends Collectible {
   }
 
 
-
 }
 
 export class HealthPotion extends Potion {
 
-  private healAmount : number;
+  private healAmount: number;
 
-  constructor(position: Position, healAmount: number = 25 ) {
+  constructor(position: Position, healAmount: number = 25) {
     super('../../assets/sprites/potion/healthPotion.png', position, 1, 1);
     this.healAmount = healAmount;
   }

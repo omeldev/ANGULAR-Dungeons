@@ -51,12 +51,12 @@ export function isKeyPressed(key: string): boolean {
   const gameKey = KEYS.find(gameKey => gameKey.getKey() === key);
   return gameKey!.isPressed();
 }
+
 const audioPlayer = new AudioPlayer(['background', 'background2', 'background3', 'background4']);
 
 export function registerKeystrokes(): void {
 
   const handleKeyEvent = (event: KeyboardEvent, pressed: boolean) => {
-
 
 
     const key = event.key;

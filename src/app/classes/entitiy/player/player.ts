@@ -4,14 +4,9 @@ import {Sprite} from "../sprite";
 import {GameComponent} from "../../../components/game/game.component";
 import {CollisionBlock} from "../../level/collision/CollisionBlock";
 import {isKeyPressed} from "../../../listener/keystroke";
-import {Coin} from "../../collectibles/coin/coin";
 import {Hitbox} from "../../level/collision/hitbox";
-import {Key} from "../../collectibles/key/key";
-import {Shine} from "../../collectibles/shines/shine";
 import {GameAudio} from "../../audio/audio";
-import {HealthPotion} from "../../collectibles/potion/potion";
 import {Healthbar} from "../../gui/bar/healthbar";
-import {Ladder} from "../../level/collision/ladderblock";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -25,6 +20,9 @@ export class Player extends Sprite {
   public healthbar: Healthbar = new Healthbar(new Position(0, 200));
   public maxHealth: number = 100;
   public attackBox: Hitbox;
+  collectedCoins: number = 0;
+  isReceivingDamage: boolean = false;
+  isOnGround: boolean = false;
   protected MAX_SPEED = 350;
   protected ACCELERATION = 500;
   protected JUMP_STRENGTH = 450;
@@ -32,10 +30,7 @@ export class Player extends Sprite {
   protected MAX_GRAVITY: number = 500;
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
-  collectedCoins: number = 0;
   private collisionDone = new Set<Hitbox>;
-  isReceivingDamage: boolean = false;
-  isOnGround: boolean = false;
 
   /**
    * Create a new player
@@ -197,12 +192,10 @@ export class Player extends Sprite {
      */
 
 
-    if(!this.isOnGround && !this.isAttacking && !this.isReceivingDamage) {
+    if (!this.isOnGround && !this.isAttacking && !this.isReceivingDamage) {
       this.switchSprite(this.lastDirection === 'right' ? 'fallRight' : 'fallLeft')
       console.log("Should fall")
     }
-
-
 
 
     if (this.attackCooldown > 0 && this.attackCooldown != 0 && !this.isReceivingDamage) this.attackCooldown -= delta;
@@ -268,7 +261,6 @@ export class Player extends Sprite {
     this.checkVerticalCollisions();
 
 
-
     /**
      * Check if the player is on the ground and if the jump key is pressed
      * If so, apply the jump strength
@@ -278,7 +270,7 @@ export class Player extends Sprite {
         this.getVelocity().setY(-this.JUMP_STRENGTH);
     }
 
-    if(this.isReceivingDamage) {
+    if (this.isReceivingDamage) {
       this.switchSprite(this.lastDirection === 'right' ? 'hitRight' : 'hitLeft');
       this.attackCooldown = 0
       this.isAttacking = false;
@@ -311,7 +303,7 @@ export class Player extends Sprite {
 
     if (!this.isOnLadder) {
 
-      if(this.getVelocity().getY() < this.MAX_GRAVITY) {
+      if (this.getVelocity().getY() < this.MAX_GRAVITY) {
         this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
 
       }

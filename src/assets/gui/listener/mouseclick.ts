@@ -4,11 +4,11 @@ import {Mobile} from "../../../app/classes/gui/window/mobile";
 
 export function registerGuiListener() {
   window.addEventListener("click", (event) => {
-    if(GameComponent.isTitleScreen){
+    if (GameComponent.isTitleScreen) {
       TitleScreen.checkButtons(event.clientX, event.clientY);
     }
 
-    if(GameComponent.isMobile){
+    if (GameComponent.isMobile) {
       Mobile.checkButtons(event.clientX, event.clientY);
     }
 

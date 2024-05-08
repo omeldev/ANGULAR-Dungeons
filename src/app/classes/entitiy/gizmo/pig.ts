@@ -1,8 +1,6 @@
 import {Gizmo} from "./gizmo";
 import {Position} from "../position";
 import {GameAudio} from "../../audio/audio";
-import {Hitbox} from "../../level/collision/hitbox";
-import {publish} from "rxjs";
 
 export class Pig extends Gizmo {
 
@@ -36,7 +34,6 @@ export class Pig extends Gizmo {
         imageSrc: '../../../assets/sprites/pig/animation/runRight.png'
       }
     }, 11);
-
 
 
   }

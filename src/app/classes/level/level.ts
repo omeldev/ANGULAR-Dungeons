@@ -310,6 +310,12 @@ export class Level extends Sprite {
 
   }
 
+  getEntities(): Gizmo[] {
+
+    return [...this.pigs, ...this.bats, ...this.wizzards];
+
+  }
+
   private setShine(shine: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
@@ -447,11 +453,5 @@ export class Level extends Sprite {
         }
       });
     }));
-  }
-
-  getEntities(): Gizmo[] {
-
-    return [...this.pigs, ...this.bats, ...this.wizzards];
-
   }
 }

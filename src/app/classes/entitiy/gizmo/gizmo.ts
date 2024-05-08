@@ -107,7 +107,7 @@ export abstract class Gizmo extends Sprite {
   public applyGravity(delta: number): void {
     if (!this.isFlying) {
 
-      if(this.velocity.getY() < this.MAX_GRAVITY) {
+      if (this.velocity.getY() < this.MAX_GRAVITY) {
         this.velocity.setY(this.velocity.getY() + this.GRAVITY * delta);
       }
       this.position.setY(this.position.getY() + this.velocity.getY() * delta);

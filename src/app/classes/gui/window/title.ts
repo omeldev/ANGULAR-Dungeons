@@ -17,23 +17,23 @@ export class TitleScreen {
           GameComponent.player.preventInput = false;
         }),
         new Button('../../../assets/gui/mobile/down.png', new Position(100, 200), new Scale(0.25), () => {
-         if(GameComponent.volume - 0.1 <= 0.0){
+          if (GameComponent.volume - 0.1 <= 0.0) {
             GameComponent.volume = 0.0;
             return;
-         }
+          }
 
-         console.log("BEfore"+ GameComponent.volume);
+          console.log("BEfore" + GameComponent.volume);
           GameComponent.volume -= 0.1;
           console.log("AFTER" + GameComponent.volume);
         }),
         new Button('../../../assets/gui/mobile/up.png', new Position(100, 250), new Scale(0.25), () => {
-         if(GameComponent.volume + 0.1 >= 1.0){
+          if (GameComponent.volume + 0.1 >= 1.0) {
             GameComponent.volume = 1.0;
             return;
 
-         }
+          }
           GameComponent.volume += 0.1;
-         console.log(GameComponent.volume);
+          console.log(GameComponent.volume);
         }),
       ];
     TitleScreen.buttons = this.buttons;

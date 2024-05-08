@@ -1,4 +1,3 @@
-import {Sprite} from "../../entitiy/sprite";
 import {Position} from "../../entitiy/position";
 import {Collectible} from "../collectible";
 import {Gizmo} from "../../entitiy/gizmo/gizmo";

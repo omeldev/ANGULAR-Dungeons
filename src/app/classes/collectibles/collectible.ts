@@ -7,9 +7,8 @@ import {Player} from "../entitiy/player/player";
 
 export abstract class Collectible extends Sprite {
 
-  private hitbox: Hitbox | undefined;
-
   public swapBuffer = 2 + Math.random();
+  private hitbox: Hitbox | undefined;
   private swapCounter = 0;
   private swap = false;
 

@@ -176,21 +176,16 @@ export class GameComponent implements AfterViewInit {
     this.canvas!.nativeElement.height = height;
     GameComponent.canvasWidth = width;
     GameComponent.canvasHeight = height;
+    //TODO IOS support (Aspect Ratio)
 
   }
 
   private animate() {
     window.requestAnimationFrame(() => this.animate());
-
-
-
     if (GameComponent.isTitleScreen) {
       GameComponent.player.preventInput = true;
 
     }
-
-
-
 
     GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
     localStorage.setItem('volume', this.volume.toString());
@@ -216,12 +211,12 @@ export class GameComponent implements AfterViewInit {
     }
 
     this.moveCamera();
-    if(GameComponent.hasInteracted) {
-     if(GameComponent.isMobile) {
-       if(this.cameraCanvas?.nativeElement.requestFullscreen)
-       this.cameraCanvas?.nativeElement.requestFullscreen().then()
+    if (GameComponent.hasInteracted) {
+      if (GameComponent.isMobile) {
+        if (this.cameraCanvas?.nativeElement.requestFullscreen)
+          this.cameraCanvas?.nativeElement.requestFullscreen().then()
 
-     }
+      }
 
     }
 
