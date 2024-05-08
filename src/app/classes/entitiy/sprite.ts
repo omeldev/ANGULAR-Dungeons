@@ -14,7 +14,6 @@ export class Sprite {
   protected readonly position: Position;
   protected image: HTMLImageElement;
   private readonly imageSrc: string;
-  private isSpriteSheet: boolean = false;
   private width: number = 0;
   private height: number = 0;
   private readonly scale: Scale;

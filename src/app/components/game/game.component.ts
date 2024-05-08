@@ -61,7 +61,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   public static levelChange(): void {
-    const levels = [level1, level2, level3, level4];
+    const levels = [level1, level4, level3, level2];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 
@@ -207,9 +207,7 @@ export class GameComponent implements AfterViewInit {
 
     //Draw Shader
     if (GameComponent.isFlashLightShaderOn) {
-
-      if (GameComponent.getCurrentLevel().isLoaded)
-        this.flashLightShader.draw(this.context!, delta);
+      if (GameComponent.getCurrentLevel().isLoaded) this.flashLightShader.draw(this.context!, delta);
     }
 
 
@@ -219,7 +217,11 @@ export class GameComponent implements AfterViewInit {
 
     this.moveCamera();
     if(GameComponent.hasInteracted) {
-     if(GameComponent.isMobile) this.cameraCanvas?.nativeElement.requestFullscreen().then()
+     if(GameComponent.isMobile) {
+       if(this.cameraCanvas?.nativeElement.requestFullscreen)
+       this.cameraCanvas?.nativeElement.requestFullscreen().then()
+
+     }
 
     }
 

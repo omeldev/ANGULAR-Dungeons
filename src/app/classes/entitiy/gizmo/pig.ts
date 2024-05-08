@@ -1,6 +1,8 @@
 import {Gizmo} from "./gizmo";
 import {Position} from "../position";
 import {GameAudio} from "../../audio/audio";
+import {Hitbox} from "../../level/collision/hitbox";
+import {publish} from "rxjs";
 
 export class Pig extends Gizmo {
 
@@ -35,13 +37,13 @@ export class Pig extends Gizmo {
       }
     }, 11);
 
-    this.getScale().setScale(1)
 
 
   }
 
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
+    this.getHitbox().draw(context);
     if (this.shouldSpeak) {
       this.speechBubbles[this.currentBubble].show(context, delta);
       return;
@@ -65,8 +67,13 @@ export class Pig extends Gizmo {
     this.speechBubbles[this.currentBubble].show(context, delta);
   }
 
+  public override updateHitbox(offsetX: number, offsetY: number) {
+    super.updateHitbox(6, 8);
+  }
+
 
 }
+
 
 export class KingPig extends Gizmo {
 

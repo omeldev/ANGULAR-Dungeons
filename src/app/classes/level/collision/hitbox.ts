@@ -1,11 +1,12 @@
 import {Position} from "../../entitiy/position";
+import {Scale} from "../../entitiy/scale";
 
 export class Hitbox {
   private position: Position;
   private width: number;
   private height: number;
 
-  constructor(position: Position, width: number, height: number) {
+  constructor(position: Position, width: number, height: number, scale: Scale = new Scale(1)) {
     this.position = new Position(position.getX(), position.getY());
     this.width = width;
     this.height = height;

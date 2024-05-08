@@ -18,7 +18,7 @@ export abstract class Gizmo extends Sprite {
     bottom: false
   }
   protected speechBubbles: SpeechBubble[];
-  protected readonly hitbox;
+  protected readonly hitbox: Hitbox;
   protected pausedMovement = true;
   protected lastDirection: Direction = Direction.RIGHT;
   private readonly SPEED = 100;

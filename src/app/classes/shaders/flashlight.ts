@@ -18,6 +18,7 @@ export class FlashlightShader {
     }
   }
 
+  //Lightning depending on Radius brighter or darker
   public draw(context: CanvasRenderingContext2D, delta: number): void {
     this.updateCooldown(delta)
 
