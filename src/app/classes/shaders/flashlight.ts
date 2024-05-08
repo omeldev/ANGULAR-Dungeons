@@ -2,7 +2,7 @@ import {GameComponent} from "../../components/game/game.component";
 
 export class FlashlightShader {
 
-  public isActive: boolean = false;
+  public isActive: boolean = true;
 
   public cooldown: number = 0;
   public shaderCanvas = document.createElement('canvas');

@@ -7,6 +7,7 @@ import {isKeyPressed} from "../../../listener/keystroke";
 import {Hitbox} from "../../level/collision/hitbox";
 import {GameAudio} from "../../audio/audio";
 import {Healthbar} from "../../gui/bar/healthbar";
+import {PotionEffect, PotionEffectType} from "../../collectibles/potion/potioneffect";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -20,6 +21,7 @@ export class Player extends Sprite {
   public healthbar: Healthbar = new Healthbar(new Position(0, 200));
   public maxHealth: number = 100;
   public attackBox: Hitbox;
+  public damage: number = 25;
   collectedCoins: number = 0;
   isReceivingDamage: boolean = false;
   isOnGround: boolean = false;
@@ -30,6 +32,7 @@ export class Player extends Sprite {
   protected MAX_GRAVITY: number = 500;
   private readonly velocity: Velocity;
   private readonly hitbox: Hitbox;
+  private potionEffects: PotionEffect[] = [];
   private collisionDone = new Set<Hitbox>;
 
   /**
@@ -160,6 +163,10 @@ export class Player extends Sprite {
    */
   public getVelocity(): Velocity {
     return this.velocity;
+  }
+
+  public getPotionEffects(){
+    return this.potionEffects;
   }
 
   public switchSprite(name: string) {
@@ -417,6 +424,13 @@ export class Player extends Sprite {
     this.healthbar.position.setY(GameComponent.player.getPosition().getY() + 10);
 
     this.healthbar.draw(context, 10, GameComponent.player.health, GameComponent.player.maxHealth);
+
+    for(let i = 0; i < this.potionEffects.length; i++) {
+      this.potionEffects[i].update(context, delta);
+      if(this.potionEffects[i].duration <= 0) {
+        this.potionEffects.splice(i, 1);
+      }
+    }
   }
 
   public checkForAttackCollisions() {
@@ -426,9 +440,17 @@ export class Player extends Sprite {
         if (this.collisionDone.has(wizzards.getHitbox())) return;
         this.collisionDone.add(wizzards.getHitbox());
         wizzards.isReceivingDamage = true;
-        wizzards.health -= 25;
+        wizzards.health -= this.getDamage();
       }
     }
+  }
+
+  public getDamage(): number {
+    const amplifier = this.potionEffects.find(effect => effect.type === PotionEffectType.STRENGTH);
+    if (amplifier) {
+      return this.damage * amplifier.amplifier;
+    }
+    return this.damage;
   }
 
   protected updateHitbox(offsetX: number, offsetY: number): void {

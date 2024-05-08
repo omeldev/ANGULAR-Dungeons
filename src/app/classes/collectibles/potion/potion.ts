@@ -58,3 +58,11 @@ export class HealthPotion extends Potion {
   }
 
 }
+
+export class StrengthPotion extends Potion {
+  constructor(position: Position) {
+    super('../../assets/sprites/potion/strengthPotion.png', position, 1, 1);
+  }
+
+
+}
