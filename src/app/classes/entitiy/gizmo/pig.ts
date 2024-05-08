@@ -43,7 +43,6 @@ export class Pig extends Gizmo {
 
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
-    this.getHitbox().draw(context);
     if (this.shouldSpeak) {
       this.speechBubbles[this.currentBubble].show(context, delta);
       return;

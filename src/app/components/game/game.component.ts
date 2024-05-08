@@ -61,7 +61,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   public static levelChange(): void {
-    const levels = [level1, level4, level3, level2];
+    const levels = [level1, level2, level3, level4];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 
