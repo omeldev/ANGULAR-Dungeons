@@ -2,7 +2,6 @@
 
 ```diff
 - At the moment there is no IOS support.
- 
 Supports only Windows, Linux, and Android.
 ```
 
