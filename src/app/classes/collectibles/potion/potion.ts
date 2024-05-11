@@ -4,6 +4,7 @@ import {Gizmo} from "../../entitiy/gizmo/gizmo";
 import {Player} from "../../entitiy/player/player";
 import {GameComponent} from "../../../components/game/game.component";
 import {GameAudio} from "../../audio/audio";
+import {PotionEffectType} from "./potioneffect";
 
 export class Potion extends Collectible {
 
@@ -60,8 +61,20 @@ export class HealthPotion extends Potion {
 }
 
 export class StrengthPotion extends Potion {
-  constructor(position: Position) {
+  constructor(position: Position, public amplifier: number = 1, public duration: number) {
     super('../../assets/sprites/potion/strengthPotion.png', position, 1, 1);
+  }
+
+  public override onCollideWithPlayer(player: Player, context: CanvasRenderingContext2D, delta: number): void {
+    const strengthPotions = GameComponent.getCurrentLevel().getStrengthPotions();
+    for (let i = 0; i < strengthPotions.length; i++) {
+      if (strengthPotions[i] === this) {
+        GameComponent.getCurrentLevel().getStrengthPotions().splice(i, 1);
+        player.addPotionEffect(PotionEffectType.STRENGTH, this.amplifier, this.duration);
+        GameAudio.getAudio('shine:collect').play();
+        break;
+      }
+    }
   }
 
 

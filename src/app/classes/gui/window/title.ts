@@ -22,9 +22,7 @@ export class TitleScreen {
             return;
           }
 
-          console.log("BEfore" + GameComponent.volume);
           GameComponent.volume -= 0.1;
-          console.log("AFTER" + GameComponent.volume);
         }),
         new Button('../../../assets/gui/mobile/up.png', new Position(100, 250), new Scale(0.25), () => {
           if (GameComponent.volume + 0.1 >= 1.0) {
@@ -33,7 +31,6 @@ export class TitleScreen {
 
           }
           GameComponent.volume += 0.1;
-          console.log(GameComponent.volume);
         }),
       ];
     TitleScreen.buttons = this.buttons;

@@ -201,7 +201,6 @@ export class Player extends Sprite {
 
     if (!this.isOnGround && !this.isAttacking && !this.isReceivingDamage) {
       this.switchSprite(this.lastDirection === 'right' ? 'fallRight' : 'fallLeft')
-      console.log("Should fall")
     }
 
 
@@ -485,6 +484,10 @@ export class Player extends Sprite {
   private onAttackDone() {
     this.isAttacking = false;
     this.collisionDone.clear();
+  }
+
+  public addPotionEffect(type: PotionEffectType, amplifier: number, duration: number) {
+    this.potionEffects.push(new PotionEffect(type, duration, amplifier));
   }
 }
 

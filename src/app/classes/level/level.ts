@@ -7,7 +7,7 @@ import {Key} from "../collectibles/key/key";
 import {Shine} from "../collectibles/shines/shine";
 import {Ladder} from "./collision/ladderblock";
 import {Wizard} from "../entitiy/boss/wizard";
-import {HealthPotion} from "../collectibles/potion/potion";
+import {HealthPotion, StrengthPotion} from "../collectibles/potion/potion";
 import {Pig} from "../entitiy/gizmo/pig";
 import {Bat} from "../entitiy/gizmo/bat";
 import {GameComponent} from "../../components/game/game.component";
@@ -29,6 +29,7 @@ export class Level extends Sprite {
   private readonly healthPotions: HealthPotion[] = [];
   private shine: Shine[] = [];
   private ladders: Ladder [] = [];
+  private strengthPotions: StrengthPotion[] = []
 
 
   /**
@@ -51,7 +52,8 @@ export class Level extends Sprite {
               wizzards?: number[],
               healthPotions?: number[],
               pigs?: number[],
-              bats?: number[]) {
+              bats?: number[],
+              strengthPotions?: number[]) {
     super(background.getImage().src, background.getPosition(), () => {
       this.getCollisionsMap().forEach((row, y) => {
         row.forEach((symbol, x) => {
@@ -93,6 +95,10 @@ export class Level extends Sprite {
 
       if (bats) {
         this.setBats(bats);
+      }
+
+      if(strengthPotions){
+        this.setStrengthPotions(strengthPotions);
       }
 
     });
@@ -276,7 +282,7 @@ export class Level extends Sprite {
     GameComponent.getCurrentLevel().getKey().forEach(key => key.drawSprite(context, delta));
     GameComponent.getCurrentLevel().getShines().forEach(shine => shine.drawSprite(context, delta));
     GameComponent.getCurrentLevel().getHealthPotions().forEach(potion => potion.drawSprite(context, delta));
-
+    GameComponent.getCurrentLevel().getStrengthPotions().forEach(potion => potion.drawSprite(context, delta));
 
     //Entities
     GameComponent.getCurrentLevel().getWizzards().forEach(wizzard => {
@@ -453,5 +459,34 @@ export class Level extends Sprite {
         }
       });
     }));
+  }
+
+  public getStrengthPotions(): StrengthPotion[] {
+    return this.strengthPotions;
+  }
+
+  private setStrengthPotions(strengthPotions: number[]) {
+
+    const rows: number[][] = [];
+    const rowSize = this.getWidth() / 64;
+
+    if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
+
+
+    for (let i = 0; i < strengthPotions.length; i += rowSize) {
+      rows.push(strengthPotions.slice(i, rowSize + i));
+    }
+
+
+    rows.forEach(((row, y) => {
+      row.forEach((symbol, x) => {
+        if (symbol) {
+          const potion = new StrengthPotion(new Position(x * 64, y * 64), 3, 10);
+          this.strengthPotions.push(potion);
+        }
+      });
+    }));
+
+
   }
 }
