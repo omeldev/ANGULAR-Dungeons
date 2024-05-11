@@ -165,7 +165,7 @@ export class Player extends Sprite {
     return this.velocity;
   }
 
-  public getPotionEffects(){
+  public getPotionEffects() {
     return this.potionEffects;
   }
 
@@ -216,6 +216,7 @@ export class Player extends Sprite {
     }
 
 
+
     if (!isKeyPressed('a') && !isKeyPressed('d') && !this.isReceivingDamage && this.isOnGround) {
       if (this.lastDirection === 'left') {
         if (!this.preventInput && !this.isAttacking) this.switchSprite('idleLeft')
@@ -246,6 +247,15 @@ export class Player extends Sprite {
       } else this.velocity.setX(this.MAX_SPEED);
     }
 
+    if (isKeyPressed('a') && isKeyPressed('d')) {
+      if (this.lastDirection === 'left') {
+        if (!this.preventInput && !this.isAttacking) this.switchSprite('idleLeft')
+
+      } else {
+        if (!this.preventInput && !this.isAttacking) this.switchSprite('idleRight')
+      }
+      this.getVelocity().setX(0);
+    }
 
     /**
      * Update the position on the X-axis
@@ -425,9 +435,9 @@ export class Player extends Sprite {
 
     this.healthbar.draw(context, 10, GameComponent.player.health, GameComponent.player.maxHealth);
 
-    for(let i = 0; i < this.potionEffects.length; i++) {
+    for (let i = 0; i < this.potionEffects.length; i++) {
       this.potionEffects[i].update(context, delta);
-      if(this.potionEffects[i].duration <= 0) {
+      if (this.potionEffects[i].duration <= 0) {
         this.potionEffects.splice(i, 1);
       }
     }
