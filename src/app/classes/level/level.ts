@@ -322,6 +322,8 @@ export class Level extends Sprite {
 
   }
 
+
+
   private setShine(shine: number[]) {
     const rows: number[][] = [];
     const rowSize = this.getWidth() / 64;
@@ -367,6 +369,7 @@ export class Level extends Sprite {
         }
       });
     }));
+
 
   }
 
