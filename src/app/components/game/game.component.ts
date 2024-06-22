@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
-import {level1, level2, level3, level4} from "../../levels/levels";
+import {level1, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {FlashlightShader} from "../../classes/shaders/flashlight";
 import {TitleScreen} from "../../classes/gui/window/title";
@@ -61,7 +61,7 @@ export class GameComponent implements AfterViewInit {
   }
 
   public static levelChange(): void {
-    const levels = [level1, level2, level3, level4];
+    const levels = [level4];
     const index = levels.indexOf(GameComponent.getCurrentLevel());
     GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
 

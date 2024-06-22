@@ -8,6 +8,7 @@ import {Hitbox} from "../../level/collision/hitbox";
 import {GameAudio} from "../../audio/audio";
 import {Healthbar} from "../../gui/bar/healthbar";
 import {PotionEffect, PotionEffectType} from "../../collectibles/potion/potioneffect";
+import {Door} from "../../level/door/door";
 
 export class Player extends Sprite {
   public lastDirection: string = 'right';
@@ -69,6 +70,15 @@ export class Player extends Sprite {
         loop: true,
         imageSrc: '../../../assets/sprites/player/animation/runLeft.png'
 
+      },
+      enterIntermediateDoor: {
+        frameRate: 8,
+        frameBuffer: 12,
+        loop: false,
+        imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
+        onComplete: () => {
+          GameComponent.player.preventInput = false;
+        }
       },
       enterDoor: {
         frameRate: 8,
@@ -169,9 +179,16 @@ export class Player extends Sprite {
     return this.potionEffects;
   }
 
-  public switchSprite(name: string) {
+  public switchSprite(name: string, destinationDoor?: Door) {
     if (this.image === this.animations[name].image) return;
     this.currentFrame = 0;
+
+    if(destinationDoor) {
+      this.animations[name].onComplete = () => {
+        GameComponent.player.preventInput = false;
+        GameComponent.player.setPosition(destinationDoor.getDestination().getPosition());
+      }
+    }
 
     this.image = this.animations[name].image;
     this.frameRate = this.animations[name].frameRate;
@@ -180,6 +197,7 @@ export class Player extends Sprite {
 
     this.currentAnimation = this.animations[name];
     this.currentAnimation.isActive = false;
+
   }
 
   /**
@@ -213,7 +231,6 @@ export class Player extends Sprite {
         this.switchSprite('attackLeft');
       GameAudio.getAudio('player:attack').play();
     }
-
 
 
     if (!isKeyPressed('a') && !isKeyPressed('d') && !this.isReceivingDamage && this.isOnGround) {
@@ -462,6 +479,10 @@ export class Player extends Sprite {
     return this.damage;
   }
 
+  public addPotionEffect(type: PotionEffectType, amplifier: number, duration: number) {
+    this.potionEffects.push(new PotionEffect(type, duration, amplifier));
+  }
+
   protected updateHitbox(offsetX: number, offsetY: number): void {
 
     this.hitbox.getPosition().setX(this.getPosition().getX() + offsetX);
@@ -484,10 +505,6 @@ export class Player extends Sprite {
   private onAttackDone() {
     this.isAttacking = false;
     this.collisionDone.clear();
-  }
-
-  public addPotionEffect(type: PotionEffectType, amplifier: number, duration: number) {
-    this.potionEffects.push(new PotionEffect(type, duration, amplifier));
   }
 }
 

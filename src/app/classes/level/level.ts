@@ -14,15 +14,18 @@ import {GameComponent} from "../../components/game/game.component";
 import {isKeyPressed} from "../../listener/keystroke";
 import {GameAudio} from "../audio/audio";
 import {Gizmo} from "../entitiy/gizmo/gizmo";
+import {ILevel} from "./ILevel";
+import {exitDoorLevel1} from "../../levels/doors/doors";
 
 export class Level extends Sprite {
-  private collisions: number[];
+  private collisions: number[] = [];
   private readonly background: Sprite;
   private collisionBlocks: CollisionBlock[] = [];
   private readonly coins: Coin[] = [];
   private readonly key: Key[] = [];
   private readonly spawnPoint: Position;
   private readonly finalDoor: Door;
+  private readonly doors: Door[] = [];
   private readonly wizzards: Wizard[] = [];
   private pigs: Pig[] = [];
   private bats: Bat[] = [];
@@ -43,76 +46,17 @@ export class Level extends Sprite {
    */
   constructor(background: Sprite,
               spawnPoint: Position,
-              collisions: number[],
+              fileName: string,
               finalDoor?: Door,
-              coins?: number[],
-              key?: number[],
-              shine?: number[],
-              ladders?: number[],
-              wizzards?: number[],
-              healthPotions?: number[],
-              pigs?: number[],
-              bats?: number[],
-              strengthPotions?: number[]) {
-    super(background.getImage().src, background.getPosition(), () => {
-      this.getCollisionsMap().forEach((row, y) => {
-        row.forEach((symbol, x) => {
-          if (symbol) {
-            const block = new CollisionBlock(new Position(x * 64, y * 64));
-            this.collisionBlocks.push(block);
-          }
-        })
+              iniFunction?: () => void){
+    super(background.getImage().src, background.getPosition(), () => new Promise<void>(() => {
+      this.loadLevel('assets/levels/' + fileName).then(() => {
+        iniFunction?.();
       });
-
-
-      if (coins) {
-        this.setCoins(coins);
-      }
-
-      if (key) {
-        this.setKey(key);
-      }
-
-      if (shine) {
-        this.setShine(shine);
-      }
-
-      if (ladders) {
-        this.setLadders(ladders);
-      }
-
-      if (wizzards) {
-        this.setWizzards(wizzards);
-      }
-
-      if (healthPotions) {
-        this.setHealthPotions(healthPotions);
-      }
-
-      if (pigs) {
-        this.setPigs(pigs);
-      }
-
-      if (bats) {
-        this.setBats(bats);
-      }
-
-      if(strengthPotions){
-        this.setStrengthPotions(strengthPotions);
-      }
-
-    });
-    this.collisions = collisions;
+    }));
     this.background = background;
     this.finalDoor = finalDoor ? finalDoor : new Door(new Position(13 * 64, 64 + 16), true, new Door(new Position(0, 0), true));
-
     this.spawnPoint = spawnPoint;
-
-
-    /**
-     * Convert the collisions array to CollisionBlocks
-     * 292 is the symbol for a collision block
-     */
 
   }
 
@@ -135,6 +79,56 @@ export class Level extends Sprite {
         }
       });
     }));
+
+  }
+
+  public async loadLevel(filePath: string) {
+
+    fetch(filePath).then(response => response.json()).then((data: ILevel) => {
+      data.layers.forEach(layer => {
+        if (layer.name === 'collision') {
+          this.collisions = layer.data;
+          this.getCollisionsMap().forEach((row, y) => {
+            row.forEach((symbol, x) => {
+              if (symbol) {
+                const block = new CollisionBlock(new Position(x * 64, y * 64));
+                this.collisionBlocks.push(block);
+                console.log("Found Collision", x, y)
+              }
+            })
+          });
+
+        }
+        if (layer.name === 'coin') {
+          this.setCoins(layer.data);
+        }
+        if (layer.name === 'key') {
+          this.setKey(layer.data);
+        }
+        if (layer.name === 'shine') {
+          this.setShine(layer.data);
+        }
+        if (layer.name === 'ladder') {
+          this.setLadders(layer.data);
+        }
+        if (layer.name === 'wizard') {
+          this.setWizzards(layer.data);
+        }
+        if (layer.name === 'health_potion') {
+          this.setHealthPotions(layer.data);
+        }
+        if (layer.name === 'pig') {
+          this.setPigs(layer.data);
+        }
+        if (layer.name === 'bat') {
+          this.setBats(layer.data);
+        }
+        if (layer.name === 'strength_potion') {
+          this.setStrengthPotions(layer.data);
+        }
+
+      })
+    });
 
   }
 
@@ -170,6 +164,10 @@ export class Level extends Sprite {
    * Transform the 1D array to a 2D array
    * TODO: Independent from the size of the Level
    */
+
+  public addDoor(door: Door) {
+    this.doors.push(door);
+  }
   public getCollisionsMap(): number[][] {
     const rows: number[][] = [];
 
@@ -178,8 +176,8 @@ export class Level extends Sprite {
     if (this.getWidth() % 64 !== 0) throw new Error("invalid width");
 
 
-    for (let i = 0; i < this.collisions.length; i += rowSize) {
-      rows.push(this.collisions.slice(i, rowSize + i));
+    for (let i = 0; i < this.collisions!.length; i += rowSize) {
+      rows.push(this.collisions!.slice(i, rowSize + i));
     }
 
     return rows;
@@ -275,6 +273,7 @@ export class Level extends Sprite {
 
     //Door
     this.getFinalDoor().drawSprite(context, delta);
+    GameComponent.getCurrentLevel().getDoors().forEach(door => door.drawSprite(context, delta));
 
     //Collectibles
 
@@ -301,6 +300,7 @@ export class Level extends Sprite {
     });
 
 
+
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
       if (GameComponent.player.isAttacking) return;
       GameComponent.getCurrentLevel().getFinalDoor().play();
@@ -313,6 +313,29 @@ export class Level extends Sprite {
 
     }
 
+    this.getDoors().forEach(door => {
+      if(this.getFinalDoor() === door) return;
+
+      if (door.checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
+        if (GameComponent.player.isAttacking) return;
+        door.play().then(() => {
+
+        });
+        GameAudio.getAudio('door:open').play();
+        GameComponent.player.collectedKeys -= 1;
+
+        GameComponent.player.getVelocity().setY(0);
+        GameComponent.player.getVelocity().setX(0);
+
+        GameComponent.player.preventInput = true;
+
+        GameComponent.player.switchSprite('enterIntermediateDoor', exitDoorLevel1);
+
+      }
+    })
+
+
+
 
   }
 
@@ -322,7 +345,9 @@ export class Level extends Sprite {
 
   }
 
-
+  public getStrengthPotions(): StrengthPotion[] {
+    return this.strengthPotions;
+  }
 
   private setShine(shine: number[]) {
     const rows: number[][] = [];
@@ -464,10 +489,6 @@ export class Level extends Sprite {
     }));
   }
 
-  public getStrengthPotions(): StrengthPotion[] {
-    return this.strengthPotions;
-  }
-
   private setStrengthPotions(strengthPotions: number[]) {
 
     const rows: number[][] = [];
@@ -491,5 +512,9 @@ export class Level extends Sprite {
     }));
 
 
+  }
+
+  private getDoors() {
+    return this.doors;
   }
 }

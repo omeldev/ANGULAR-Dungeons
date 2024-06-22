@@ -162,8 +162,11 @@ export class Sprite {
 
   }
 
-  public play() {
-    this.autoPlay = true;
+  public play(): Promise<void> {
+    return new Promise((resolve) => {
+      this.autoPlay = true;
+      resolve();
+    });
   }
 
   private nextFrame(delta: number): void {
