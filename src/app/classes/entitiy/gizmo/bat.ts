@@ -49,11 +49,17 @@ export class Bat extends Gizmo {
     }
 
      */
+
+
+
   }
 
+  private switchTime = 0;
   public override update(context: CanvasRenderingContext2D, delta: number) {
     super.update(context, delta);
+    
   }
+
 
 
 }
