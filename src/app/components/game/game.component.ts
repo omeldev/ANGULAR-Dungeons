@@ -8,6 +8,7 @@ import {TitleScreen} from "../../classes/gui/window/title";
 import {initializeSounds} from "../../classes/audio/audio";
 import {Mobile} from "../../classes/gui/window/mobile";
 import {PotionEffectType} from "../../classes/collectibles/potion/potioneffect";
+import {LeaderboardService} from "../../services/leaderboard.service";
 
 @Component({
   selector: 'app-game',
@@ -24,7 +25,9 @@ export class GameComponent implements AfterViewInit {
   public static isTitleScreen: boolean = true;
   public static hasInteracted: boolean = false;
   public static isFlashLightShaderOn: boolean = true;
-  private static currentLevel = level1;
+  public static levels = [level4];
+
+  private static currentLevel = level1 ?? GameComponent.levels[0];
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   @ViewChild('cameraCanvas', {static: true})
@@ -35,8 +38,10 @@ export class GameComponent implements AfterViewInit {
   public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   private oldFrameTime: number = 1;
 
+  public static isFinished: boolean = false;
 
-  constructor() {
+
+  constructor(public readonly leaderboard: LeaderboardService) {
     GameComponent.player = new Player();
     initializeSounds();
     this.registerGuiListener();
@@ -62,9 +67,9 @@ export class GameComponent implements AfterViewInit {
   }
 
   public static levelChange(): void {
-    const levels = [level4];
-    const index = levels.indexOf(GameComponent.getCurrentLevel());
-    GameComponent.setCurrentLevel(levels[(index + 1) % levels.length]);
+
+    const index = this.levels.indexOf(GameComponent.getCurrentLevel());
+    GameComponent.setCurrentLevel(this.levels[(index + 1) % this.levels.length]);
 
 
   }
@@ -197,6 +202,8 @@ export class GameComponent implements AfterViewInit {
     this.oldFrameTime = performance.now();
 
 
+
+
     GameComponent.getCurrentLevel().draw(this.context!, delta);
     GameComponent.player.update(this.context!, delta);
     GameComponent.player.drawSprite(this.context!, delta);
@@ -231,6 +238,8 @@ export class GameComponent implements AfterViewInit {
       return;
     }
 
+    if(!GameComponent.isFinished)
+    this.leaderboard.time += delta;
 
   }
 
@@ -263,30 +272,35 @@ export class GameComponent implements AfterViewInit {
       0, 0, cameraWidth, cameraHeight
     );
 
+    //Draw Name onto Camera Canvas
+    this.cameraContext!.fillStyle = 'white';
+    this.cameraContext!.font = '20px Arial';
+    this.cameraContext!.fillText(`Name: ${this.leaderboard.name} Time: ${Math.round(this.leaderboard.time* 100) / 100}`, 10, 30);
+
     //Draw Coin Counter onto Camera Canvas
     this.cameraContext!.fillStyle = 'white';
     this.cameraContext!.font = '20px Arial';
-    this.cameraContext!.fillText(`Coins: ${GameComponent.player.collectedCoins}`, 10, 30);
+    this.cameraContext!.fillText(`Coins: ${GameComponent.player.collectedCoins}`, 10, 60);
 
     //Draw Shine Counter onto Camera Canvas
     this.cameraContext!.fillStyle = 'white';
     this.cameraContext!.font = '20px Arial';
-    this.cameraContext!.fillText(`Shines: ${GameComponent.player.collectedShines}`, 10, 60);
+    this.cameraContext!.fillText(`Shines: ${GameComponent.player.collectedShines}`, 10, 90);
 
     //Draw Key Counter onto Camera Canvas
     this.cameraContext!.fillStyle = 'white';
     this.cameraContext!.font = '20px Arial';
-    this.cameraContext!.fillText(`Keys: ${GameComponent.player.collectedKeys}`, 10, 90);
+    this.cameraContext!.fillText(`Keys: ${GameComponent.player.collectedKeys}`, 10, 120);
 
     //Draw Active Potion Effects
     this.cameraContext!.fillStyle = 'white';
     this.cameraContext!.font = '20px Arial';
 
-    for(let i = 0; i < GameComponent.player.getPotionEffects().length; i++) {
+    for (let i = 0; i < GameComponent.player.getPotionEffects().length; i++) {
       let duration = GameComponent.player.getPotionEffects()[i].duration;
       //Round to 2 decimal places
       duration = Math.round(duration * 100) / 100;
-      this.cameraContext!.fillText(PotionEffectType[GameComponent.player.getPotionEffects()[i].type] + ": " + duration, 10, 120 + i * 30);
+      this.cameraContext!.fillText(PotionEffectType[GameComponent.player.getPotionEffects()[i].type] + ": " + duration, 10, 150 + i * 30);
     }
 
   }

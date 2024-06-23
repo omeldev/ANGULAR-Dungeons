@@ -310,6 +310,9 @@ export class Level extends Sprite {
       GameComponent.player.getVelocity().setX(0);
       GameComponent.player.preventInput = true;
       GameComponent.player.switchSprite('enterDoor');
+      if(GameComponent.getCurrentLevel() === GameComponent.levels[GameComponent.levels.length - 1]) {
+        GameComponent.isFinished = true;
+      }
 
     }
 

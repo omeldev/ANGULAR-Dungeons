@@ -35,6 +35,7 @@ export class Player extends Sprite {
   private readonly hitbox: Hitbox;
   private potionEffects: PotionEffect[] = [];
   private collisionDone = new Set<Hitbox>;
+  private name: string = 'Anonymous';
 
   /**
    * Create a new player
@@ -86,6 +87,7 @@ export class Player extends Sprite {
         loop: false,
         imageSrc: '../../../assets/sprites/player/animation/enterDoor.png',
         onComplete: () => {
+
           GameComponent.levelChange();
           GameComponent.player.preventInput = false;
 
@@ -177,6 +179,14 @@ export class Player extends Sprite {
 
   public getPotionEffects() {
     return this.potionEffects;
+  }
+
+  public setName(name: string) {
+    this.name = name;
+  }
+
+  public getName() {
+    return this.name;
   }
 
   public switchSprite(name: string, destinationDoor?: Door) {

@@ -8,6 +8,8 @@ import {RouterModule} from "@angular/router";
 import {routes} from "./modules/route/app.routes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GameComponent} from './components/game/game.component';
+import { IntroComponent } from './components/intro/intro.component';
+import {LeaderboardService} from "./services/leaderboard.service";
 
 
 @NgModule({
@@ -16,6 +18,7 @@ import {GameComponent} from './components/game/game.component';
 
     ErrorComponent,
     GameComponent,
+    IntroComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,7 @@ import {GameComponent} from './components/game/game.component';
     FormsModule
 
   ],
-  providers: [],
+  providers: [LeaderboardService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "createComponent": "ng generate component components/game",
-    "createService": "ng generate service services/home"
+    "createComponent": "ng generate component components/intro",
+    "createService": "ng generate service services/leaderboard"
   },
   "private": true,
   "dependencies": {
