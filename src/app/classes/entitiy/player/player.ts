@@ -186,6 +186,8 @@ export class Player extends Sprite {
     if(destinationDoor) {
       this.animations[name].onComplete = () => {
         GameComponent.player.preventInput = false;
+        destinationDoor.play();
+
         GameComponent.player.setPosition(destinationDoor.getDestination().getPosition());
       }
     }

@@ -7,6 +7,7 @@ import {FlashlightShader} from "../../classes/shaders/flashlight";
 import {TitleScreen} from "../../classes/gui/window/title";
 import {initializeSounds} from "../../classes/audio/audio";
 import {Mobile} from "../../classes/gui/window/mobile";
+import {PotionEffectType} from "../../classes/collectibles/potion/potioneffect";
 
 @Component({
   selector: 'app-game',
@@ -261,5 +262,32 @@ export class GameComponent implements AfterViewInit {
       cameraStartX, cameraStartY, cameraWidth, cameraHeight,
       0, 0, cameraWidth, cameraHeight
     );
+
+    //Draw Coin Counter onto Camera Canvas
+    this.cameraContext!.fillStyle = 'white';
+    this.cameraContext!.font = '20px Arial';
+    this.cameraContext!.fillText(`Coins: ${GameComponent.player.collectedCoins}`, 10, 30);
+
+    //Draw Shine Counter onto Camera Canvas
+    this.cameraContext!.fillStyle = 'white';
+    this.cameraContext!.font = '20px Arial';
+    this.cameraContext!.fillText(`Shines: ${GameComponent.player.collectedShines}`, 10, 60);
+
+    //Draw Key Counter onto Camera Canvas
+    this.cameraContext!.fillStyle = 'white';
+    this.cameraContext!.font = '20px Arial';
+    this.cameraContext!.fillText(`Keys: ${GameComponent.player.collectedKeys}`, 10, 90);
+
+    //Draw Active Potion Effects
+    this.cameraContext!.fillStyle = 'white';
+    this.cameraContext!.font = '20px Arial';
+
+    for(let i = 0; i < GameComponent.player.getPotionEffects().length; i++) {
+      let duration = GameComponent.player.getPotionEffects()[i].duration;
+      //Round to 2 decimal places
+      duration = Math.round(duration * 100) / 100;
+      this.cameraContext!.fillText(PotionEffectType[GameComponent.player.getPotionEffects()[i].type] + ": " + duration, 10, 120 + i * 30);
+    }
+
   }
 }
