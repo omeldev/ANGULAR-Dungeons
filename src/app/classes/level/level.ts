@@ -322,11 +322,28 @@ export class Level extends Sprite {
     this.getDoors().forEach(door => {
       if(this.getFinalDoor() === door) return;
 
-      if (door.checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
+      if (door.checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
 
         if (GameComponent.player.isAttacking) return;
 
-        if(!door.isLocked()) return;
+        if(!door.isLocked()){
+          GameComponent.player.getVelocity().setY(0);
+          GameComponent.player.getVelocity().setX(0);
+          GameComponent.player.preventInput = true;
+
+          this.doors.forEach(destination => {
+            if(destination.getDestination() === door) {
+              GameComponent.player.switchSprite('enterIntermediateDoor', destination);
+            }else {
+              GameComponent.player.switchSprite('enterIntermediateDoor', door.getDestination());
+            }
+          })
+
+
+          return;
+        }
+
+        if(GameComponent.player.collectedKeys < 1) return;
 
         door.setLocked(false);
 

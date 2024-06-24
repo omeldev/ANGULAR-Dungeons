@@ -45,6 +45,10 @@ export class GameComponent implements AfterViewInit {
     GameComponent.player = new Player();
     initializeSounds();
     this.registerGuiListener();
+
+    if(localStorage.getItem('name')) {
+      this.leaderboard.name = localStorage.getItem('name')!;
+    }
   }
 
   public static getPlayer(): Player {

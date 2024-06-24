@@ -198,7 +198,7 @@ export class Player extends Sprite {
         GameComponent.player.preventInput = false;
         destinationDoor.play();
 
-        GameComponent.player.setPosition(destinationDoor.getDestination().getPosition());
+        GameComponent.player.setPosition(destinationDoor.getPosition());
       }
     }
 

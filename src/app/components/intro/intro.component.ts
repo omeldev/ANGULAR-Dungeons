@@ -19,9 +19,11 @@ export class IntroComponent {
               public readonly router: Router) {
 
 
+
   }
 
   public redirect(): void {
+    localStorage.setItem('name', this.leaderboardService.name);
     this.router.navigate(['/game']).then(r => console.log(r));
   }
 
