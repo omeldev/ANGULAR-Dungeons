@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
-import {level1, level4} from "../../levels/levels";
+import {intro, level1, level4} from "../../levels/levels";
 import {Level} from "../../classes/level/level";
 import {FlashlightShader} from "../../classes/shaders/flashlight";
 import {TitleScreen} from "../../classes/gui/window/title";
@@ -22,12 +22,12 @@ export class GameComponent implements AfterViewInit {
   public static canvasHeight = 64 * 9;
   public static player: Player;
   public static volume: number = 1.0;
-  public static isTitleScreen: boolean = true;
+  public static isTitleScreen: boolean = false;
   public static hasInteracted: boolean = false;
   public static isFlashLightShaderOn: boolean = true;
-  public static levels = [level4];
+  public static levels = [level1, level4];
 
-  private static currentLevel = level1 ?? GameComponent.levels[0];
+  private static currentLevel = intro ?? GameComponent.levels[0];
   @ViewChild('canvas', {static: true})
   public canvas: ElementRef<HTMLCanvasElement> | undefined;
   @ViewChild('cameraCanvas', {static: true})
@@ -203,10 +203,11 @@ export class GameComponent implements AfterViewInit {
 
 
 
+      GameComponent.getCurrentLevel().draw(this.context!, delta);
+      GameComponent.player.update(this.context!, delta);
+      GameComponent.player.drawSprite(this.context!, delta);
 
-    GameComponent.getCurrentLevel().draw(this.context!, delta);
-    GameComponent.player.update(this.context!, delta);
-    GameComponent.player.drawSprite(this.context!, delta);
+
 
     //Draw Shader
     if (GameComponent.isFlashLightShaderOn) {

@@ -4,7 +4,8 @@ import {Player} from "../../entitiy/player/player";
 
 export class Door extends Sprite {
   private isFinalDoor: boolean;
-  private destination: Door;
+  private destination: Door = this;
+  private locked: boolean = true;
 
   /**
    * Create a new Door
@@ -16,7 +17,9 @@ export class Door extends Sprite {
     super('../../../assets/sprites/door/doorOpen.png', position, () => {
     }, 5);
     this.isFinalDoor = false;
-    this.destination = this;
+    if(destination) {
+      this.destination = destination;
+    }
     this.frameBuffer = 7;
     this.loop = false;
     this.autoPlay = false;
@@ -30,6 +33,14 @@ export class Door extends Sprite {
    */
   public getIsFinalDoor(): boolean {
     return this.isFinalDoor;
+  }
+
+  public setLocked(isLocked: boolean): void {
+    this.locked = isLocked;
+  }
+
+  public isLocked(): boolean {
+    return this.locked;
   }
 
   /**

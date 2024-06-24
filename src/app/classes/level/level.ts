@@ -303,6 +303,9 @@ export class Level extends Sprite {
 
     if (GameComponent.getCurrentLevel().getFinalDoor().checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
       if (GameComponent.player.isAttacking) return;
+      if(!GameComponent.getCurrentLevel().getFinalDoor().isLocked()) return;
+
+      GameComponent.getCurrentLevel().getFinalDoor().setLocked(false);
       GameComponent.getCurrentLevel().getFinalDoor().play();
       GameAudio.getAudio('door:open').play();
       GameComponent.player.collectedKeys -= 1;
@@ -320,10 +323,17 @@ export class Level extends Sprite {
       if(this.getFinalDoor() === door) return;
 
       if (door.checkCollision(GameComponent.player) && isKeyPressed('w') && GameComponent.player.collectedKeys >= 1 && GameComponent.player.isOnGround && !GameComponent.player.isReceivingDamage) {
+
         if (GameComponent.player.isAttacking) return;
+
+        if(!door.isLocked()) return;
+
+        door.setLocked(false);
+
         door.play().then(() => {
 
         });
+
         GameAudio.getAudio('door:open').play();
         GameComponent.player.collectedKeys -= 1;
 
@@ -332,7 +342,8 @@ export class Level extends Sprite {
 
         GameComponent.player.preventInput = true;
 
-        GameComponent.player.switchSprite('enterIntermediateDoor', exitDoorLevel1);
+        GameComponent.player.switchSprite('enterIntermediateDoor', door.getDestination());
+        door.getDestination().setLocked(false);
 
       }
     })
