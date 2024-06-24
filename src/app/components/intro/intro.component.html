@@ -1,2 +1,6 @@
-<input [(ngModel)]="leaderboardService.name" placeholder="Enter Name">
+<input [(ngModel)]="gameService.name" placeholder="Enter Name">
 <button (click)="redirect()">Start Playing</button>
+<div>
+  <p>Volume Slider</p>
+  <input [(ngModel)]="gameService.volume" type="range" min="0" max="1" step="0.01">
+</div>

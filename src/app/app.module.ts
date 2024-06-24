@@ -9,7 +9,7 @@ import {routes} from "./modules/route/app.routes";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GameComponent} from './components/game/game.component';
 import { IntroComponent } from './components/intro/intro.component';
-import {LeaderboardService} from "./services/leaderboard.service";
+import {GameService} from "./services/game.service";
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import {LeaderboardService} from "./services/leaderboard.service";
     FormsModule
 
   ],
-  providers: [LeaderboardService],
+  providers: [GameService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -8,7 +8,7 @@ import {TitleScreen} from "../../classes/gui/window/title";
 import {initializeSounds} from "../../classes/audio/audio";
 import {Mobile} from "../../classes/gui/window/mobile";
 import {PotionEffectType} from "../../classes/collectibles/potion/potioneffect";
-import {LeaderboardService} from "../../services/leaderboard.service";
+import {GameService} from "../../services/game.service";
 
 @Component({
   selector: 'app-game',
@@ -21,8 +21,7 @@ export class GameComponent implements AfterViewInit {
   public static canvasWidth = 64 * 16;
   public static canvasHeight = 64 * 9;
   public static player: Player;
-  public static volume: number = 1.0;
-  public static isTitleScreen: boolean = false;
+  public static isTitleScreen: boolean = true;
   public static hasInteracted: boolean = false;
   public static isFlashLightShaderOn: boolean = true;
   public static levels = [level1, level4];
@@ -35,13 +34,12 @@ export class GameComponent implements AfterViewInit {
   public cameraContext: CanvasRenderingContext2D | undefined;
   public context: CanvasRenderingContext2D | undefined;
   public flashLightShader = new FlashlightShader();
-  public volume: number = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume')!) : 1.0;
   private oldFrameTime: number = 1;
 
   public static isFinished: boolean = false;
 
 
-  constructor(public readonly leaderboard: LeaderboardService) {
+  constructor(public readonly leaderboard: GameService) {
     GameComponent.player = new Player();
     initializeSounds();
     this.registerGuiListener();
@@ -197,8 +195,6 @@ export class GameComponent implements AfterViewInit {
 
     }
 
-    GameComponent.volume = parseFloat(localStorage.getItem('volume') || '1.0');
-    localStorage.setItem('volume', this.volume.toString());
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
 

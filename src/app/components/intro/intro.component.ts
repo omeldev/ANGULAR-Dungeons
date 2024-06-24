@@ -1,5 +1,5 @@
 import {Component, signal} from '@angular/core';
-import {LeaderboardService} from "../../services/leaderboard.service";
+import {GameService} from "../../services/game.service";
 import {Router} from "@angular/router";
 import {distinctUntilChanged} from "rxjs";
 import {FormControl} from "@angular/forms";
@@ -15,7 +15,7 @@ export class IntroComponent {
   public name: FormControl<string | null> = new FormControl('');
 
 
-  constructor(public readonly leaderboardService: LeaderboardService,
+  constructor(public readonly gameService: GameService,
               public readonly router: Router) {
 
 
@@ -23,7 +23,8 @@ export class IntroComponent {
   }
 
   public redirect(): void {
-    localStorage.setItem('name', this.leaderboardService.name);
+    localStorage.setItem('name', this.gameService.name);
+    localStorage.setItem('volume', this.gameService.volume.toString());
     this.router.navigate(['/game']).then(r => console.log(r));
   }
 

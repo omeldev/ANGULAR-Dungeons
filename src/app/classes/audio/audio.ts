@@ -1,4 +1,6 @@
 import {GameComponent} from "../../components/game/game.component";
+import {inject} from "@angular/core";
+import {GameService} from "../../services/game.service";
 
 export class GameAudio {
 
@@ -7,10 +9,10 @@ export class GameAudio {
 
   private audio: HTMLAudioElement;
 
-  constructor(name: string, audioSrc: string, loop: boolean, volume: number = GameComponent.volume) {
+  constructor(name: string, audioSrc: string, loop: boolean, volume?: number) {
     this.audio = new Audio(audioSrc);
     this.audio.loop = loop;
-    this.audio.volume = volume;
+    this.audio.volume = volume ?? localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume') ?? '0.5') : 0.5;
 
     GameAudio.map.set(name, this);
   }
@@ -26,7 +28,7 @@ export class GameAudio {
 
   public play(onEnded?: () => void): void {
     const clone = this.audio.cloneNode(true) as HTMLAudioElement; // Create a clone of the audio element
-    clone.volume = GameComponent.volume;
+    clone.volume = localStorage.getItem('volume') ? parseFloat(localStorage.getItem('volume') ?? '0.5') : 0.5;
     clone.play().then();
     clone.addEventListener("ended", function () {
       onEnded?.();
