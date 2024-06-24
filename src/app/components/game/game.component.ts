@@ -40,13 +40,7 @@ export class GameComponent implements AfterViewInit {
 
 
   constructor(public readonly leaderboard: GameService) {
-    GameComponent.player = new Player();
-    initializeSounds();
-    this.registerGuiListener();
 
-    if(localStorage.getItem('name')) {
-      this.leaderboard.name = localStorage.getItem('name')!;
-    }
   }
 
   public static getPlayer(): Player {
@@ -117,6 +111,13 @@ export class GameComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    GameComponent.player = new Player();
+    initializeSounds();
+    this.registerGuiListener();
+
+    if(localStorage.getItem('name')) {
+      this.leaderboard.name = localStorage.getItem('name')!;
+    }
     this.context = this.canvas?.nativeElement.getContext('2d')!;
 
     // @ts-ignore
