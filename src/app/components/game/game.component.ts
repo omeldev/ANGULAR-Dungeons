@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Injectable, ViewChild} from '@angular/core';
 import {Player} from "../../classes/entitiy/player/player";
 import {isKeyPressed, registerKeystrokes, setKeyPressed} from "../../listener/keystroke";
 import {intro, level1, level4} from "../../levels/levels";
@@ -9,6 +9,7 @@ import {initializeSounds} from "../../classes/audio/audio";
 import {Mobile} from "../../classes/gui/window/mobile";
 import {PotionEffectType} from "../../classes/collectibles/potion/potioneffect";
 import {GameService} from "../../services/game.service";
+
 
 @Component({
   selector: 'app-game',
@@ -199,8 +200,10 @@ export class GameComponent implements AfterViewInit {
     this.changeCanvasSize(GameComponent.getCurrentLevel().getBackground().getWidth(), GameComponent.getCurrentLevel().getBackground().getHeight());
 
 
-    const delta = (performance.now() - this.oldFrameTime) / 1000;
+    let delta = (performance.now() - this.oldFrameTime) / 1000;
     this.oldFrameTime = performance.now();
+
+    if(delta > 0.2) delta = 0.0;
 
 
 

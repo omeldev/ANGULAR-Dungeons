@@ -137,7 +137,10 @@ export class Sprite {
    * @param delta {number} time since the last frame
    */
   public drawSprite(context: CanvasRenderingContext2D, delta?: number): void {
-    if (!this.isLoaded) return;
+    if (!this.isLoaded){
+      this.image.onload;
+      return;
+    }
 
     const cropbox = {
       position: {
