@@ -484,9 +484,9 @@ export class Player extends Sprite {
   }
 
   public getDamage(): number {
-    const amplifier = this.potionEffects.find(effect => effect.type === PotionEffectType.STRENGTH);
-    if (amplifier) {
-      return this.damage * amplifier.amplifier;
+    const effect = this.potionEffects.find(effect => effect.type === PotionEffectType.STRENGTH);
+    if (effect) {
+      return this.damage * effect.amplifier;
     }
     return this.damage;
   }
